@@ -1,8 +1,10 @@
 package Map::Tube::Exception;
 
+$Map::Tube::Exception::VERSION = '0.01';
+
 use 5.006;
-use strict;
-use warnings FATAL => 'all';
+use Moo;
+with 'Throwable';
 
 =head1 NAME
 
@@ -14,39 +16,32 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+use overload
+    q{""}    => 'as_string',
+    fallback => 1;
 
+has message     => (is => 'ro');
+has method      => (is => 'ro');
+has code        => (is => 'ro');
+has reason      => (is => 'ro');
+has filename    => (is => 'ro');
+has line_number => (is => 'ro');
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+=head1 METHODS
 
-Perhaps a little code snippet.
-
-    use Map::Tube::Exception;
-
-    my $foo = Map::Tube::Exception->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
+=head2 as_string
 
 =cut
 
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
+sub as_string
+{
+    my $self = shift;
+    return $self->method.'(): '
+           .$self->message.' ('.$self->code.' '.$self->reason.') '
+           .'file '.$self->filename.' on line '.$self->line_number."\n";
+    ;
 }
 
 =head1 AUTHOR
