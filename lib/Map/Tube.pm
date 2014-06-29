@@ -34,7 +34,7 @@ sub BUILD {
     my $map = {};
 
     foreach my $station (@{$xml->{stations}->{station}}) {
-        $map->{$station->{id}} = Map::Tube::Node(
+        $map->{$station->{id}} = Map::Tube::Node->new(
             link   => [split /\,/, $station->{link}],
             line   => [split /\,/, $station->{line}],
             name   => $station->{name},
@@ -48,17 +48,18 @@ sub BUILD {
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
 
-    $self->_process($from, $to);
+    my $_from = $self->_get_node_code($from);
+    my $_to   = $self->_get_node_code($to);
+    $self->_process($_from, $_to);
 
     my @route = ();
-    while (defined($from) && defined($to) && !(is_same($from, $to))) {
-	push @route, $self->map->{$to}->name;
-	$to = $self->map->{$to}->path;
+    while (defined($_from) && defined($_to) && !(_is_same($_from, $_to))) {
+	push @route, $self->map->{$_to};
+	$_to = $self->map->{$_to}->path;
     }
 
-    push @route, $self->{map}->{$from}->name;
-    return join(",", reverse(@route));
-
+    push @route, $self->{map}->{$_from};
+    return join(", ", reverse(@route));
 }
 
 sub _process {
@@ -151,7 +152,7 @@ sub _get_node_code {
     my ($self, $name) = @_;
 
     foreach my $code (keys %{$self->map}) {
-        return $code if is_same($self->map->{$code}->name, $name);
+        return $code if _is_same($self->map->{$code}->name, $name);
     }
 
     return;

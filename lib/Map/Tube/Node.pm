@@ -31,8 +31,7 @@ has length => (is => 'rw');
 
 =cut
 
-sub as_string
-{
+sub as_string {
     my $self = shift;
     return $self->name;
 }
