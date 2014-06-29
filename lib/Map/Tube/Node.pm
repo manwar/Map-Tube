@@ -1,14 +1,13 @@
-package Map::Tube::Exception;
+package Map::Tube::Node;
 
-$Map::Tube::Exception::VERSION = '0.01';
+$Map::Tube::Node::VERSION = '0.01';
 
 use 5.006;
 use Moo;
-with 'Throwable';
 
 =head1 NAME
 
-Map::Tube::Exception - Interface to exception class used by Map::Tube.
+Map::Tube::Node - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
@@ -18,12 +17,11 @@ Version 0.01
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has message     => (is => 'ro');
-has method      => (is => 'ro');
-has code        => (is => 'ro');
-has reason      => (is => 'ro');
-has filename    => (is => 'ro');
-has line_number => (is => 'ro');
+has name   => (is => 'ro');
+has link   => (is => 'ro');
+has line   => (is => 'ro');
+has path   => (is => 'rw');
+has length => (is => 'rw');
 
 =head1 SYNOPSIS
 
@@ -36,9 +34,7 @@ has line_number => (is => 'ro');
 sub as_string
 {
     my $self = shift;
-    return sprintf("%s(): %s (%s %s) file %s on line %d\n",
-                   $self->method, $self->message, $self->code, $self->reason,
-                   $self->filename, $self->line_number);
+    return $self->name;
 }
 
 =head1 AUTHOR
@@ -56,7 +52,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Exception
+    perldoc Map::Tube::Node
 
 You can also look for information at:
 

@@ -1,6 +1,7 @@
 Build.PL
 Changes
 lib/Map/Tube.pm
+lib/Map/Tube/Node.pm
 lib/Map/Tube/Errors.pm
 lib/Map/Tube/Exception.pm
 Makefile.PL
