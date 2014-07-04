@@ -108,7 +108,7 @@ sub get_shortest_route {
     my $end = Time::HiRes::time;
     print {*STDOUT} sprintf("Time taken %02f second(s).\n", ($end-$start));
 
-    return reverse(@routes);
+    return join(", ", reverse(@routes));
 }
 
 sub _init_table {
@@ -162,13 +162,15 @@ sub _get_next_node {
 
     return unless (defined($list) && scalar(@{$list}));
 
-    my @current_lines = $self->_get_lines($from);
-    foreach my $line (@current_lines) {
-        foreach my $id (@{$list}) {
-            my @next_lines = $self->_get_lines($id);
-            return $id if grep(/$line/,@next_lines);
-        }
-    }
+    return shift(@{$list});
+
+    #my @current_lines = $self->_get_lines($from);
+    #foreach my $line (@current_lines) {
+    #    foreach my $id (@{$list}) {
+    #        my @next_lines = $self->_get_lines($id);
+    #        return $id if grep(/$line/,@next_lines);
+    #    }
+    #}
 
     return shift(@{$list});
 }
