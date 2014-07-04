@@ -5,6 +5,7 @@ $Map::Tube::VERSION = '0.01';
 use 5.006;
 use XML::Simple;
 use Data::Dumper;
+use Time::HiRes qw(time);
 use Map::Tube::Node;
 
 use Moo;
@@ -24,69 +25,136 @@ Version 0.01
 
 =cut
 
-has xml => (is => 'ro');
-has map => (is => 'rw');
+has xml   => (is => 'ro');
+has nodes => (is => 'rw');
+has ucase => (is => 'rw');
+has links => (is => 'rw');
+has lines => (is => 'rw');
+has table => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
 
-    my $xml = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
-    my $map = {};
+    my $xml   = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+    my $nodes = {};
+    my $links = {};
+    my $lines = {};
+    my $table = {};
+    my $ucase = {};
 
     foreach my $station (@{$xml->{stations}->{station}}) {
-        $map->{$station->{id}} = Map::Tube::Node->new(
-            link   => [split /\,/, $station->{link}],
-            line   => [split /\,/, $station->{line}],
-            name   => $station->{name},
-            path   => undef,
-            length => undef);
+        my $_id    = $station->{id};
+        my $_name  = $station->{name};
+        my $_links = $station->{link};
+        my $_lines = $station->{line};
+
+        $nodes->{$_name}     = $_id;
+        $ucase->{uc($_name)} = $_id;
+
+        foreach my $line (split /\,/,$_lines) {
+            $lines->{$_id}->{$line} = 1;
+        }
+
+        foreach my $link (split /\,/,$_links) {
+            push @{$links->{$_id}}, $link;
+        }
+
+        $table->{$_id}->{path}   = undef;
+        $table->{$_id}->{length} = undef;
     }
 
-    $self->map($map);
+    $self->nodes($nodes);
+    $self->ucase($ucase);
+    $self->links($links);
+    $self->lines($lines);
+    $self->table($table);
 }
 
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
 
-    my $_from = $self->_get_node_code($from);
-    my $_to   = $self->_get_node_code($to);
-    $self->_process($_from, $_to);
+    my $start = Time::HiRes::time;
 
-    my @route = ();
-    while (defined($_from) && defined($_to) && !(_is_same($_from, $_to))) {
-	push @route, $self->map->{$_to};
-	$_to = $self->map->{$_to}->path;
+    croak("ERROR: Either FROM/TO node is undefined.\n")
+        unless (defined($from) && defined($to));
+
+    $from =~ s/\s+/ /g;
+    $from =~ s/^\s+//g;
+    $from =~ s/\s+$//g;
+
+    $to   =~ s/\s+/ /g;
+    $to   =~ s/^\s+//g;
+    $to   =~ s/\s+$//g;
+
+    croak("ERROR: Received invalid FROM node $from.\n")
+        unless exists $self->ucase->{uc($from)};
+    croak("ERROR: Received invalid TO node $to.\n")
+        unless exists $self->ucase->{uc($to)};
+
+    $from = $self->ucase->{uc($from)};
+    $to   = $self->nodes->{$to};
+
+    $self->_process($from);
+
+    my @routes = ();
+    my $table  = $self->table;
+    while (defined($from) && defined($to) && !(_is_same($from, $to))) {
+        push @routes, $self->_get_name($to);
+        $to = $table->{$to}->{path};
     }
 
-    push @route, $self->{map}->{$_from};
-    return join(", ", reverse(@route));
+    push @routes, $self->_get_name($from);
+
+    my $end = Time::HiRes::time;
+    print {*STDOUT} sprintf("Time taken %02f second(s).\n", ($end-$start));
+
+    return reverse(@routes);
+}
+
+sub _init_table {
+    my ($self) = @_;
+
+    my $table = $self->table;
+    foreach my $id (keys %{$self->links}) {
+        $table->{$id}->{path}   = undef;
+        $table->{$id}->{length} = undef;
+    }
+
+    $self->table($table);
 }
 
 sub _process {
-    my ($self, $from, $to) = @_;
+    my ($self, $from) = @_;
 
-    my $queues = [];
-    my $index  = 0;
+    my @queue = ();
+    my $index = 0;
 
-    $self->_set_path($from, $from);
-    $self->_set_length($from, $index);
+    $self->_init_table;
+
+    my $table = $self->table;
+    my $links = $self->links;
+
+    $table->{$from}->{length} = $index;
+    $table->{$from}->{path}   = $from;
 
     while (defined($from)) {
-        my $links = $self->_get_links($from);
-	foreach my $link (@{$links}) {
-            my $link_length = $self->_get_length($link);
-            my $from_length = $self->_get_length($from);
-            if (!defined($link_length)
-                || ($from_length > ($index + 1))) {
-		$self->_set_length($link, ($from_length + 1));
-                $self->_set_path($link, $from);
-		push @$queues, $link;
-	    }
-	}
-	$index  = $self->_get_length($from) + 1;
-	$from   = $self->_get_next_node($from, $queues);
-	$queues = [ grep(!/$from/, @$queues) ];
+	foreach my $link (@{$links->{$from}}) {
+            if (!defined($table->{$link}->{length})
+                || ($table->{$from}->{length} > ($index+1))) {
+
+                $table->{$link}->{length} = $table->{$from}->{length}+1;
+                $table->{$link}->{path}   = $from;
+                push @queue, $link;
+            }
+        }
+
+        $index = $table->{$from}->{length}+1;
+        $from  = $self->_get_next_node($from, \@queue);
+
+        @queue = grep(!/$from/, @queue);
     }
+
+    $self->table($table);
 }
 
 sub _get_next_node {
@@ -94,65 +162,36 @@ sub _get_next_node {
 
     return unless (defined($list) && scalar(@{$list}));
 
-    my $from_routes = $self->_get_routes($from);
-    foreach my $route (@$from_routes) {
-        foreach my $code (@{$list}) {
-            my $next_routes = $self->_get_routes($code);
-            return $code if grep(/$route/, @$next_routes);
+    my @current_lines = $self->_get_lines($from);
+    foreach my $line (@current_lines) {
+        foreach my $id (@{$list}) {
+            my @next_lines = $self->_get_lines($id);
+            return $id if grep(/$line/,@next_lines);
         }
     }
 
     return shift(@{$list});
 }
 
-
-sub _get_routes {
+sub _get_lines {
     my ($self, $station) = @_;
 
-    return $self->map->{$station}->line;
+    my $lines = $self->lines();
+    my @lines = keys(%{$lines->{$station}});
+
+    return @lines;
 }
 
 sub _get_name {
     my ($self, $station) = @_;
 
-    return $self->map->{$station}->name;
-}
+    croak("ERROR: Code is not defined.\n")
+        unless defined($station);
+    croak("ERROR: Invalid node code '$station'.\n")
+        unless exists $self->links->{$station};
 
-sub _get_links {
-    my ($self, $station) = @_;
-
-    return $self->map->{$station}->link;
-}
-
-sub _get_path {
-    my ($self, $station) = @_;
-
-    return $self->map->{$station}->path;
-}
-
-sub _set_path {
-    my ($self, $station, $path) = @_;
-
-    $self->map->{$station}->path($path);
-}
-
-sub _get_length {
-    my ($self, $station) = @_;
-
-    return $self->map->{$station}->length;
-}
-
-sub _set_length {
-    my ($self, $station, $length) = @_;
-
-    $self->map->{$station}->length($length);
-}
-
-sub _get_node_code {
-    my ($self, $name) = @_;
-
-    foreach my $code (keys %{$self->map}) {
-        return $code if _is_same($self->map->{$code}->name, $name);
+    foreach (keys %{$self->nodes}) {
+        return $_ if _is_same($self->nodes->{$_}, $station);
     }
 
     return;
