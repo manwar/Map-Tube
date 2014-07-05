@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
     },
     requires => {
         'Moo'         => 0,
+        'Moo::Role'   => 0,
         'Throwable'   => 0,
         'XML::Simple' => 0,
         'overload'    => 0
