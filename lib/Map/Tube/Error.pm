@@ -1,44 +1,42 @@
-package Map::Tube::Exception;
+package Map::Tube::Error;
 
-$Map::Tube::Exception::VERSION = '0.01';
+$Map::Tube::Error::VERSION = '0.01';
 
 use 5.006;
-use Moo;
-with 'Throwable';
+use strict; use warnings;
+
+use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
+
+require Exporter;
+@ISA = qw(Exporter);
 
 =head1 NAME
 
-Map::Tube::Exception - Interface to exception class used by Map::Tube.
+Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
 Version 0.01
 
-=cut
-
-use overload q{""} => 'as_string', fallback => 1;
-
-has message     => (is => 'ro');
-has method      => (is => 'ro');
-has status      => (is => 'ro');
-has filename    => (is => 'ro');
-has line_number => (is => 'ro');
-
 =head1 SYNOPSIS
 
-=head1 METHODS
-
-=head2 as_string
-
 =cut
 
-sub as_string
-{
-    my $self = shift;
-    return sprintf("%s(): %s (status: %s) file %s on line %d\n",
-                   $self->method, $self->message,  $self->status,
-                   $self->filename, $self->line_number);
+my %Status = (
+    100 => 'Missing Node Name',
+    101 => 'Invalid Node Name',
+    102 => 'Missing Node ID',
+    103 => 'Invalid Node ID' );
+
+my $mnemonic_code = '';
+while (my ($code, $message) = each %Status) {
+    $message =~ tr/a-z \-/A-Z__/;
+    $mnemonic_code .= "sub ERROR_$message () { $code }\n";
+    $mnemonic_code .= "push(\@EXPORT_OK, 'ERROR_$message');\n";
 }
+eval $mnemonic_code; die if $@;
+
+%EXPORT_TAGS = (constants => [grep /^ERROR_/, @EXPORT_OK]);
 
 =head1 AUTHOR
 
@@ -48,14 +46,14 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,  or
 through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube>.
-I will  be notified and then you'll automatically be notified of progress on your
+I will be notified, and then you'll automatically be notified of progress on your
 bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Exception
+    perldoc Map::Tube::Error
 
 You can also look for information at:
 
@@ -119,4 +117,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Exception
+1; # End of Map::Tube::Error

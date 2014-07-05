@@ -3,11 +3,11 @@ package Map::Tube;
 $Map::Tube::VERSION = '0.01';
 
 use 5.006;
-use Carp;
 use XML::Simple;
 use Data::Dumper;
-use Time::HiRes qw(time);
 use Map::Tube::Node;
+use Map::Tube::Exception;
+use Map::Tube::Error qw(:constants);
 
 use Moo;
 use namespace::clean;
@@ -44,17 +44,34 @@ sub BUILD {
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
 
-    my $start = Time::HiRes::time;
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
 
-    croak("ERROR: Either FROM/TO node is undefined.\n")
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::get_shortest_route',
+        message     => "ERROR: Either FROM/TO node is undefined",
+        status      => ERROR_MISSING_NODE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
         unless (defined($from) && defined($to));
 
     $from = _format($from);
     $to   = _format($to);
 
-    croak("ERROR: Received invalid FROM node $from.\n")
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::get_shortest_route',
+        message     => "ERROR: Received invalid FROM node '$from'",
+        status      => ERROR_INVALID_NODE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
         unless exists $self->ucase->{uc($from)};
-    croak("ERROR: Received invalid TO node $to.\n")
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::get_shortest_route',
+        message     => "ERROR: Received invalid TO node '$to'",
+        status      => ERROR_INVALID_NODE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
         unless exists $self->ucase->{uc($to)};
 
     $from = $self->ucase->{uc($from)};
@@ -70,9 +87,6 @@ sub get_shortest_route {
     }
 
     push @routes, $self->_get_name($from);
-
-    my $end = Time::HiRes::time;
-    print {*STDOUT} sprintf("Time taken %02f second(s).\n", ($end-$start));
 
     return join(", ", reverse(@routes));
 }
@@ -202,8 +216,22 @@ sub _get_lines {
 sub _get_name {
     my ($self, $id) = @_;
 
-    croak("ERROR: Code is not defined.\n")   unless defined($id);
-    croak("ERROR: Invalid node id '$id'.\n") unless exists $self->links->{$id};
+    my @caller = caller(0);
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::_get_name',
+        message     => "ERROR: Node ID is undefined",
+        status      => ERROR_MISSING_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless defined($id);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::_get_name',
+        message     => "ERROR: Node ID is invalid",
+        status      => ERROR_INVALID_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless exists $self->links->{$id};
 
     foreach my $name (keys %{$self->nodes}) {
         return $name if _is_same($self->nodes->{$name}, $id);
