@@ -3,6 +3,7 @@ package Map::Tube;
 $Map::Tube::VERSION = '0.01';
 
 use 5.006;
+use Carp;
 use XML::Simple;
 use Data::Dumper;
 use Time::HiRes qw(time);
@@ -26,6 +27,7 @@ Version 0.01
 =cut
 
 has xml   => (is => 'ro');
+has map   => (is => 'rw');
 has nodes => (is => 'rw');
 has ucase => (is => 'rw');
 has links => (is => 'rw');
@@ -35,39 +37,8 @@ has table => (is => 'rw');
 sub BUILD {
     my ($self) = @_;
 
-    my $xml   = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
-    my $nodes = {};
-    my $links = {};
-    my $lines = {};
-    my $table = {};
-    my $ucase = {};
-
-    foreach my $station (@{$xml->{stations}->{station}}) {
-        my $_id    = $station->{id};
-        my $_name  = $station->{name};
-        my $_links = $station->{link};
-        my $_lines = $station->{line};
-
-        $nodes->{$_name}     = $_id;
-        $ucase->{uc($_name)} = $_id;
-
-        foreach my $line (split /\,/,$_lines) {
-            $lines->{$_id}->{$line} = 1;
-        }
-
-        foreach my $link (split /\,/,$_links) {
-            push @{$links->{$_id}}, $link;
-        }
-
-        $table->{$_id}->{path}   = undef;
-        $table->{$_id}->{length} = undef;
-    }
-
-    $self->nodes($nodes);
-    $self->ucase($ucase);
-    $self->links($links);
-    $self->lines($lines);
-    $self->table($table);
+    $self->_init_map;
+    $self->_setup_map;
 }
 
 sub get_shortest_route {
@@ -78,13 +49,8 @@ sub get_shortest_route {
     croak("ERROR: Either FROM/TO node is undefined.\n")
         unless (defined($from) && defined($to));
 
-    $from =~ s/\s+/ /g;
-    $from =~ s/^\s+//g;
-    $from =~ s/\s+$//g;
-
-    $to   =~ s/\s+/ /g;
-    $to   =~ s/^\s+//g;
-    $to   =~ s/\s+$//g;
+    $from = _format($from);
+    $to   = _format($to);
 
     croak("ERROR: Received invalid FROM node $from.\n")
         unless exists $self->ucase->{uc($from)};
@@ -111,6 +77,56 @@ sub get_shortest_route {
     return join(", ", reverse(@routes));
 }
 
+sub _init_map {
+    my ($self) = @_;
+
+    my $map = [];
+    my $xml = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+
+    foreach my $station (@{$xml->{stations}->{station}}) {
+        push @$map, Map::Tube::Node->new($station);
+    }
+
+    $self->map($map);
+}
+
+sub _setup_map {
+    my ($self) = @_;
+
+    my $nodes = {};
+    my $links = {};
+    my $lines = {};
+    my $table = {};
+    my $ucase = {};
+
+    foreach my $node (@{$self->map}) {
+        my $_id    = $node->id;
+        my $_name  = $node->name;
+        my $_links = $node->link;
+        my $_lines = $node->line;
+
+        $nodes->{$_name}     = $_id;
+        $ucase->{uc($_name)} = $_id;
+
+        foreach my $line (split /\,/,$_lines) {
+            $lines->{$_id}->{$line} = 1;
+        }
+
+        foreach my $link (split /\,/,$_links) {
+            push @{$links->{$_id}}, $link;
+        }
+
+        $table->{$_id}->{path}   = undef;
+        $table->{$_id}->{length} = undef;
+    }
+
+    $self->nodes($nodes);
+    $self->ucase($ucase);
+    $self->links($links);
+    $self->lines($lines);
+    $self->table($table);
+}
+
 sub _init_table {
     my ($self) = @_;
 
@@ -121,6 +137,18 @@ sub _init_table {
     }
 
     $self->table($table);
+}
+
+sub _format {
+    my ($data) = @_;
+
+    return unless defined $data;
+
+    $data =~ s/\s+/ /g;
+    $data =~ s/^\s+//g;
+    $data =~ s/\s+$//g;
+
+    return $data;
 }
 
 sub _process {
@@ -140,15 +168,15 @@ sub _process {
     while (defined($from)) {
 	foreach my $link (@{$links->{$from}}) {
             if (!defined($table->{$link}->{length})
-                || ($table->{$from}->{length} > ($index+1))) {
+                || ($table->{$from}->{length} > ($index + 1))) {
 
-                $table->{$link}->{length} = $table->{$from}->{length}+1;
+                $table->{$link}->{length} = $table->{$from}->{length} + 1;
                 $table->{$link}->{path}   = $from;
                 push @queue, $link;
             }
         }
 
-        $index = $table->{$from}->{length}+1;
+        $index = $table->{$from}->{length} + 1;
         $from  = $self->_get_next_node($from, \@queue);
 
         @queue = grep(!/$from/, @queue);
@@ -163,37 +191,22 @@ sub _get_next_node {
     return unless (defined($list) && scalar(@{$list}));
 
     return shift(@{$list});
-
-    #my @current_lines = $self->_get_lines($from);
-    #foreach my $line (@current_lines) {
-    #    foreach my $id (@{$list}) {
-    #        my @next_lines = $self->_get_lines($id);
-    #        return $id if grep(/$line/,@next_lines);
-    #    }
-    #}
-
-    return shift(@{$list});
 }
 
 sub _get_lines {
-    my ($self, $station) = @_;
+    my ($self, $id) = @_;
 
-    my $lines = $self->lines();
-    my @lines = keys(%{$lines->{$station}});
-
-    return @lines;
+    return keys(%{$self->lines->{$id}});
 }
 
 sub _get_name {
-    my ($self, $station) = @_;
+    my ($self, $id) = @_;
 
-    croak("ERROR: Code is not defined.\n")
-        unless defined($station);
-    croak("ERROR: Invalid node code '$station'.\n")
-        unless exists $self->links->{$station};
+    croak("ERROR: Code is not defined.\n")   unless defined($id);
+    croak("ERROR: Invalid node id '$id'.\n") unless exists $self->links->{$id};
 
-    foreach (keys %{$self->nodes}) {
-        return $_ if _is_same($self->nodes->{$_}, $station);
+    foreach my $name (keys %{$self->nodes}) {
+        return $name if _is_same($self->nodes->{$name}, $id);
     }
 
     return;

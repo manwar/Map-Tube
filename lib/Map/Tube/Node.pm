@@ -17,11 +17,10 @@ Version 0.01
 
 use overload q{""} => 'as_string', fallback => 1;
 
+has id     => (is => 'ro');
 has name   => (is => 'ro');
 has link   => (is => 'ro');
 has line   => (is => 'ro');
-has path   => (is => 'rw');
-has length => (is => 'rw');
 
 =head1 SYNOPSIS
 
@@ -115,4 +114,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Exception
+1; # End of Map::Tube::Node
