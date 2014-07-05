@@ -14,7 +14,7 @@ use namespace::clean;
 
 =head1 NAME
 
-Map::Tube - The great new Map::Tube!
+Map::Tube - Core library to process map data.
 
 =head1 VERSION
 
@@ -22,7 +22,10 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-=head1 METHODS
+The core package to process the map data.  It also provides the interface to find
+the shortest route in terms of stoppage between two nodes.
+
+The package shouldn't be used directly. Instead it should be extended like L<Map::Tube::London>.
 
 =cut
 
