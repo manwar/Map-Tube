@@ -6,7 +6,7 @@ build_requires:
   Test::More: '0'
 configure_requires:
   Module::Build: '0'
-dynamic_config: 1
+dynamic_config: 0
 generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.141520'
 license: artistic_2
 meta-spec:
@@ -23,6 +23,11 @@ provides:
   Map::Tube::Exception:
     file: lib/Map/Tube/Exception.pm
     version: '0.01'
+requires:
+  Moo: '0'
+  Throwable: '0'
+  XML::Simple: '0'
+  overload: '0'
 resources:
   license: http://opensource.org/licenses/artistic-license-2.0.php
 version: '0.01'

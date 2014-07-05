@@ -3,7 +3,7 @@
    "author" : [
       "Mohammad S Anwar <mohammad.anwar@yahoo.com>"
    ],
-   "dynamic_config" : 1,
+   "dynamic_config" : 0,
    "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.141520",
    "license" : [
       "artistic_2"
@@ -22,6 +22,14 @@
       "configure" : {
          "requires" : {
             "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Moo" : "0",
+            "Throwable" : "0",
+            "XML::Simple" : "0",
+            "overload" : "0"
          }
       }
    },
