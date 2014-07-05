@@ -1,0 +1,42 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.73.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 05ca463ecf5b15a2e08c781d52a807a5729c625e Build.PL
+SHA1 3a7b5c9adf6a8b5a0882615ae2cfb458c47e0474 Changes
+SHA1 bd58f8ef20295865e69ab3226f0c1a1cc010a07c MANIFEST
+SHA1 5f29cdcbfacb9c46ac155fff9844aceeb064aef1 MANIFEST.SKIP
+SHA1 9b1e466d689e7f32dcdb9883c02ed59be9c8b18d META.json
+SHA1 c7b09657fc4fd017ef634354560d6b1d2a84c065 META.yml
+SHA1 c4d4f0c0a4d6714a33addddfb824aab1e49b221d Makefile.PL
+SHA1 dbdfad4584b51891fa1fedd2418dd75e649efad9 README
+SHA1 a0c9243b522f5eb3480212ccb39cd1be0ba68e2d lib/Map/Tube.pm
+SHA1 3819b11e8826568584d60c37a6cfdcbca1ecc773 lib/Map/Tube/Error.pm
+SHA1 d32af6b491927859f6742311ff8906ac78aeab22 lib/Map/Tube/Exception.pm
+SHA1 36fcdf8ff9ccc35226597dad40dac506e480cc63 lib/Map/Tube/Node.pm
+SHA1 9548110ce1a14818bf6d4e436669a755690fe2a0 t/00-load.t
+SHA1 3e86d3e277d4233e55b8a4555bf6edf2dcdf7bd0 t/manifest.t
+SHA1 a572bbed348e70b106f01fa02fee8b8edd6735d5 t/pod.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQEcBAEBAgAGBQJTt9WVAAoJENoXJXWo7C/pinEH/RYkFVkGLUTiLoMhNFopyCZM
+zUQk3F+MlYiKHfRfrwl4igKA5Ag9SzMDTjTi41opbxUhW3Vd4IL3VQE86uRzVRJZ
+aw+xFEUwvFhvtvDU88zs5rvq3OBc3vmx7OJ4rx2ZhhkbvjXoI/3/44jjYFSjYYjC
+W82IAI78l4GaQaN25IRFFH6xYib8+SQtMBTo8k0HfLK1/fq7naCloY1wgZL0bbky
+IbBHplEZyWx+PvC3Ul8sElg893E84C8nNeCt5VhkLyFT2MDuO7W9Ie/GtHfydgaU
+48l6JkcsuFbSIQDsiRKUDG/Jjpc79ReY+s5KBI09raVJ1/yO4FzYUPSJwVVY5G4=
+=7I28
+-----END PGP SIGNATURE-----
