@@ -1,4 +1,244 @@
-Revision history for Map-Tube
+Revision history for Map::Tube
 
-0.01    Sat Jul 05 10:53:11 2014
-        First version, released.
+2.20    Sat Jul 05 22:13:15 2014
+        - Complete revamp of the original Map::Tube. Converted into Role (Moo).
+
+2.19    Mon Mar 28 13:14:15 2011
+        - Updated Copyright information.
+
+2.18    Wed Mar 09 18:44:17 2011
+        - Changed the description of the module slightly.
+
+2.17    Wed Mar 02 11:43:20 2011
+        - Removed "-T" from the first line of 00-load.t, pod.t, manifest.t
+          and 00-signature.t. It appears to me that Mac OS X doesn't like it,
+          for some reason.
+
+2.16    Wed Mar 02 10:22:19 2011
+        - Cleaned up Makefile.PL as CPAN Testers have complained about it.
+
+2.15    Mon Feb 28 12:17:00 2011
+        - Removed "create_makefile_pl" from the Build.PL
+        - Arranged Makefile.PL as it's no longer be auto built.
+
+2.14    Mon Feb 28 11:49:10 2011
+        - Added DISCLAIMER section to the pod.
+
+2.13    Fri Feb 04 18:55:43 2011
+        - Added MYMETA.json to MANIFEST.SKIP as some CPAN Testers not happy on GNU/Linux
+          OS Version 2.6.32-2-amd64, Perl version (5.13.2, 5.13.6, 5.13.7, 5.13.8, 5.13.9,
+          5.8.9) as reported on Friday, 4th February 2011 (6.13pm) UK TIME.
+
+2.12    Fri Feb 04 16:46:59 2011
+        - Corrected the year part of last release in the 'Changes' file.
+        - Also fixed the pod for method show_map_chart() as it was generating incorrect
+          html on install.
+
+2.11    Fri Feb 04 15:40:21 2011
+        - Now allows multiple spaces if node's name consists of two or more words and
+          fix it automatically for user.
+        - Now trims any space at the beginning and at the end of node's name.
+        - Added unit test test-case-21.t for the above changes.
+        - Updated pod for method get_shortest_route() to reflect aboove changes.
+        - Updated pod for method show_map_chart() to show output as well in this case.
+        - Added test case in the test-case-00.t about testing node's definition after
+          setting node mappings.
+
+2.10    Mon Dec 06 18:33:46 2010
+        - Renamed key _follow to _follow_me.
+        - Renamed key _element to _nodes.
+        - Renamed key _node to _mappings.
+        - Renamed key _line to _lines.
+        - Renamed method get_name() to get_node_name().
+        - Renamed method get_element to get_nodes().
+        - Renamed method set_lines() to set_node_lines().
+        - Renamed method get_lines() to get_node_lines().
+        - Renamed method set_node() to set_node_mappings().
+        - Renamed method get_node() to get_node_mappings().
+        - Renamed method set_default_node() to set_default_node_definitions().
+        - Renamed method init() to load_node_mappings().
+        - Renamed method load_element() to load_nodes().
+        - Renamed method load_line() to load_node_lines().
+        - Renamed method upcase_element_name() to upcase_node_names().
+        - Renamed internal method _initialize() to _init().
+        - Renamed internal method _initialize_table() to _init_table().
+        - Updated internal method _get_next_node(), _sanity_check() and _process_node()
+          to reflect the above changes.
+        - Updated the unit test test-case-00.t, test-case-14.t and test-case-20.t to
+          reflect the above changes.
+        - Updated pod to reflect the above changes.
+
+2.09    Fri Dec 03 19:07:21 2010
+        - Added to setup line information for user defined nodes.
+        - Added to check the line information irrespective of whether following the line or not.
+        - Updated pod for method set_node() regarding mapping checks.
+        - Minor changes to the error message thrown during data checks.
+        - Modified method load_method() to be able to load user data.
+        - Added unit test for missing map information.
+
+2.08    Fri Nov 26 09:48:59 2010
+        - Updated pod for method init().
+
+2.07    Thu Nov 25 18:43:19 2010
+        - Updated pod for method upcase_element_name().
+
+2.06    Wed Nov 24 09:40:11 2010
+        - Added SIGNATURE to the distribution.
+        - Added unit test for SIGNATURE file.
+
+2.05    Wed Nov 24 09:04:05 2010
+        - Removed all internal methods detail from the pod.
+
+2.04    Tue Nov 23 16:03:25 2010
+        - Removed test for boilerplate.
+        - Method get_next_node() is now turned into internal method _get_next_node().
+        - Method sanity_check() is now turned into internal method _sanity_check().
+
+2.03    Thu Nov 19 10:13:49 2010
+        - Removed the constraint on node code to be a string. Now node code can
+          be a STRING or NUMBER.
+        - Added unit test test-case-20.t to test this new feature.
+        - Added internal method _is_same().
+        - Added internal method _is_number().
+        - Updated pod about the change in behaviour of node code.
+
+2.02    Fri Nov 12 09:42:39 2010
+        - Added Metropolitan line fast train mapping.
+        - Fixed the missing mapping between HOH and M09.
+        - Added unit test test-case-18.t and test-case-19.t for the mapping.
+
+2.01    Wed Nov 10 16:30:51 2010
+        - Added Overground line data.
+        - Added unit test case for Overground line data.
+        - Fixed unit test test-case-03.t, test-case-04.t, test-case-07.t and test-case-08.t
+          with regard to addition of more data.
+        - Updated pod regarding Overground line data.
+
+2.0     Wed Nov 10 13:22:09 2010
+        - Added DLR line data.
+        - Added unit test for DLR line data.
+
+1.9     Wed Nov 10 09:46:11 2010
+        - Removed the debug parameter from the constructor.
+        - By default debug is turned off.
+        - Removed unit test to validate the debug parameter for constructor.
+        - Added method set_debug() to control the debug flag.
+
+1.8     Wed Nov 10 09:27:57 2010
+        - Added Waterloo & City line data.
+        - Fixed method _process_node() for silly bug.
+        - Added unit test for Waterloo & City line data.
+        - Fixed unit test test-case-05.t and test-case-06.t with regard to addition of more data.
+
+1.7     Tue Nov 09 16:01:29 2010
+        - Updated pod about the "Famous Software Award" given by Download.FamousWhy.com.
+
+1.6     Tue Nov 09 13:40:28 2010
+        - Added MANIFEST.SKIP to the MANIFEST file.
+        - Factor out the initilization functionality into a seperate method.
+        - Added example to the method get_next_node() in the pod.
+        - Added example to the method get_tube_lines() in the pod.
+        - Added data validation to the method set_line().
+        - Added new method sanity_check() to the sanity check on the data.
+        - Corrected the node code for Holborn.
+        - Remove invalid node code P28.
+        - Corrected map definition for node code M22.
+        - Added map definition for node code M21, KSG, WBM and ESQ.
+        - Fixed map definition for KCS, missing ESQ from the list.
+        - Changed the structure of Line information.
+
+1.5     Fri Nov 05 16:54:11 2010
+        - Added boilerplate.t to the MANIFEST.
+        - Renamed the unit test case appropriately.
+        - Modified manifest.t to test MANIFEST everytime.
+        - Added Tube line definitions.
+        - Added the ability to define line definitions for user node.
+        - Now get_shortest_route() dump the time taken to find the shortest route.
+        - Added get_next_node(), which checks wether to follow the line or not.
+        - Added follow_me(), to enable the follow tube line switch. However it's not documented.
+        - Added get_tube_lines() to return the lines list of given node.
+        - Added get_line() to return the line informations.
+        - Added set_line() to allow user to define their own line informations.
+        - Added load_line() to load the default line informations.
+        - Modified Build.PL and Makefile.PL to include Time::HiRes as requirement.
+        NOTE: Follow line functionality is not yet fully functional.
+
+1.4     Tue Nov 02 18:06:15 2010
+        - Validate the parameter passed to the constructor.
+        - Added unit test to validate the parameter passed to the constructor.
+        - Fixed the example code in the pod.
+        - Added example for method get_name() in the pod.
+        - Added example for method init(), load_element() and upcase_element_name() in the pod.
+
+1.3     Tue Nov 02 15:31:22 2010
+        - Major changes to the method _process_node().
+        - Added example to each method defined in the pod.
+        - POD for method show_map_chart() arranged correctly.
+        - Added unit test to validate code passed to get_name().
+
+1.2     Mon Nov 01 09:45:41 2010
+        - Renamed method _get_name() to get_name() and made it public.
+        - Added method set_default_node() to override the user defined node.
+        - Minor data cleanup.
+
+1.1     Fri Oct 29 16:30:04 2010
+        - Fixed the pod regarding method name for get_node() and get_element().
+        - Added unit test for method set_node().
+
+1.0     Fri Oct 29 12:03:43 2010
+        - Made the lookup case insensitive.
+        - Added ability to define user own node mapping.
+        - Added unit test for case insensitive lookup.
+        - Added unit test for user defined mapping.
+
+0.09    Fri Oct 29 09:38:10 2010
+        - Added Picadilly line data.
+        - Added unit test for Picadilly line data.
+        - Corrected spelling of Oxford Circus.
+        - Corrected spelling of King's Cross St. Pancras.
+
+0.08    Thu Oct 28 18:04:35 2010
+        - Added Northern line data.
+        - Added unit test for Northern line data.
+        - Fixed the unit test test-case-05.t
+        - Fixed the unit test test-case-06.t with regard to addition of more data.
+        - Fixed the node code for few members of Bakerloo, Central, Jubilee and Victoria line.
+        - Fixed the mapping of Bakerloo, Central, Jubilee and Victoria line.
+        - Fixed some of the junction mapping as well as added new junction mapping.
+
+0.07    Thu Oct 28 15:53:19 2010
+        - Added Metropolitan line data.
+        - Added unit test for Metropolitan line data.
+        - Fixed the test-case-09.t with regard to addition of more data.
+
+0.06    Thu Oct 28 10:51:01 2010
+        - Removed the test code from the pod.
+        - Added DESCRIPTION to the pod as suggesed by Peter Makholm.
+        - Removed the 'sleep' from get_shortest_route() as suggested by Peter Makholm.
+        - Added Readonly as pre-requisite in the Build.PL to make CPAN Testers happy.
+        - Added Module::Build v0.36 as pre-requisite to get intalldeps options during build.
+        - Updated README regarding pre-requisite installation.
+
+0.05    Wed Oct 27 15:55:29 2010
+        - Added District line data.
+        - Added Hammersmith & City line data.
+        - Fixed Central line data as Fairlop and Hainault both had the same node code.
+        - Added method get_node() and get_element() to the Tube::Map module.
+        - Fixed the unit test test-case-03.t with regard to addition of more data.
+
+0.04    Wed Oct 27 11:03:34 2010
+        - Added node validations.
+        - Added unit test for validation functionality.
+        - Changed the signature of few methods defined in Map::Tube.
+        - Updated the unit test to reflect the changes in the method signature.
+        - Updated the perldoc for Map::Tube.
+        - Updated the perldoc for Map::Tube::Node.
+
+0.03    Tue Oct 26 16:29:11 2010
+        - Added Circle line data.
+
+0.02    Tue Oct 26 11:08:21 2010
+        - Added Central line data.
+
+0.01    Mon Oct 25 14:30:11 2010
+        - Module Created.
