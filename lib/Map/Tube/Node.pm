@@ -7,7 +7,7 @@ use Moo;
 
 =head1 NAME
 
-Map::Tube::Node - Interface to exception class used by Map::Tube.
+Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
@@ -17,18 +17,10 @@ Version 0.01
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has id     => (is => 'ro');
-has name   => (is => 'ro');
-has link   => (is => 'ro');
-has line   => (is => 'ro');
-
-=head1 SYNOPSIS
-
-=head1 METHODS
-
-=head2 as_string
-
-=cut
+has id   => (is => 'ro');
+has name => (is => 'ro');
+has link => (is => 'ro');
+has line => (is => 'ro');
 
 sub as_string {
     my $self = shift;

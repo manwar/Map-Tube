@@ -24,14 +24,6 @@ has status      => (is => 'ro');
 has filename    => (is => 'ro');
 has line_number => (is => 'ro');
 
-=head1 SYNOPSIS
-
-=head1 METHODS
-
-=head2 as_string
-
-=cut
-
 sub as_string
 {
     my $self = shift;
