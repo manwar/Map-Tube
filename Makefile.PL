@@ -3,12 +3,15 @@ use ExtUtils::MakeMaker;
 WriteMakefile
 (
   'VERSION_FROM' => 'lib/Map/Tube.pm',
-  'PREREQ_PM' => {
-                   'Test::More' => 0
-                 },
-  'NAME' => 'Map::Tube',
-  'PL_FILES' => {},
-  'EXE_FILES' => [],
+  'PREREQ_PM'    => {
+      'Test::More'  => 0,
+      'Moo'         => 0,
+      'Throwable'   => 0,
+      'XML::Simple' => 0,
+      'overload'    => 0
+   },
+  'NAME'        => 'Map::Tube',
+  'PL_FILES'    => {},
+  'EXE_FILES'   => [],
   'INSTALLDIRS' => 'site'
-)
-;
+);

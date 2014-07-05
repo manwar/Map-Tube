@@ -9,15 +9,17 @@ my $builder = Module::Build->new(
     dist_author         => q{Mohammad S Anwar <mohammad.anwar@yahoo.com>},
     dist_version_from   => 'lib/Map/Tube.pm',
     release_status      => 'stable',
-    configure_requires => {
+    configure_requires  => {
         'Module::Build' => 0,
     },
     build_requires => {
         'Test::More' => 0,
     },
     requires => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'Moo'         => 0,
+        'Throwable'   => 0,
+        'XML::Simple' => 0,
+        'overload'    => 0
     },
     add_to_cleanup     => [ 'Map-Tube-*' ],
     create_makefile_pl => 'traditional',
