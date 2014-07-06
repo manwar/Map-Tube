@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.20';
+$Map::Tube::VERSION = '2.21';
 
 use 5.006;
 use XML::Simple;
@@ -20,9 +20,9 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.20
+Version 2.21
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
 The core module defined as Role (Moo) to process  the map data.  It also provides
 the interface to find the shortest route in terms of stoppage between two nodes.

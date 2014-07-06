@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.21    Sun Jul 06 04:10:09 2014
+        - Tidied up the pod documemt
+
 2.20    Sat Jul 05 22:13:15 2014
         - Complete revamp of the original Map::Tube. Converted into Role (Moo).
 
