@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION = '0.02';
+$Map::Tube::Error::VERSION = '2.22';
 
 use 5.006;
 use strict; use warnings;
@@ -16,7 +16,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 0.02
+Version 2.22
 
 =cut
 

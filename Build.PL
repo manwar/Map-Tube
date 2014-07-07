@@ -16,11 +16,12 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
-        'Moo'         => 0,
-        'Moo::Role'   => 0,
-        'Throwable'   => 0,
-        'XML::Simple' => 0,
-        'overload'    => 0
+        'Moo'              => 0,
+        'Moo::Role'        => 0,
+        'namespace::clean' => 0,
+        'Throwable'        => 0,
+        'XML::Simple'      => 0,
+        'overload'         => 0
     },
     add_to_cleanup     => [ 'Map-Tube-*' ],
     create_makefile_pl => 'traditional',

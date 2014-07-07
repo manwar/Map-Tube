@@ -18,12 +18,13 @@ WriteMakefile
     BUILD_REQUIRES   => {
         'Test::More' => 0,
     },
-    PREREQ_PM       => {
-      'Moo'         => 0,
-      'Moo::Role'   => 0,
-      'Throwable'   => 0,
-      'XML::Simple' => 0,
-      'overload'    => 0
+    PREREQ_PM            => {
+      'Moo'              => 0,
+      'Moo::Role'        => 0,
+      'namespace::clean' => 0,
+      'Throwable'        => 0,
+      'XML::Simple'      => 0,
+      'overload'         => 0
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Map-Tube-*' },

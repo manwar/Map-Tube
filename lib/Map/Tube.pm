@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.21';
+$Map::Tube::VERSION = '2.22';
 
 use 5.006;
 use XML::Simple;
@@ -20,7 +20,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.21
+Version 2.22
 
 =head1 DESCRIPTION
 
