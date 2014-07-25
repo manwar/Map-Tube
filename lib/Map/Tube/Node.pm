@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '0.01';
+$Map::Tube::Node::VERSION = '2.23';
 
 use 5.006;
 use Moo;
@@ -11,7 +11,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 0.01
+Version 2.23
 
 =cut
 
@@ -23,7 +23,8 @@ has link => (is => 'ro');
 has line => (is => 'ro');
 
 sub as_string {
-    my $self = shift;
+    my ($self) = @_;
+
     return $self->name;
 }
 

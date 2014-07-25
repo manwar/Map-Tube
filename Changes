@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.23    Fri Jul 25 16:48:13 2014
+        - Streamlined version to all modules
+        - Minor cosmetic changes
+
 2.22    Mon Jul 07 20:41:00 2014
         - Added 'namespace::clean' as pre-requisite to Build.PL and Makefile.PL
 

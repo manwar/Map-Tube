@@ -1,6 +1,6 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION = '2.22';
+$Map::Tube::Exception::VERSION = '2.23';
 
 use 5.006;
 use Moo;
@@ -13,7 +13,7 @@ Map::Tube::Exception - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
-Version 2.22
+Version 2.23
 
 =cut
 
@@ -25,9 +25,9 @@ has status      => (is => 'ro');
 has filename    => (is => 'ro');
 has line_number => (is => 'ro');
 
-sub as_string
-{
-    my $self = shift;
+sub as_string {
+    my ($self) = @_;
+
     return sprintf("%s(): %s (status: %s) file %s on line %d\n",
                    $self->method, $self->message,  $self->status,
                    $self->filename, $self->line_number);
