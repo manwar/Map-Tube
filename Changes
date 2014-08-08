@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.24    Fri Aug 08 23:38:09 2014
+        - Removed Build.PL script.
+        - Tidied up README file.
+
 2.23    Fri Jul 25 16:48:13 2014
         - Streamlined version to all modules
         - Minor cosmetic changes
