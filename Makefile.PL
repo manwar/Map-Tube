@@ -26,6 +26,16 @@ WriteMakefile
       'XML::Simple'      => 0,
       'overload'         => 0
     },
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            repository => {
+                type => 'git',
+                url  => 'https://github.com/Manwar/Map-Tube.git',
+                web  => 'https://github.com/Manwar/Map-Tube',
+            },
+        },
+    },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Map-Tube-*' },
 );

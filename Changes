@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.25    Sat Aug 16 10:22:18 2014
+        - Added secction "REPOSITORY" to the pod
+        - Added key "META_MERGE" to Makefile.PL
+
 2.24    Fri Aug 08 23:38:09 2014
         - Removed Build.PL script.
         - Tidied up README file.

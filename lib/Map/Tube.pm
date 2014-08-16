@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.24';
+$Map::Tube::VERSION = '2.25';
 
 use 5.006;
 use XML::Simple;
@@ -20,7 +20,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.24
+Version 2.25
 
 =head1 DESCRIPTION
 
@@ -267,6 +267,10 @@ sub _is_number {
 =head1 AUTHOR
 
 Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
+
+=head1 REPOSITORY
+
+L<https://github.com/Manwar/Map-Tube>
 
 =head1 BUGS
 

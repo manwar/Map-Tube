@@ -1,9 +1,10 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '2.24';
+$Map::Tube::Node::VERSION = '2.25';
 
 use 5.006;
 use Moo;
+use namespace::clean;
 
 =head1 NAME
 
@@ -11,7 +12,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.24
+Version 2.25
 
 =cut
 
@@ -31,6 +32,10 @@ sub as_string {
 =head1 AUTHOR
 
 Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
+
+=head1 REPOSITORY
+
+L<https://github.com/Manwar/Map-Tube>
 
 =head1 BUGS
 

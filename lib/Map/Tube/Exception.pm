@@ -1,6 +1,6 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION = '2.24';
+$Map::Tube::Exception::VERSION = '2.25';
 
 use 5.006;
 use Moo;
@@ -13,7 +13,7 @@ Map::Tube::Exception - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
-Version 2.24
+Version 2.25
 
 =cut
 
@@ -36,6 +36,10 @@ sub as_string {
 =head1 AUTHOR
 
 Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
+
+=head1 REPOSITORY
+
+L<https://github.com/Manwar/Map-Tube>
 
 =head1 BUGS
 
