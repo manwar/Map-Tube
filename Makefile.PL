@@ -3,8 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
 
-WriteMakefile
-(
+WriteMakefile(
     NAME               => 'Map::Tube',
     AUTHOR             => q{Mohammad S Anwar <mohammad.anwar@yahoo.com>},
     VERSION_FROM       => 'lib/Map/Tube.pm',
@@ -18,24 +17,25 @@ WriteMakefile
     BUILD_REQUIRES   => {
         'Test::More' => 0,
     },
-    PREREQ_PM            => {
-      'Moo'              => 0,
-      'Moo::Role'        => 0,
-      'namespace::clean' => 0,
-      'Throwable'        => 0,
-      'XML::Simple'      => 0,
-      'overload'         => 0
+    PREREQ_PM              => {
+        'Moo'              => 0,
+        'Moo::Role'        => 0,
+        'namespace::clean' => 0,
+        'Throwable'        => 0,
+        'XML::Simple'      => 0,
+        'overload'         => 0
     },
-    META_MERGE => {
+    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean => { FILES => 'Map-Tube-*' },
+    (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
-        resources   => {
+        resources => {
             repository => {
                 type => 'git',
                 url  => 'https://github.com/Manwar/Map-Tube.git',
                 web  => 'https://github.com/Manwar/Map-Tube',
             },
-        },
-    },
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Map-Tube-*' },
+        }})
+     : ()
+    ),
 );

@@ -1,6 +1,6 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION = '2.25';
+$Map::Tube::Exception::VERSION = '2.26';
 
 use 5.006;
 use Moo;
@@ -13,7 +13,7 @@ Map::Tube::Exception - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
-Version 2.25
+Version 2.26
 
 =cut
 
