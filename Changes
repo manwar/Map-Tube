@@ -1,5 +1,12 @@
 Revision history for Map::Tube
 
+2.27    Sun Nov 30 11:19:10 2014
+        - Refactored code in a big way to be more OO style.
+        - Added new package Map::Tube::Table to represent table in the map.
+        - Added new method Map::Tube::get_routes() to get all possible routes between two nodes.
+        - Updated method Map::Tube::get_shortest_route() to return list of objects of type Map::Tube::Node.
+        - Updated method Map::Tube::Node::to_string() to return the node line along with the name.
+
 2.26    Sat Aug 30 02:45:00 2014
         - Added key "META_MERGE" key on condition (ExUtils::MakeMake->VERSION(6.46).
 

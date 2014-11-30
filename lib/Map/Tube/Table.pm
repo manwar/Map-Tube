@@ -1,10 +1,10 @@
-package Map::Tube::Node;
+package Map::Tube::Table;
 
-$Map::Tube::Node::VERSION = '2.27';
+$Map::Tube::Table::VERSION = '2.27';
 
 =head1 NAME
 
-Map::Tube::Node - Class to represent the node in the map.
+Map::Tube::Table - Class to represent the table in the map.
 
 =head1 VERSION
 
@@ -16,18 +16,9 @@ use 5.006;
 use Moo;
 use namespace::clean;
 
-use overload q{""} => 'as_string', fallback => 1;
-
-has id   => (is => 'ro');
-has name => (is => 'ro');
-has link => (is => 'ro');
-has line => (is => 'ro');
-
-sub as_string {
-    my ($self) = @_;
-
-    return sprintf("%s (%s)", $self->name, $self->line);
-}
+has id     => (is => 'ro');
+has path   => (is => 'rw');
+has length => (is => 'rw');
 
 =head1 AUTHOR
 
@@ -48,7 +39,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Node
+    perldoc Map::Tube::Table
 
 You can also look for information at:
 
@@ -112,4 +103,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Node
+1; # End of Map::Tube::Table

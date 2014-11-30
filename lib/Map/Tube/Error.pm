@@ -1,6 +1,16 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION = '2.26';
+$Map::Tube::Error::VERSION = '2.27';
+
+=head1 NAME
+
+Map::Tube::Error - Error class for the library Map::Tube.
+
+=head1 VERSION
+
+Version 2.27
+
+=cut
 
 use 5.006;
 use strict; use warnings;
@@ -9,16 +19,6 @@ use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 
 require Exporter;
 @ISA = qw(Exporter);
-
-=head1 NAME
-
-Map::Tube::Error - Error class for the library Map::Tube.
-
-=head1 VERSION
-
-Version 2.26
-
-=cut
 
 my %Status = (
     100 => 'Missing Node Name',

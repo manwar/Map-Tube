@@ -1,11 +1,6 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION = '2.26';
-
-use 5.006;
-use Moo;
-use namespace::clean;
-with 'Throwable';
+$Map::Tube::Exception::VERSION = '2.27';
 
 =head1 NAME
 
@@ -13,9 +8,14 @@ Map::Tube::Exception - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
-Version 2.26
+Version 2.27
 
 =cut
+
+use 5.006;
+use Moo;
+use namespace::clean;
+with 'Throwable';
 
 use overload q{""} => 'as_string', fallback => 1;
 

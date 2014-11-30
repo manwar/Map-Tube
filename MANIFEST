@@ -1,6 +1,8 @@
 Changes
 lib/Map/Tube.pm
 lib/Map/Tube/Node.pm
+lib/Map/Tube/Table.pm
+lib/Map/Tube/Route.pm
 lib/Map/Tube/Error.pm
 lib/Map/Tube/Exception.pm
 Makefile.PL

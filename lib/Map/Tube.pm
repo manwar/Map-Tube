@@ -1,18 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.26';
-
-use 5.006;
-use XML::Simple;
-use Data::Dumper;
-use Map::Tube::Node;
-use Map::Tube::Exception;
-use Map::Tube::Error qw(:constants);
-
-use Moo::Role;
-use namespace::clean;
-
-requires 'xml';
+$Map::Tube::VERSION = '2.27';
 
 =head1 NAME
 
@@ -20,7 +8,23 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.26
+Version 2.27
+
+=cut
+
+use 5.006;
+use XML::Simple;
+use Data::Dumper;
+use Map::Tube::Node;
+use Map::Tube::Table;
+use Map::Tube::Route;
+use Map::Tube::Exception;
+use Map::Tube::Error qw(:constants);
+
+use Moo::Role;
+use namespace::clean;
+
+requires 'xml';
 
 =head1 DESCRIPTION
 
@@ -31,18 +35,16 @@ This role has been taken by one of my module L<Map::Tube::London>.
 
 =cut
 
-has map   => (is => 'rw');
-has nodes => (is => 'rw');
-has ucase => (is => 'rw');
-has links => (is => 'rw');
-has lines => (is => 'rw');
-has table => (is => 'rw');
+has map    => (is => 'rw');
+has nodes  => (is => 'rw');
+has tables => (is => 'rw');
+has routes => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
 
-    $self->_init_map;
-    $self->_setup_map;
+    $self->init_map;
+    $self->setup_map;
 }
 
 sub get_shortest_route {
@@ -60,42 +62,124 @@ sub get_shortest_route {
         unless (defined($from) && defined($to));
 
     $from = _format($from);
-    $to   = _format($to);
-
+    my $_from = $self->get_node_by_name($from);
     Map::Tube::Exception->throw({
         method      => __PACKAGE__.'::get_shortest_route',
         message     => "ERROR: Received invalid FROM node '$from'",
         status      => ERROR_INVALID_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless exists $self->ucase->{uc($from)};
+        unless (defined $_from);
 
+    $to = _format($to);
+    my $_to = $self->get_node_by_name($to);
     Map::Tube::Exception->throw({
         method      => __PACKAGE__.'::get_shortest_route',
         message     => "ERROR: Received invalid TO node '$to'",
         status      => ERROR_INVALID_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless exists $self->ucase->{uc($to)};
+        unless (defined $_to);
 
-    $from = $self->ucase->{uc($from)};
-    $to   = $self->nodes->{$to};
+    $from = $_from->id;
+    $to   = $_to->id;
+    $self->_get_shortest_route($from);
 
-    $self->_process($from);
-
-    my @routes = ();
-    my $table  = $self->table;
+    my $nodes = [];
     while (defined($from) && defined($to) && !(_is_same($from, $to))) {
-        push @routes, $self->_get_name($to);
-        $to = $table->{$to}->{path};
+        push @$nodes, $self->get_node_by_id($to);
+        $to = $self->get_path($to);
     }
 
-    push @routes, $self->_get_name($from);
+    push @$nodes, $self->get_node_by_id($from);
 
-    return join(", ", reverse(@routes));
+    return Map::Tube::Route->new({ nodes => [ reverse(@$nodes) ] });
 }
 
-sub _init_map {
+sub get_node_by_id {
+    my ($self, $id) = @_;
+
+    foreach my $name (keys %{$self->nodes}) {
+        my $node = $self->get_node_by_name($name);
+        return $node if _is_same($node->id, $id);
+    }
+
+    return;
+}
+
+sub get_node_by_name {
+    my ($self, $name) = @_;
+
+    foreach my $_name (keys %{$self->nodes}) {
+        return $self->nodes->{$_name} if _is_same($_name, $name);
+    }
+
+    return;
+}
+
+sub get_routes {
+    my ($self, $from, $to) = @_;
+
+    $from = _format($from);
+    $to   = _format($to);
+    $from = $self->get_node_by_name($from)->id;
+    $to   = $self->get_node_by_name($to)->id;
+
+    return $self->_get_routes([$from], $to);
+}
+
+sub set_routes {
+    my ($self, $routes) = @_;
+
+    my $_routes = [];
+    foreach my $id (@$routes) {
+        push @$_routes, $self->get_node_by_id($id);
+    }
+
+    push @{$self->{routes}}, Map::Tube::Route->new({ nodes => $_routes });
+}
+
+sub get_path {
+    my ($self, $id) = @_;
+
+    foreach my $table (@{$self->tables}) {
+        return $table->path if _is_same($table->id, $id);
+    }
+}
+
+sub set_path {
+    my ($self, $id, $node_id) = @_;
+
+    foreach my $table (@{$self->tables}) {
+        return $table->path($node_id) if _is_same($table->id, $id);
+    }
+}
+
+sub get_length {
+    my ($self, $id) = @_;
+
+    foreach my $table (@{$self->tables}) {
+        return $table->length if _is_same($table->id, $id);
+    }
+}
+
+sub set_length {
+    my ($self, $id, $value) = @_;
+
+    foreach my $table (@{$self->tables}) {
+        return $table->length($value) if _is_same($table->id, $id);
+    }
+}
+
+sub get_table {
+    my ($self, $id) = @_;
+
+    foreach my $table (@{$self->tables}) {
+        return $table if _is_same($table->id, $id);
+    }
+}
+
+sub init_map {
     my ($self) = @_;
 
     my $map = [];
@@ -108,53 +192,115 @@ sub _init_map {
     $self->map($map);
 }
 
-sub _setup_map {
+sub setup_map {
     my ($self) = @_;
 
-    my $nodes = {};
-    my $links = {};
-    my $lines = {};
-    my $table = {};
-    my $ucase = {};
+    my $nodes  = {};
+    my $tables = [];
 
     foreach my $node (@{$self->map}) {
-        my $_id    = $node->id;
-        my $_name  = $node->name;
-        my $_links = $node->link;
-        my $_lines = $node->line;
-
-        $nodes->{$_name}     = $_id;
-        $ucase->{uc($_name)} = $_id;
-
-        foreach my $line (split /\,/,$_lines) {
-            $lines->{$_id}->{$line} = 1;
-        }
-
-        foreach my $link (split /\,/,$_links) {
-            push @{$links->{$_id}}, $link;
-        }
-
-        $table->{$_id}->{path}   = undef;
-        $table->{$_id}->{length} = undef;
+        $nodes->{$node->name} = $node;
+        push @$tables, Map::Tube::Table->new({ id => $node->id });
     }
 
     $self->nodes($nodes);
-    $self->ucase($ucase);
-    $self->links($links);
-    $self->lines($lines);
-    $self->table($table);
+    $self->tables($tables);
 }
 
-sub _init_table {
+sub init_table {
     my ($self) = @_;
 
-    my $table = $self->table;
-    foreach my $id (keys %{$self->links}) {
-        $table->{$id}->{path}   = undef;
-        $table->{$id}->{length} = undef;
+    foreach my $table (@{$self->tables}) {
+        $table->path(undef);
+        $table->length(0);
+    }
+}
+
+#
+#
+# PRIVATE METHODS
+
+sub _get_shortest_route {
+    my ($self, $from) = @_;
+
+    my @caller = caller(0);
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::_get_shortest_routes',
+        message     => "ERROR: Node ID is undefined (FROM)",
+        status      => ERROR_MISSING_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless defined($from);
+
+    my $nodes = [];
+    my $index = 0;
+
+    $self->init_table;
+    $self->set_length($from, $index);
+    $self->set_path($from, $from);
+
+    while (defined($from)) {
+        my $length = $self->get_length($from);
+        my $f_node = $self->get_node_by_id($from);
+        if (defined $f_node) {
+            foreach my $link (split /\,/, $f_node->link) {
+                if (($self->get_length($link) == 0) || ($length > ($index + 1))) {
+                    $self->set_length($link, $length + 1);
+                    $self->set_path($link, $from);
+                    push @$nodes, $link;
+                }
+            }
+        }
+
+        $index = $length + 1;
+        $from  = shift @$nodes;
+        $nodes = [ grep(!/$from/, @$nodes) ];
+    }
+}
+
+sub _get_routes {
+    my ($self, $visited, $to) = @_;
+
+    my $last   = $visited->[-1];
+    my @caller = caller(0);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::_get_routes',
+        message     => "ERROR: Node ID is undefined (LAST)",
+        status      => ERROR_MISSING_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless defined($last);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__.'::_get_routes',
+        message     => "ERROR: Node ID is undefined (TO)",
+        status      => ERROR_MISSING_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless defined($to);
+
+    my $nodes = $self->get_node_by_id($last)->link;
+    foreach my $id (split /\,/, $nodes) {
+        next if _is_visited($id, $visited);
+
+        if (_is_same($id, $to)) {
+            push @$visited, $id;
+            $self->set_routes($visited);
+            pop @$visited;
+            last;
+        }
     }
 
-    $self->table($table);
+    foreach my $id (split /\,/, $nodes) {
+        next if (_is_visited($id, $visited) || _is_same($id, $to));
+
+        push @$visited, $id;
+        $self->_get_routes($visited, $to);
+        pop @$visited;
+    }
+
+    return $self->{routes};
 }
 
 sub _format {
@@ -169,92 +315,26 @@ sub _format {
     return $data;
 }
 
-sub _process {
-    my ($self, $from) = @_;
-
-    my @queue = ();
-    my $index = 0;
-
-    $self->_init_table;
-
-    my $table = $self->table;
-    my $links = $self->links;
-
-    $table->{$from}->{length} = $index;
-    $table->{$from}->{path}   = $from;
-
-    while (defined($from)) {
-	foreach my $link (@{$links->{$from}}) {
-            if (!defined($table->{$link}->{length})
-                || ($table->{$from}->{length} > ($index + 1))) {
-
-                $table->{$link}->{length} = $table->{$from}->{length} + 1;
-                $table->{$link}->{path}   = $from;
-                push @queue, $link;
-            }
-        }
-
-        $index = $table->{$from}->{length} + 1;
-        $from  = $self->_get_next_node($from, \@queue);
-
-        @queue = grep(!/$from/, @queue);
-    }
-
-    $self->table($table);
-}
-
-sub _get_next_node {
-    my ($self, $from, $list) = @_;
-
-    return unless (defined($list) && scalar(@{$list}));
-
-    return shift(@{$list});
-}
-
-sub _get_lines {
-    my ($self, $id) = @_;
-
-    return keys(%{$self->lines->{$id}});
-}
-
-sub _get_name {
-    my ($self, $id) = @_;
-
-    my @caller = caller(0);
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::_get_name',
-        message     => "ERROR: Node ID is undefined",
-        status      => ERROR_MISSING_NODE_ID,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless defined($id);
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::_get_name',
-        message     => "ERROR: Node ID is invalid",
-        status      => ERROR_INVALID_NODE_ID,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless exists $self->links->{$id};
-
-    foreach my $name (keys %{$self->nodes}) {
-        return $name if _is_same($self->nodes->{$name}, $id);
-    }
-
-    return;
-}
-
 sub _is_same {
     my ($this, $that) = @_;
 
     return 0 unless (defined($this) && defined($that));
 
-    if (_is_number($this) && _is_number($that)) {
-        return ($this == $that);
+    (_is_number($this) && _is_number($that))
+    ?
+    (return ($this == $that))
+    :
+    (uc($this) eq uc($that));
+}
+
+sub _is_visited {
+    my ($id, $list) = @_;
+
+    foreach (@$list) {
+        return 1 if _is_same($_, $id);
     }
-    else {
-        return (uc($this) eq uc($that));
-    }
+
+    return 0;
 }
 
 sub _is_number {
