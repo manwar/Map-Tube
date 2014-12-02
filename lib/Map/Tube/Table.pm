@@ -1,6 +1,6 @@
 package Map::Tube::Table;
 
-$Map::Tube::Table::VERSION = '2.27';
+$Map::Tube::Table::VERSION = '2.28';
 
 =head1 NAME
 
@@ -8,10 +8,11 @@ Map::Tube::Table - Class to represent the table in the map.
 
 =head1 VERSION
 
-Version 2.27
+Version 2.28
 
 =cut
 
+use utf8;
 use 5.006;
 use Moo;
 use namespace::clean;

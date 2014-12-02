@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.27';
+$Map::Tube::VERSION = '2.28';
 
 =head1 NAME
 
@@ -8,10 +8,11 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.27
+Version 2.28
 
 =cut
 
+use utf8;
 use 5.006;
 use XML::Simple;
 use Data::Dumper;
@@ -31,7 +32,15 @@ requires 'xml';
 The core module defined as Role (Moo) to process  the map data.  It also provides
 the interface to find the shortest route in terms of stoppage between two nodes.
 
-This role has been taken by one of my module L<Map::Tube::London>.
+This role has been taken by the following modules:
+    - L<Map::Tube::London>
+    - L<Map::Tube::Tokyo>
+    - L<Map::Tube::NYC>
+    - L<Map::Tube::Delhi>
+    - L<Map::Tube::Barcelona>
+    - L<Map::Tube::Prague>
+    - L<Map::Tube::Warsaw>
+    - L<Map::Tube::Sofia>
 
 =cut
 
@@ -45,6 +54,7 @@ sub BUILD {
 
     $self->init_map;
     $self->setup_map;
+    $self->validate_map_data;
 }
 
 sub get_shortest_route {
@@ -213,6 +223,26 @@ sub init_table {
     foreach my $table (@{$self->tables}) {
         $table->path(undef);
         $table->length(0);
+    }
+}
+
+sub validate_map_data {
+    my ($self) = @_;
+
+    my $seen  = {};
+    my $nodes = $self->nodes;
+    foreach my $name (keys %$nodes) {
+        my $node = $self->get_node_by_name($name);
+        my $id   = $node->id;
+        die "ERROR: Node ID can't have ',' character.\n" if ($id =~ /\,/);
+        my $link = $node->link;
+        foreach (split /\,/,$link) {
+            next if (exists $seen->{$_});
+            my $_node = $self->get_node_by_id($_);
+
+            die "ERROR: Found invalid node id [$_].\n" unless (defined $_node);
+            $seen->{$_} = 1;
+        }
     }
 }
 
