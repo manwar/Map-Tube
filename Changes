@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.29    Tue Dec 03 00:40:00 2014
+        - Cosmetics changes to the pod document of package Map::Tube.
+
 2.28    Tue Dec 02 22:02:00 2014
         - Added method validate_map_data() to the package Map::Tube, to validate the map data.
           Post loading map data, it checks if all the nodes are defined and throw error if found

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.28';
+$Map::Tube::VERSION = '2.29';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.28
+Version 2.29
 
 =cut
 
@@ -33,14 +33,26 @@ The core module defined as Role (Moo) to process  the map data.  It also provide
 the interface to find the shortest route in terms of stoppage between two nodes.
 
 This role has been taken by the following modules:
-    - L<Map::Tube::London>
-    - L<Map::Tube::Tokyo>
-    - L<Map::Tube::NYC>
-    - L<Map::Tube::Delhi>
-    - L<Map::Tube::Barcelona>
-    - L<Map::Tube::Prague>
-    - L<Map::Tube::Warsaw>
-    - L<Map::Tube::Sofia>
+
+=over 4
+
+=item L<Map::Tube::London>
+
+=item L<Map::Tube::Tokyo>
+
+=item L<Map::Tube::NYC>
+
+=item L<Map::Tube::Delhi>
+
+=item L<Map::Tube::Barcelona>
+
+=item L<Map::Tube::Prague>
+
+=item L<Map::Tube::Warsaw>
+
+=item L<Map::Tube::Sofia>
+
+=back
 
 =cut
 
