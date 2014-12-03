@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.30';
+$Map::Tube::VERSION = '2.31';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.30
+Version 2.31
 
 =cut
 
@@ -52,6 +52,8 @@ This role has been taken by the following modules:
 =item L<Map::Tube::Warsaw>
 
 =item L<Map::Tube::Sofia>
+
+=item L<Map::Tube::Berlin>
 
 =back
 
@@ -135,9 +137,9 @@ sub init_map {
         my $id   = $node->id;
         my $name = $node->name;
         die "ERROR: Duplicate station name [$name].\n"
-            if (exists $self->{name_to_id}->{$name});
+            if (exists $self->{name_to_id}->{uc($name)});
 
-        $self->{name_to_id}->{$name} = $id;
+        $self->{name_to_id}->{uc($name)} = $id;
         $nodes->{$id}  = $node;
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
     }
@@ -186,9 +188,9 @@ sub get_node_by_id {
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && exists $self->{name_to_id}->{$name});
+    return unless (defined $name && exists $self->{name_to_id}->{uc($name)});
 
-    return $self->get_node_by_id($self->{name_to_id}->{$name});
+    return $self->get_node_by_id($self->{name_to_id}->{uc($name)});
 }
 
 sub set_routes {

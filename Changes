@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.30    Wed Dec 03 21:00:00 2014
+        - Added the feature to accept case insensitive station name.
+        - Also added Map::Tube::Berlin to the list of package taking the role Map::Tube.
+
 2.30    Wed Dec 03 14:40:00 2014
         - Fixed the performance issue raised in the ticket RT: 100677.
         - Updated pod document about the methods exposed by the Map::Tube.
