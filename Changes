@@ -1,6 +1,10 @@
 Revision history for Map::Tube
 
-2.29    Tue Dec 03 00:40:00 2014
+2.30    Wed Dec 03 14:40:00 2014
+        - Fixed the performance issue raised in the ticket RT: 100677.
+        - Updated pod document about the methods exposed by the Map::Tube.
+
+2.29    Wed Dec 03 00:40:00 2014
         - Cosmetics changes to the pod document of package Map::Tube.
 
 2.28    Tue Dec 02 22:02:00 2014
