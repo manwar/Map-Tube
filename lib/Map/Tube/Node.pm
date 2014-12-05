@@ -31,9 +31,9 @@ sub as_string {
 }
 
 
-=head2 METHODS
+=head1 METHODS
 
-=head1 id()
+=head2 id()
 
 Returns the station id as defined in the map data.
 
