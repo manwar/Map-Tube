@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.31';
+$Map::Tube::VERSION = '2.32';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.31
+Version 2.32
 
 =cut
 
@@ -83,13 +83,11 @@ On error it returns an object of type L<Map::Tube::Exception>.
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
 
-    $self->_validate_input('get_shortest_route', $from, $to);
+    ($from, $to) =
+        $self->_validate_input('get_shortest_route', $from, $to);
 
-    $from = _format($from);
-    $from = $self->get_node_by_name($from)->id;
-
-    $to   = _format($to);
-    $to   = $self->get_node_by_name($to)->id;
+    my $_from = $self->get_node_by_id($from);
+    my $_to   = $self->get_node_by_id($to);
 
     $self->_get_shortest_route($from);
 
@@ -99,9 +97,12 @@ sub get_shortest_route {
         $to = $self->get_path($to);
     }
 
-    push @$nodes, $self->get_node_by_id($from);
+    push @$nodes, $_from;
 
-    return Map::Tube::Route->new({ nodes => [ reverse(@$nodes) ] });
+    return Map::Tube::Route->new(
+        { from  => $_from,
+          to    => $_to,
+          nodes => [ reverse(@$nodes) ] } );
 }
 
 =head2 get_all_routes($from, $to)
@@ -109,18 +110,28 @@ sub get_shortest_route {
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
 L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
 
+=head3 NOTE
+
+Be carefull when using against a large map.  You may encountered warning as
+'deep-recursion'. It throws the following error when run against London map.
+
+Deep recursion on subroutine "Map::Tube::_get_all_routes"
+
+However for comparatively smaller map, like below,it is happy to give all routes.
+
+      A(1)  ----  B(2)
+     /              \
+    C(3)  --------  F(6) --- G(7) ---- H(8)
+     \              /
+      D(4)  ----  E(5)
+
 =cut
 
 sub get_all_routes {
     my ($self, $from, $to) = @_;
 
-    $self->_validate_input('get_all_routes', $from, $to);
-
-    $from = _format($from);
-    $from = $self->get_node_by_name($from)->id;
-
-    $to   = _format($to);
-    $to   = $self->get_node_by_name($to)->id;
+    ($from, $to) =
+        $self->_validate_input('get_all_routes', $from, $to);
 
     return $self->_get_all_routes([ $from ], $to);
 }
@@ -136,10 +147,9 @@ sub init_map {
         my $node = Map::Tube::Node->new($station);
         my $id   = $node->id;
         my $name = $node->name;
-        die "ERROR: Duplicate station name [$name].\n"
-            if (exists $self->{name_to_id}->{uc($name)});
+        die "ERROR: Duplicate station name [$name].\n" if (defined $self->get_id($name));
 
-        $self->{name_to_id}->{uc($name)} = $id;
+        $self->map_name($name, $id);
         $nodes->{$id}  = $node;
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
     }
@@ -179,6 +189,18 @@ sub validate_map_data {
     }
 }
 
+sub map_name {
+    my ($self, $name, $id) = @_;
+
+    $self->{name_to_id}->{uc($name)} = $id;
+}
+
+sub get_id {
+    my ($self, $name) = @_;
+
+    return $self->{name_to_id}->{uc($name)};
+}
+
 sub get_node_by_id {
     my ($self, $id) = @_;
 
@@ -188,9 +210,9 @@ sub get_node_by_id {
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && exists $self->{name_to_id}->{uc($name)});
+    return unless (defined $name && defined $self->get_id($name));
 
-    return $self->get_node_by_id($self->{name_to_id}->{uc($name)});
+    return $self->get_node_by_id($self->get_id($name));
 }
 
 sub set_routes {
@@ -201,7 +223,10 @@ sub set_routes {
         push @$_routes, $self->get_node_by_id($id);
     }
 
-    push @{$self->{routes}}, Map::Tube::Route->new({ nodes => $_routes });
+    my $from  = $_routes->[0];
+    my $to    = $_routes->[-1];
+    my $route = Map::Tube::Route->new({ from => $from, to => $to, nodes => $_routes });
+    push @{$self->{routes}}, $route;
 }
 
 sub get_path {
@@ -219,6 +244,7 @@ sub set_path {
 sub get_length {
     my ($self, $id) = @_;
 
+    return 0 unless defined $self->tables->{$id};
     return $self->tables->{$id}->length;
 }
 
@@ -240,15 +266,6 @@ sub get_table {
 
 sub _get_shortest_route {
     my ($self, $from) = @_;
-
-    my @caller = caller(0);
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::_get_shortest_routes',
-        message     => "ERROR: Node ID is undefined (FROM)",
-        status      => ERROR_MISSING_NODE_ID,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless defined($from);
 
     my $nodes = [];
     my $index = 0;
@@ -279,25 +296,7 @@ sub _get_shortest_route {
 sub _get_all_routes {
     my ($self, $visited, $to) = @_;
 
-    my $last   = $visited->[-1];
-    my @caller = caller(0);
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::_get_routes',
-        message     => "ERROR: Node ID is undefined (LAST)",
-        status      => ERROR_MISSING_NODE_ID,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless defined($last);
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::_get_routes',
-        message     => "ERROR: Node ID is undefined (TO)",
-        status      => ERROR_MISSING_NODE_ID,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless defined($to);
-
+    my $last  = $visited->[-1];
     my $nodes = $self->get_node_by_id($last)->link;
     foreach my $id (split /\,/, $nodes) {
         next if _is_visited($id, $visited);
@@ -348,12 +347,14 @@ sub _validate_input {
     $to = _format($to);
     my $_to = $self->get_node_by_name($to);
     Map::Tube::Exception->throw({
-        method      => __PACKAGE__.'::get_shortest_route',
+        method      => __PACKAGE__."::$method",
         message     => "ERROR: Received invalid TO node '$to'",
         status      => ERROR_INVALID_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $_to);
+
+    return ($_from->id, $_to->id);
 }
 
 sub _format {

@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION = '2.31';
+$Map::Tube::Route::VERSION = '2.32';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.31
+Version 2.32
 
 =cut
 
@@ -20,13 +20,30 @@ use namespace::clean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has nodes => (is => 'ro');
+has from  => (is => 'ro', required => 1);
+has to    => (is => 'ro', required => 1);
+has nodes => (is => 'ro', required => 1);
 
 sub as_string {
     my ($self) = @_;
 
     return join ", ", @{$self->nodes};
 }
+
+=head1 METHODS
+
+=head2 from()
+
+Returns an object of type L<Map::Tube::Node> representing the start station.
+
+=head2 to()
+
+Returns an object of type L<Map::Tube::Node> representing the end station.
+
+hade2 nodes()
+
+Returns the ref to a list of objects of type L<Map::Tube::Node> representing  the
+path from "start" and "end" station.
 
 =head1 AUTHOR
 

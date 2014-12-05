@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '2.31';
+$Map::Tube::Node::VERSION = '2.32';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.31
+Version 2.32
 
 =cut
 
@@ -19,16 +19,35 @@ use namespace::clean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has id   => (is => 'ro');
-has name => (is => 'ro');
-has link => (is => 'ro');
-has line => (is => 'ro');
+has id   => (is => 'ro', required => 1);
+has name => (is => 'ro', required => 1);
+has link => (is => 'ro', required => 1);
+has line => (is => 'ro', required => 1);
 
 sub as_string {
     my ($self) = @_;
 
     return sprintf("%s (%s)", $self->name, $self->line);
 }
+
+
+=head2 METHODS
+
+=head1 id()
+
+Returns the station id as defined in the map data.
+
+=head2 name()
+
+Returns the station name as defined in the map data.
+
+head2 link()
+
+Returns the linked station id as defined in the map data.
+
+=head2 line()
+
+Returns the line(s) the station linked to as defined in the map data.
 
 =head1 AUTHOR
 

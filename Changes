@@ -1,6 +1,15 @@
 Revision history for Map::Tube
 
-2.30    Wed Dec 03 21:00:00 2014
+2.32    Fri Dec 05 15:30:00 2014
+        - Made all the attributes of class Map::Tube::Node as required mandatory.
+        - Documented all methods exposed by class Map::Tube::Node.
+        - Made attribute 'id' as required mandatory for class Map::Tube::Table.
+        - Added two attributes 'from' and 'to' to the class Map::Tube::Route.
+        - Made all attributes as required mandatory for class Map::Tube::Route.
+        - Made slight improvement to the method get_shortest_route() and get_all_routes().
+        - Documented the method get_all_routes().
+
+2.31    Wed Dec 03 21:00:00 2014
         - Added the feature to accept case insensitive station name.
         - Also added Map::Tube::Berlin to the list of package taking the role Map::Tube.
 
