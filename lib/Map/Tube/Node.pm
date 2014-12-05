@@ -41,7 +41,7 @@ Returns the station id as defined in the map data.
 
 Returns the station name as defined in the map data.
 
-head2 link()
+=head2 link()
 
 Returns the linked station id as defined in the map data.
 
