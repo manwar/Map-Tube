@@ -1,6 +1,6 @@
 package Map::Tube::Table;
 
-$Map::Tube::Table::VERSION = '2.32';
+$Map::Tube::Table::VERSION = '2.33';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Table - Class to represent the table in the map.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.33
 
 =cut
 
@@ -20,6 +20,10 @@ use namespace::clean;
 has id     => (is => 'ro', required => 1);
 has path   => (is => 'rw');
 has length => (is => 'rw');
+
+=head1 DESCRIPTION
+
+It is used internally by L<Map::Tube> to hold the processed nodes.
 
 =head1 AUTHOR
 

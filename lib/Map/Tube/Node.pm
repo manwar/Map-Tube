@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '2.32';
+$Map::Tube::Node::VERSION = '2.33';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.33
 
 =cut
 
@@ -30,10 +30,9 @@ sub as_string {
     return sprintf("%s (%s)", $self->name, $self->line);
 }
 
+=head1 METHODS
 
-=head2 METHODS
-
-=head1 id()
+=head2 id()
 
 Returns the station id as defined in the map data.
 

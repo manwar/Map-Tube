@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+2.33    Fri Dec 05 19:36:00 2014
+        - Tidied up the pod document of Map::Tube and removed "NOTE".
+        - Corrected the pod tag for "METHODS" and method id() in the package Map::Tube::Node.
+        - Added section "DESCRIPTION" in the package Map::Tube::Table.
+        - Corrected the pod tag for method nodes() in the package Map::Tube::Route.
+
 2.32    Fri Dec 05 15:30:00 2014
         - Made all the attributes of class Map::Tube::Node as required mandatory.
         - Documented all methods exposed by class Map::Tube::Node.

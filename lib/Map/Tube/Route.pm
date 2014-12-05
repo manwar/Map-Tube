@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION = '2.32';
+$Map::Tube::Route::VERSION = '2.33';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.33
 
 =cut
 
@@ -40,10 +40,10 @@ Returns an object of type L<Map::Tube::Node> representing the start station.
 
 Returns an object of type L<Map::Tube::Node> representing the end station.
 
-hade2 nodes()
+=head2 nodes()
 
 Returns the ref to a list of objects of type L<Map::Tube::Node> representing  the
-path from "start" and "end" station.
+path from "start" to "end" station.
 
 =head1 AUTHOR
 

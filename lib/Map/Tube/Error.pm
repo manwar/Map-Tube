@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION = '2.32';
+$Map::Tube::Error::VERSION = '2.33';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.33
 
 =cut
 
@@ -33,6 +33,7 @@ while (my ($code, $message) = each %Status) {
     $mnemonic_code .= "sub ERROR_$message () { $code }\n";
     $mnemonic_code .= "push(\@EXPORT_OK, 'ERROR_$message');\n";
 }
+
 eval $mnemonic_code; die if $@;
 
 %EXPORT_TAGS = (constants => [grep /^ERROR_/, @EXPORT_OK]);
