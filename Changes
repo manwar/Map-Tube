@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.34    Fri Dec 05 21:19:00 2014
+        - Fixed the pod tag for method link() in the package Map::Tube::Node.
+
 2.33    Fri Dec 05 19:36:00 2014
         - Tidied up the pod document of Map::Tube and removed "NOTE".
         - Corrected the pod tag for "METHODS" and method id() in the package Map::Tube::Node.

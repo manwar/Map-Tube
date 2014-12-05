@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '2.33';
+$Map::Tube::Node::VERSION = '2.34';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.33
+Version 2.34
 
 =cut
 
@@ -40,7 +40,7 @@ Returns the station id as defined in the map data.
 
 Returns the station name as defined in the map data.
 
-head2 link()
+=head2 link()
 
 Returns the linked station id as defined in the map data.
 

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.33';
+$Map::Tube::VERSION = '2.34';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.33
+Version 2.34
 
 =cut
 
