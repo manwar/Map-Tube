@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.37    Sat Dec 07 16:38:20 2014
+        - Removed 'use utf8;' line from all the packages of the distribution Map-Tube.
+
 2.36    Sat Dec 07 14:15:00 2014
         - Added new attribute 'utf8' to Map::Tube which default to true.
         - Also added new mandatory attribute 'utf8' which inherits the setting of 'utf8' attribute of Map::Tube.
