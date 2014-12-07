@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.38    Sat Dec 07 17:20:20 2014
+        - Removed the new attribute 'utf8' from Map::Tube and Map::Tube::Node as it was causing
+          more trouble for end user than any help as added in v2.36.
+
 2.37    Sat Dec 07 16:38:20 2014
         - Removed 'use utf8;' line from all the packages of the distribution Map-Tube.
 
