@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION = '2.34';
+$Map::Tube::Node::VERSION = '2.36';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.34
+Version 2.36
 
 =cut
 
@@ -26,11 +26,17 @@ has id   => (is => 'ro', required => 1);
 has name => (is => 'ro', required => 1);
 has link => (is => 'ro', required => 1);
 has line => (is => 'ro', required => 1);
+has utf8 => (is => 'ro', required => 1);
 
 sub as_string {
     my ($self) = @_;
 
-    return encode_utf8(sprintf("%s (%s)", $self->name, $self->line));
+    my $node = sprintf("%s (%s)", $self->name, $self->line);
+    ($self->utf8)
+    ?
+    (return encode_utf8($node))
+    :
+    (return $node);
 }
 
 =head1 METHODS
@@ -50,6 +56,10 @@ Returns the linked station id as defined in the map data.
 =head2 line()
 
 Returns the line(s) the station linked to as defined in the map data.
+
+=head2 utf8()
+
+Returns true/false (0/1) whether station name/line should be utf8 encoded.
 
 =head1 AUTHOR
 

@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+2.36    Sat Dec 07 14:15:00 2014
+        - Added new attribute 'utf8' to Map::Tube which default to true.
+        - Also added new mandatory attribute 'utf8' which inherits the setting of 'utf8' attribute of Map::Tube.
+        - Now utf8 encode/decode happens depending on this new attribute.
+
 2.35    Sat Dec 07 11:45:00 2014
         - Updated method Map::Tube::get_shortest_route() to decode (utf8) the station names.
         - Updated method Map::Tube::Node::to_string() to encode (utf8) the response.

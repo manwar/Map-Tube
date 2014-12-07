@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.35';
+$Map::Tube::VERSION = '2.36';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.35
+Version 2.36
 
 =cut
 
@@ -64,6 +64,7 @@ has nodes      => (is => 'rw');
 has tables     => (is => 'rw');
 has routes     => (is => 'rw');
 has name_to_id => (is => 'rw');
+has utf8       => (is => 'ro', default => sub { 1 });
 
 sub BUILD {
     my ($self) = @_;
@@ -85,8 +86,10 @@ name or encoding the response is no longer required.
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
 
-    $from = decode_utf8($from);
-    $to   = decode_utf8($to);
+    if ($self->utf8) {
+        $from = decode_utf8($from);
+        $to   = decode_utf8($to);
+    }
 
     ($from, $to) =
         $self->_validate_input('get_shortest_route', $from, $to);
@@ -134,8 +137,10 @@ However for comparatively smaller map, like below,it is happy to give all routes
 sub get_all_routes {
     my ($self, $from, $to) = @_;
 
-    $from = decode_utf8($from);
-    $to   = decode_utf8($to);
+    if ($self->utf8) {
+        $from = decode_utf8($from);
+        $to   = decode_utf8($to);
+    }
 
     ($from, $to) =
         $self->_validate_input('get_all_routes', $from, $to);
@@ -151,6 +156,7 @@ sub init_map {
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
 
     foreach my $station (@{$xml->{stations}->{station}}) {
+        $station->{utf8} = $self->utf8;
         my $node = Map::Tube::Node->new($station);
         my $id   = $node->id;
         my $name = $node->name;
