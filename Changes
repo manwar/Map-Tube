@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.39    Sat Dec 07 17:45:20 2014
+        - Removed dependency on 'Encode' from Makefile.PL as it is no longer required.
+
 2.38    Sat Dec 07 17:20:20 2014
         - Removed the new attribute 'utf8' from Map::Tube and Map::Tube::Node as it was causing
           more trouble for end user than any help as added in v2.36.
