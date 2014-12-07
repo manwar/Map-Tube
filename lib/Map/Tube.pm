@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.34';
+$Map::Tube::VERSION = '2.35';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.34
+Version 2.35
 
 =cut
 
@@ -20,6 +20,7 @@ use Map::Tube::Node;
 use Map::Tube::Table;
 use Map::Tube::Route;
 use Map::Tube::Exception;
+use Encode qw(decode_utf8);
 use Map::Tube::Error qw(:constants);
 
 use Moo::Role;
@@ -76,12 +77,16 @@ sub BUILD {
 =head2 get_shortest_routes($from, $to)
 
 Expects 'from' and 'to' station name and returns an object of type L<Map::Tube::Route>.
-On error it returns an object of type L<Map::Tube::Exception>.
+On error it returns an object of type L<Map::Tube::Exception>.Decoding the station
+name or encoding the response is no longer required.
 
 =cut
 
 sub get_shortest_route {
     my ($self, $from, $to) = @_;
+
+    $from = decode_utf8($from);
+    $to   = decode_utf8($to);
 
     ($from, $to) =
         $self->_validate_input('get_shortest_route', $from, $to);
@@ -105,10 +110,11 @@ sub get_shortest_route {
           nodes => [ reverse(@$nodes) ] } );
 }
 
-=head2 get_all_routes($from, $to)
+=head2 get_all_routes($from, $to) [EXPERIMENTAL]
 
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
 L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
+Decoding the station name or encoding the response is no longer required.
 
 Be carefull when using against a large map. You may encountered warning as 'deep-recursion'.
 It throws the following error when run against London map.
@@ -127,6 +133,9 @@ However for comparatively smaller map, like below,it is happy to give all routes
 
 sub get_all_routes {
     my ($self, $from, $to) = @_;
+
+    $from = decode_utf8($from);
+    $to   = decode_utf8($to);
 
     ($from, $to) =
         $self->_validate_input('get_all_routes', $from, $to);

@@ -14,6 +14,9 @@ Version 2.34
 
 use utf8;
 use 5.006;
+use Data::Dumper;
+use Encode qw(encode_utf8);
+
 use Moo;
 use namespace::clean;
 
@@ -27,7 +30,7 @@ has line => (is => 'ro', required => 1);
 sub as_string {
     my ($self) = @_;
 
-    return sprintf("%s (%s)", $self->name, $self->line);
+    return encode_utf8(sprintf("%s (%s)", $self->name, $self->line));
 }
 
 =head1 METHODS

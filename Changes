@@ -1,5 +1,13 @@
 Revision history for Map::Tube
 
+2.35    Sat Dec 07 11:45:00 2014
+        - Updated method Map::Tube::get_shortest_route() to decode (utf8) the station names.
+        - Updated method Map::Tube::Node::to_string() to encode (utf8) the response.
+        - Marked method Map::Tube::get_all_routes() as EXPERIMENTAL.
+        - Added package Encode as pre-requisite in the Makefile.PL file.
+        - Updated pod document to reflect the change in behaviour of the two methods
+          Map::Tube::get_shortest_route() and Map::Tube::get_all_routes().
+
 2.34    Fri Dec 05 21:19:00 2014
         - Fixed the pod tag for method link() in the package Map::Tube::Node.
 

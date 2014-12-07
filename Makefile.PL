@@ -22,6 +22,7 @@ WriteMakefile(
         'Moo::Role'        => 0,
         'namespace::clean' => 0,
         'Throwable'        => 0,
+        'Encode'           => 0,
         'XML::Simple'      => 0,
         'overload'         => 0
     },
