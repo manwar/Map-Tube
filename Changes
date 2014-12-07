@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.40    Sat Dec 07 19:15:20 2014
+        - Added new attribute 'name' to package Map::Tube to hold the map name. [RT: 100771]
+
 2.39    Sat Dec 07 17:45:20 2014
         - Removed dependency on 'Encode' from Makefile.PL as it is no longer required.
 

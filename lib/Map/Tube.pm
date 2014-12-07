@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.39';
+$Map::Tube::VERSION = '2.40';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.39
+Version 2.40
 
 =cut
 
@@ -58,6 +58,7 @@ This role has been taken by the following modules:
 
 =cut
 
+has name       => (is => 'rw');
 has nodes      => (is => 'rw');
 has tables     => (is => 'rw');
 has routes     => (is => 'rw');
@@ -141,6 +142,7 @@ sub init_map {
     my $nodes  = {};
     my $tables = {};
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+    $self->name($xml->{name});
 
     foreach my $station (@{$xml->{stations}->{station}}) {
         my $node = Map::Tube::Node->new($station);
