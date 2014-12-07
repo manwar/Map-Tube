@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.40';
+$Map::Tube::VERSION = '2.41';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.40
+Version 2.41
 
 =cut
 
@@ -76,8 +76,7 @@ sub BUILD {
 =head2 get_shortest_routes($from, $to)
 
 Expects 'from' and 'to' station name and returns an object of type L<Map::Tube::Route>.
-On error it returns an object of type L<Map::Tube::Exception>.Decoding the station
-name or encoding the response is no longer required.
+On error it returns an object of type L<Map::Tube::Exception>.
 
 =cut
 
@@ -110,7 +109,6 @@ sub get_shortest_route {
 
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
 L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
-Decoding the station name or encoding the response is no longer required.
 
 Be carefull when using against a large map. You may encountered warning as 'deep-recursion'.
 It throws the following error when run against London map.

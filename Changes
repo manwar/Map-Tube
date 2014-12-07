@@ -1,24 +1,27 @@
 Revision history for Map::Tube
 
-2.40    Sat Dec 07 19:15:20 2014
+2.41    Sun Dec 07 19:50:20 2014
+        - Tidied up pod document of the package Map::Tube.
+
+2.40    Sun Dec 07 19:15:20 2014
         - Added new attribute 'name' to package Map::Tube to hold the map name. [RT: 100771]
 
-2.39    Sat Dec 07 17:45:20 2014
+2.39    Sun Dec 07 17:45:20 2014
         - Removed dependency on 'Encode' from Makefile.PL as it is no longer required.
 
-2.38    Sat Dec 07 17:20:20 2014
+2.38    Sun Dec 07 17:20:20 2014
         - Removed the new attribute 'utf8' from Map::Tube and Map::Tube::Node as it was causing
           more trouble for end user than any help as added in v2.36.
 
-2.37    Sat Dec 07 16:38:20 2014
+2.37    Sun Dec 07 16:38:20 2014
         - Removed 'use utf8;' line from all the packages of the distribution Map-Tube.
 
-2.36    Sat Dec 07 14:15:00 2014
+2.36    Sun Dec 07 14:15:00 2014
         - Added new attribute 'utf8' to Map::Tube which default to true.
         - Also added new mandatory attribute 'utf8' which inherits the setting of 'utf8' attribute of Map::Tube.
         - Now utf8 encode/decode happens depending on this new attribute.
 
-2.35    Sat Dec 07 11:45:00 2014
+2.35    Sun Dec 07 11:45:00 2014
         - Updated method Map::Tube::get_shortest_route() to decode (utf8) the station names.
         - Updated method Map::Tube::Node::to_string() to encode (utf8) the response.
         - Marked method Map::Tube::get_all_routes() as EXPERIMENTAL.
