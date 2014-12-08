@@ -35,6 +35,14 @@ WriteMakefile(
                 url  => 'https://github.com/Manwar/Map-Tube.git',
                 web  => 'https://github.com/Manwar/Map-Tube',
             },
+            provides => {
+                'Map::Tube'            => { file => 'lib/Map/Tube.pm'           },
+                'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'      },
+                'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'     },
+                'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'     },
+                'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'     },
+                'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm' },
+            },
         }})
      : ()
     ),
