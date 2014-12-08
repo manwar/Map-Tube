@@ -3,7 +3,6 @@ Revision history for Map::Tube
 2.42    Mon Dec 08 14:48:20 2014
         - Added 'provides' key to the Makefile.PL file.
 
-
 2.41    Sun Dec 07 19:50:20 2014
         - Tidied up pod document of the package Map::Tube.
 
