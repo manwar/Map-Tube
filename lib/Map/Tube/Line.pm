@@ -1,10 +1,10 @@
-package Map::Tube::Table;
+package Map::Tube::Line;
 
-$Map::Tube::Table::VERSION = '2.44';
+$Map::Tube::Node::VERSION = '2.44';
 
 =head1 NAME
 
-Map::Tube::Table - Class to represent the table in the map.
+Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
@@ -13,16 +13,31 @@ Version 2.44
 =cut
 
 use 5.006;
+use Data::Dumper;
+
 use Moo;
 use namespace::clean;
 
-has id     => (is => 'ro', required => 1);
-has path   => (is => 'rw');
-has length => (is => 'rw');
+use overload q{""} => 'as_string', fallback => 1;
 
-=head1 DESCRIPTION
+has name  => (is => 'ro', required => 1);
+has color => (is => 'ro');
 
-It is used internally by L<Map::Tube> to hold the processed nodes.
+sub as_string {
+    my ($self) = @_;
+
+    return $self->name;
+}
+
+=head1 METHODS
+
+=head2 name()
+
+Returns the line name.
+
+=head2 color()
+
+Returns the color name of the line, if available.
 
 =head1 AUTHOR
 
@@ -43,7 +58,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Table
+    perldoc Map::Tube::Line
 
 You can also look for information at:
 
@@ -107,4 +122,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Table
+1; # End of Map::Tube::Line

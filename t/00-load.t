@@ -2,11 +2,12 @@
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 BEGIN {
     use_ok('Map::Tube')            || print "Bail out!\n";
     use_ok('Map::Tube::Node')      || print "Bail out!\n";
+    use_ok('Map::Tube::Line')      || print "Bail out!\n";
     use_ok('Map::Tube::Table')     || print "Bail out!\n";
     use_ok('Map::Tube::Route')     || print "Bail out!\n";
     use_ok('Map::Tube::Error')     || print "Bail out!\n";

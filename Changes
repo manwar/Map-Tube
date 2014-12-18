@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.44    Thu Dec 18 15:18:10 2014
+        - Added new package Map::Tube::Line to hold map line information.
+        - Updated method Map::Tube::get_lines() to return ref to a list of objects of type Map::Tube::Line.
+
 2.43    Thu Dec 18 12:00:10 2014
         - Added two new methods get_lines() and get_stations($line) to the package Map::Tube (RT: 100971).
         - Added new error codes to the package Map::Tube::Error.

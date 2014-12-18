@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.43';
+$Map::Tube::VERSION = '2.44';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.43
+Version 2.44
 
 =cut
 
@@ -16,6 +16,7 @@ use 5.006;
 use XML::Simple;
 use Data::Dumper;
 use Map::Tube::Node;
+use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
 use Map::Tube::Exception;
@@ -61,6 +62,7 @@ This role has been taken by the following modules:
 has name       => (is => 'rw');
 has nodes      => (is => 'rw');
 has lines      => (is => 'rw');
+has _lines     => (is => 'rw');
 has tables     => (is => 'rw');
 has routes     => (is => 'rw');
 has name_to_id => (is => 'rw');
@@ -138,6 +140,7 @@ sub get_all_routes {
 sub init_map {
     my ($self) = @_;
 
+    my $_lines = {};
     my $lines  = {};
     my $nodes  = {};
     my $tables = {};
@@ -154,12 +157,15 @@ sub init_map {
         $nodes->{$id}  = $node;
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
 
-        foreach my $line (split /\,/,$node->line) {
-            push @{$lines->{uc($line)}}, $node;
+        foreach my $_line (split /\,/,$node->line) {
+            push @{$_lines->{uc($_line)}}, $node;
+            next if exists $lines->{uc($_line)};
+            $lines->{uc($_line)} = Map::Tube::Line->new({ name => $_line });
         }
     }
 
-    $self->lines($lines);
+    $self->lines([ values %$lines ]);
+    $self->_lines($_lines);
     $self->nodes($nodes);
     $self->tables($tables);
 }
@@ -223,14 +229,14 @@ sub get_node_by_name {
 
 =head2 get_lines()
 
-Returns the list of all lines in the map.
+Returns ref to a list of objects of type L<Map::Tube::Line>.
 
 =cut
 
 sub get_lines {
     my ($self) = @_;
 
-    return join(", ", (sort keys %{$self->lines}));
+    return $self->lines;
 }
 
 =head2 get_stations($line)
@@ -259,9 +265,9 @@ sub get_stations {
         status      => ERROR_INVALID_LINE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless (exists $self->{lines}->{uc($line)});
+        unless (exists $self->_lines->{uc($line)});
 
-    return $self->{lines}->{uc($line)};
+    return $self->_lines->{uc($line)};
 }
 
 sub set_routes {
