@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+2.45    Thu Dec 18 17:08:10 2014
+        - Fixed invalid pod tag in the section "DESCRIPTION" of the package Map::Tube::Error.
+        - Added section "DESCRIPTION" to the package Map::Tube::Exception.
+        - Updated description of the method Map::Tube::get_stations in the package Map::Tube.
+        - Updated section "DESCRIPTION" of the package Map::Tube::Table.
+
 2.44    Thu Dec 18 15:18:10 2014
         - Added new package Map::Tube::Line to hold map line information.
         - Updated method Map::Tube::get_lines() to return ref to a list of objects of type Map::Tube::Line.
