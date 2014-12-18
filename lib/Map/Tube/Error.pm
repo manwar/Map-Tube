@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION = '2.42';
+$Map::Tube::Error::VERSION = '2.43';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.42
+Version 2.43
 
 =cut
 
@@ -24,7 +24,10 @@ my %Status = (
     100 => 'Missing Node Name',
     101 => 'Invalid Node Name',
     102 => 'Missing Node ID',
-    103 => 'Invalid Node ID' );
+    103 => 'Invalid Node ID',
+    104 => 'Missing Line Name',
+    105 => 'Invalid Line Name',
+);
 
 my $mnemonic_code = '';
 while (my ($code, $message) = each %Status) {
@@ -36,6 +39,26 @@ while (my ($code, $message) = each %Status) {
 eval $mnemonic_code; die if $@;
 
 %EXPORT_TAGS = (constants => [grep /^ERROR_/, @EXPORT_OK]);
+
+=head1 DESCRIPTION
+
+<B FOR INTERNAL USE ONLY>
+
+=over 2
+
+=item * 100: Missing Node Name
+
+=item * 101: Invalid Noe Name
+
+=item * 102: Missing Node ID
+
+=item * 103: Invalid Node ID
+
+=item * 104: Missing Line Name
+
+=item * 105: Invalid Line Name
+
+=back
 
 =head1 AUTHOR
 

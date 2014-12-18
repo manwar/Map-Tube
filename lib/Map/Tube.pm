@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.42';
+$Map::Tube::VERSION = '2.43';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.42
+Version 2.43
 
 =cut
 
@@ -34,7 +34,7 @@ Also you can get all possible routes between two given nodes.
 
 This role has been taken by the following modules:
 
-=over 4
+=over 2
 
 =item L<Map::Tube::London>
 
@@ -60,6 +60,7 @@ This role has been taken by the following modules:
 
 has name       => (is => 'rw');
 has nodes      => (is => 'rw');
+has lines      => (is => 'rw');
 has tables     => (is => 'rw');
 has routes     => (is => 'rw');
 has name_to_id => (is => 'rw');
@@ -137,6 +138,7 @@ sub get_all_routes {
 sub init_map {
     my ($self) = @_;
 
+    my $lines  = {};
     my $nodes  = {};
     my $tables = {};
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
@@ -151,8 +153,13 @@ sub init_map {
         $self->map_name($name, $id);
         $nodes->{$id}  = $node;
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
+
+        foreach my $line (split /\,/,$node->line) {
+            push @{$lines->{uc($line)}}, $node;
+        }
     }
 
+    $self->lines($lines);
     $self->nodes($nodes);
     $self->tables($tables);
 }
@@ -212,6 +219,49 @@ sub get_node_by_name {
     return unless (defined $name && defined $self->get_id($name));
 
     return $self->get_node_by_id($self->get_id($name));
+}
+
+=head2 get_lines()
+
+Returns the list of all lines in the map.
+
+=cut
+
+sub get_lines {
+    my ($self) = @_;
+
+    return join(", ", (sort keys %{$self->lines}));
+}
+
+=head2 get_stations($line)
+
+Returns ref to a list objects of type L<Map::Tube::Node>.
+
+=cut
+
+sub get_stations {
+    my ($self, $line) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::get_stations",
+        message     => "ERROR: Missing Line name.",
+        status      => ERROR_MISSING_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (defined $line);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::get_stations",
+        message     => "ERROR: Invalid Line name.",
+        status      => ERROR_INVALID_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (exists $self->{lines}->{uc($line)});
+
+    return $self->{lines}->{uc($line)};
 }
 
 sub set_routes {
