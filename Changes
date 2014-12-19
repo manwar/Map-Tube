@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.46    Fri Dec 19 00:47:30 2014
+        - Removed redundant code from the methods get_shortest_route() and _get_shortest_route().
+        - Minor cosmetics changes to some of the pod documents.
+
 2.45    Thu Dec 18 17:08:10 2014
         - Fixed invalid pod tag in the section "DESCRIPTION" of the package Map::Tube::Error.
         - Added section "DESCRIPTION" to the package Map::Tube::Exception.

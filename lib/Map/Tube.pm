@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.45';
+$Map::Tube::VERSION = '2.46';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.45
+Version 2.46
 
 =cut
 
@@ -33,27 +33,27 @@ The core module defined as Role (Moo) to process  the map data.  It provides the
 the interface to find the shortest route in terms of stoppage between two nodes.
 Also you can get all possible routes between two given nodes.
 
-This role has been taken by the following modules:
+This role has been taken by the following modules (and many more):
 
 =over 2
 
-=item L<Map::Tube::London>
+=item * L<Map::Tube::London>
 
-=item L<Map::Tube::Tokyo>
+=item * L<Map::Tube::Tokyo>
 
-=item L<Map::Tube::NYC>
+=item * L<Map::Tube::NYC>
 
-=item L<Map::Tube::Delhi>
+=item * L<Map::Tube::Delhi>
 
-=item L<Map::Tube::Barcelona>
+=item * L<Map::Tube::Barcelona>
 
-=item L<Map::Tube::Prague>
+=item * L<Map::Tube::Prague>
 
-=item L<Map::Tube::Warsaw>
+=item * L<Map::Tube::Warsaw>
 
-=item L<Map::Tube::Sofia>
+=item * L<Map::Tube::Sofia>
 
-=item L<Map::Tube::Berlin>
+=item * L<Map::Tube::Berlin>
 
 =back
 
@@ -95,7 +95,7 @@ sub get_shortest_route {
     $self->_get_shortest_route($from);
 
     my $nodes = [];
-    while (defined($from) && defined($to) && !(_is_same($from, $to))) {
+    while (defined($to) && !(_is_same($from, $to))) {
         push @$nodes, $self->get_node_by_id($to);
         $to = $self->get_path($to);
     }
@@ -344,7 +344,7 @@ sub _get_shortest_route {
 
         $index = $length + 1;
         $from  = shift @$nodes;
-        $nodes = [ grep(!/$from/, @$nodes) ];
+        $nodes = [ grep(!/$from/, @$nodes) ] if defined $from;
     }
 }
 
