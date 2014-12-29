@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION = '2.46';
+$Map::Tube::Error::VERSION = '2.47';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.46
+Version 2.47
 
 =cut
 
@@ -27,6 +27,8 @@ my %Status = (
     103 => 'Invalid Node ID',
     104 => 'Missing Line Name',
     105 => 'Invalid Line Name',
+    106 => 'Missing Station',
+    107 => 'Invalid Station',
 );
 
 my $mnemonic_code = '';
@@ -59,6 +61,10 @@ B<FOR INTERNAL USE ONLY>.
 =item * 104: Missing Line Name
 
 =item * 105: Invalid Line Name
+
+=item * 106: Missing Station
+
+=item * 107: Invalid Station
 
 =back
 

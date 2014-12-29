@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.46';
+$Map::Tube::VERSION = '2.47';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.46
+Version 2.47
 
 =cut
 
@@ -158,9 +158,11 @@ sub init_map {
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
 
         foreach my $_line (split /\,/,$node->line) {
-            push @{$_lines->{uc($_line)}}, $node;
-            next if exists $lines->{uc($_line)};
-            $lines->{uc($_line)} = Map::Tube::Line->new({ name => $_line });
+            my $line = $lines->{uc($_line)};
+            $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
+            $line->add_station($node);
+            $_lines->{uc($_line)} = $line;
+            $lines->{uc($_line)}  = $line;
         }
     }
 
@@ -267,7 +269,7 @@ sub get_stations {
         line_number => $caller[2] })
         unless (exists $self->_lines->{uc($line)});
 
-    return $self->_lines->{uc($line)};
+    return $self->_lines->{uc($line)}->get_stations;
 }
 
 sub set_routes {
