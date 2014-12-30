@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.47';
+$Map::Tube::VERSION = '2.48';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.47
+Version 2.48
 
 =cut
 
@@ -70,8 +70,8 @@ has name_to_id => (is => 'rw');
 sub BUILD {
     my ($self) = @_;
 
-    $self->init_map;
-    $self->validate_map_data;
+    $self->_init_map;
+    $self->_validate_map_data;
 }
 
 =head1 METHODS
@@ -97,7 +97,7 @@ sub get_shortest_route {
     my $nodes = [];
     while (defined($to) && !(_is_same($from, $to))) {
         push @$nodes, $self->get_node_by_id($to);
-        $to = $self->get_path($to);
+        $to = $self->_get_path($to);
     }
 
     push @$nodes, $_from;
@@ -137,83 +137,11 @@ sub get_all_routes {
     return $self->_get_all_routes([ $from ], $to);
 }
 
-sub init_map {
-    my ($self) = @_;
+=head2 get_node_by_id($node_id)
 
-    my $_lines = {};
-    my $lines  = {};
-    my $nodes  = {};
-    my $tables = {};
-    my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
-    $self->name($xml->{name});
+Returns node object of type L<Map::Tube::Node> for the given node id.
 
-    foreach my $station (@{$xml->{stations}->{station}}) {
-        my $node = Map::Tube::Node->new($station);
-        my $id   = $node->id;
-        my $name = $node->name;
-        die "ERROR: Duplicate station name [$name].\n" if (defined $self->get_id($name));
-
-        $self->map_name($name, $id);
-        $nodes->{$id}  = $node;
-        $tables->{$id} = Map::Tube::Table->new({ id => $id });
-
-        foreach my $_line (split /\,/,$node->line) {
-            my $line = $lines->{uc($_line)};
-            $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
-            $line->add_station($node);
-            $_lines->{uc($_line)} = $line;
-            $lines->{uc($_line)}  = $line;
-        }
-    }
-
-    $self->lines([ values %$lines ]);
-    $self->_lines($_lines);
-    $self->nodes($nodes);
-    $self->tables($tables);
-}
-
-sub init_table {
-    my ($self) = @_;
-
-    foreach my $id (keys %{$self->tables}) {
-        $self->tables->{$id}->path(undef);
-        $self->tables->{$id}->length(0);
-    }
-}
-
-sub validate_map_data {
-    my ($self) = @_;
-
-    my $seen  = {};
-    my $nodes = $self->nodes;
-    foreach my $id (keys %$nodes) {
-        my $node = $self->get_node_by_id($id);
-        die "ERROR: Node ID can't have ',' character.\n"
-            if ($id =~ /\,/);
-
-        my $link = $node->link;
-        foreach (split /\,/,$link) {
-            next if (exists $seen->{$_});
-            my $_node = $self->get_node_by_id($_);
-
-            die "ERROR: Found invalid node id [$_].\n"
-                unless (defined $_node);
-            $seen->{$_} = 1;
-        }
-    }
-}
-
-sub map_name {
-    my ($self, $name, $id) = @_;
-
-    $self->{name_to_id}->{uc($name)} = $id;
-}
-
-sub get_id {
-    my ($self, $name) = @_;
-
-    return $self->{name_to_id}->{uc($name)};
-}
+=cut
 
 sub get_node_by_id {
     my ($self, $id) = @_;
@@ -221,12 +149,19 @@ sub get_node_by_id {
     return $self->nodes->{$id};
 }
 
+=head2 get_node_by_name($node_name)
+
+Returns node object of type L<Map::Tube::Node> for the given node name.
+
+=cut
+
+
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && defined $self->get_id($name));
+    return unless (defined $name && defined $self->_get_id($name));
 
-    return $self->get_node_by_id($self->get_id($name));
+    return $self->get_node_by_id($self->_get_id($name));
 }
 
 =head2 get_lines()
@@ -272,51 +207,6 @@ sub get_stations {
     return $self->_lines->{uc($line)}->get_stations;
 }
 
-sub set_routes {
-    my ($self, $routes) = @_;
-
-    my $_routes = [];
-    foreach my $id (@$routes) {
-        push @$_routes, $self->get_node_by_id($id);
-    }
-
-    my $from  = $_routes->[0];
-    my $to    = $_routes->[-1];
-    my $route = Map::Tube::Route->new({ from => $from, to => $to, nodes => $_routes });
-    push @{$self->{routes}}, $route;
-}
-
-sub get_path {
-    my ($self, $id) = @_;
-
-    return $self->tables->{$id}->path;
-}
-
-sub set_path {
-    my ($self, $id, $node_id) = @_;
-
-    $self->tables->{$id}->path($node_id);
-}
-
-sub get_length {
-    my ($self, $id) = @_;
-
-    return 0 unless defined $self->tables->{$id};
-    return $self->tables->{$id}->length;
-}
-
-sub set_length {
-    my ($self, $id, $value) = @_;
-
-    $self->tables->{$id}->length($value);
-}
-
-sub get_table {
-    my ($self, $id) = @_;
-
-    return $self->tables->{$id};
-}
-
 #
 #
 # PRIVATE METHODS
@@ -327,18 +217,18 @@ sub _get_shortest_route {
     my $nodes = [];
     my $index = 0;
 
-    $self->init_table;
-    $self->set_length($from, $index);
-    $self->set_path($from, $from);
+    $self->_init_table;
+    $self->_set_length($from, $index);
+    $self->_set_path($from, $from);
 
     while (defined($from)) {
-        my $length = $self->get_length($from);
+        my $length = $self->_get_length($from);
         my $f_node = $self->get_node_by_id($from);
         if (defined $f_node) {
             foreach my $link (split /\,/, $f_node->link) {
-                if (($self->get_length($link) == 0) || ($length > ($index + 1))) {
-                    $self->set_length($link, $length + 1);
-                    $self->set_path($link, $from);
+                if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
+                    $self->_set_length($link, $length + 1);
+                    $self->_set_path($link, $from);
                     push @$nodes, $link;
                 }
             }
@@ -360,7 +250,7 @@ sub _get_all_routes {
 
         if (_is_same($id, $to)) {
             push @$visited, $id;
-            $self->set_routes($visited);
+            $self->_set_routes($visited);
             pop @$visited;
             last;
         }
@@ -375,6 +265,12 @@ sub _get_all_routes {
     }
 
     return $self->{routes};
+}
+
+sub _map_node_name {
+    my ($self, $name, $id) = @_;
+
+    $self->{name_to_id}->{uc($name)} = $id;
 }
 
 sub _validate_input {
@@ -412,6 +308,124 @@ sub _validate_input {
         unless (defined $_to);
 
     return ($_from->id, $_to->id);
+}
+
+sub _init_map {
+    my ($self) = @_;
+
+    my $_lines = {};
+    my $lines  = {};
+    my $nodes  = {};
+    my $tables = {};
+    my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+    $self->name($xml->{name});
+
+    foreach my $station (@{$xml->{stations}->{station}}) {
+        my $node = Map::Tube::Node->new($station);
+        my $id   = $node->id;
+        my $name = $node->name;
+        die "ERROR: Duplicate station name [$name].\n"
+            if (defined $self->_get_id($name));
+
+        $self->_map_node_name($name, $id);
+        $nodes->{$id}  = $node;
+        $tables->{$id} = Map::Tube::Table->new({ id => $id });
+
+        foreach my $_line (split /\,/,$node->line) {
+            my $line = $lines->{uc($_line)};
+            $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
+            $line->add_station($node);
+            $_lines->{uc($_line)} = $line;
+            $lines->{uc($_line)}  = $line;
+        }
+    }
+
+    $self->lines([ values %$lines ]);
+    $self->_lines($_lines);
+    $self->nodes($nodes);
+    $self->tables($tables);
+}
+
+sub _init_table {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->tables}) {
+        $self->tables->{$id}->path(undef);
+        $self->tables->{$id}->length(0);
+    }
+}
+
+sub _validate_map_data {
+    my ($self) = @_;
+
+    my $seen  = {};
+    my $nodes = $self->nodes;
+    foreach my $id (keys %$nodes) {
+        my $node = $self->get_node_by_id($id);
+        die "ERROR: Node ID can't have ',' character.\n"
+            if ($id =~ /\,/);
+
+        my $link = $node->link;
+        foreach (split /\,/,$link) {
+            next if (exists $seen->{$_});
+            my $_node = $self->get_node_by_id($_);
+
+            die "ERROR: Found invalid node id [$_].\n"
+                unless (defined $_node);
+            $seen->{$_} = 1;
+        }
+    }
+}
+
+sub _set_routes {
+    my ($self, $routes) = @_;
+
+    my $_routes = [];
+    foreach my $id (@$routes) {
+        push @$_routes, $self->get_node_by_id($id);
+    }
+
+    my $from  = $_routes->[0];
+    my $to    = $_routes->[-1];
+    my $route = Map::Tube::Route->new({ from => $from, to => $to, nodes => $_routes });
+    push @{$self->{routes}}, $route;
+}
+
+sub _get_path {
+    my ($self, $id) = @_;
+
+    return $self->tables->{$id}->path;
+}
+
+sub _set_path {
+    my ($self, $id, $node_id) = @_;
+
+    $self->tables->{$id}->path($node_id);
+}
+
+sub _get_length {
+    my ($self, $id) = @_;
+
+    return 0 unless defined $self->tables->{$id};
+    return $self->tables->{$id}->length;
+}
+
+sub _set_length {
+    my ($self, $id, $value) = @_;
+
+    $self->tables->{$id}->length($value);
+}
+
+sub _get_table {
+    my ($self, $id) = @_;
+
+    return $self->tables->{$id};
+}
+
+sub _get_id {
+    my ($self, $name) = @_;
+
+    return $self->{name_to_id}->{uc($name)};
 }
 
 sub _format {
