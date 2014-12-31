@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.48';
+$Map::Tube::VERSION = '2.49';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.48
+Version 2.49
 
 =cut
 
@@ -216,6 +216,7 @@ sub _get_shortest_route {
 
     my $nodes = [];
     my $index = 0;
+    my $seen  = {};
 
     $self->_init_table;
     $self->_set_length($from, $index);
@@ -226,11 +227,13 @@ sub _get_shortest_route {
         my $f_node = $self->get_node_by_id($from);
         if (defined $f_node) {
             foreach my $link (split /\,/, $f_node->link) {
+                next if exists $seen->{$link};
                 if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
                     $self->_set_length($link, $length + 1);
                     $self->_set_path($link, $from);
                     push @$nodes, $link;
                 }
+                $seen->{$link} = 1;
             }
         }
 

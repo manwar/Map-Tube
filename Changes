@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.49    Wed Dec 31 10:40:00 2014
+        - Improved the performance of method get_shortest_route() slightly.
+
 2.48    Tue Dec 30 13:00:00 2014
         - Documented public method defined in the package Map::Tube.
         - Tidied up code in general.
