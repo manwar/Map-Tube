@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION = '2.49';
+$Map::Tube::Route::VERSION = '2.50';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.49
+Version 2.50
 
 =cut
 

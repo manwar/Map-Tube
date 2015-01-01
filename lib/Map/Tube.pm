@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.49';
+$Map::Tube::VERSION = '2.50';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.49
+Version 2.50
 
 =cut
 
@@ -59,13 +59,14 @@ This role has been taken by the following modules (and many more):
 
 =cut
 
-has name       => (is => 'rw');
-has nodes      => (is => 'rw');
-has lines      => (is => 'rw');
-has _lines     => (is => 'rw');
-has tables     => (is => 'rw');
-has routes     => (is => 'rw');
-has name_to_id => (is => 'rw');
+has name          => (is => 'rw');
+has nodes         => (is => 'rw');
+has lines         => (is => 'rw');
+has _lines        => (is => 'rw');
+has tables        => (is => 'rw');
+has routes        => (is => 'rw');
+has name_to_id    => (is => 'rw');
+has _active_lines => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
@@ -225,15 +226,21 @@ sub _get_shortest_route {
     while (defined($from)) {
         my $length = $self->_get_length($from);
         my $f_node = $self->get_node_by_id($from);
+        $self->_set_active_lines($f_node);
+
         if (defined $f_node) {
-            foreach my $link (split /\,/, $f_node->link) {
-                next if exists $seen->{$link};
+            my $links = [ split /\,/,$f_node->link ];
+            while (scalar(@$links) > 0) {
+                my ($success, $link) = $self->_get_next_link($from, $seen, $links);
+                $success or ($links = [ grep(!/$link/, @$links) ]) and next;
+
                 if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
                     $self->_set_length($link, $length + 1);
                     $self->_set_path($link, $from);
                     push @$nodes, $link;
                 }
                 $seen->{$link} = 1;
+                $links = [ grep(!/$link/, @$links) ];
             }
         }
 
@@ -356,6 +363,56 @@ sub _init_table {
         $self->tables->{$id}->path(undef);
         $self->tables->{$id}->length(0);
     }
+
+    $self->_active_lines(undef);
+}
+
+sub _common_lines {
+    my ($array1, $array2) = @_;
+
+    my %element = map { $_ => undef } @{$array1};
+    return grep { exists($element{$_}) } @{$array2};
+}
+
+sub _get_next_link {
+    my ($self, $from, $seen, $links) = @_;
+
+    my $active_lines = $self->_active_lines;
+    my @common_lines = _common_lines($active_lines->[0], $active_lines->[1]);
+    my $link         = undef;
+    foreach my $_link (@$links) {
+        return (0,  $_link)
+            if ((exists $seen->{$_link}) || ($from eq $_link));
+
+        my $node = $self->get_node_by_id($_link);
+        next unless defined $node;
+
+        my @lines  = (split /\,/, $node->line);
+        my @common = _common_lines(\@common_lines, \@lines);
+        return (1, $_link) if (scalar(@common) > 0);
+
+        $link = $_link;
+    }
+
+    return (1, $link);
+}
+
+sub _set_active_lines {
+    my ($self, $node) = @_;
+
+    my $active_lines = $self->_active_lines;
+    my $links        = [ split /\,/, $node->link ];
+
+    if (defined $active_lines) {
+        shift @$active_lines;
+        push @$active_lines, $links;
+    }
+    else {
+        push @$active_lines, $links;
+        push @$active_lines, $links;
+    }
+
+    $self->_active_lines($active_lines);
 }
 
 sub _validate_map_data {

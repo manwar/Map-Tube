@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.50    Thu Jan 01 10:15:00 2015
+        - Updated method get_shortest_route() to stay on the same line as much
+          as possible unless it is expensive in terms of stoppage.
+
 2.49    Wed Dec 31 10:40:00 2014
         - Improved the performance of method get_shortest_route() slightly.
 
