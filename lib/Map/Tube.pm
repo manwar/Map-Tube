@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.50';
+$Map::Tube::VERSION = '2.51';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.50
+Version 2.51
 
 =cut
 
@@ -177,9 +177,9 @@ sub get_lines {
     return $self->lines;
 }
 
-=head2 get_stations($line)
+=head2 get_stations($line_name)
 
-Returns ref to a list of objects of type L<Map::Tube::Node>.
+Returns ref to a list of objects of type L<Map::Tube::Node> for the given line.
 
 =cut
 

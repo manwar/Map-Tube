@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.51    Thu Jan 01 18:40:00 2015
+        - Tidied up pod document for method get_stations() in the package Map::Tube.
+
 2.50    Thu Jan 01 10:15:00 2015
         - Updated method get_shortest_route() to stay on the same line as much
           as possible unless it is expensive in terms of stoppage.

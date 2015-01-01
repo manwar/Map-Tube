@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Node::VERSION = '2.50';
+$Map::Tube::Node::VERSION = '2.51';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.50
+Version 2.51
 
 =cut
 
