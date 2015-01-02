@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.53  2015-01-02T23:15:00+01:00
+      - Added missing package Map::Tube::Line to the 'provides' key in the Makefile.PL file.
+
 2.52  2015-01-02T10:30:00+01:00
       - Updated Changes file according to CPAN::Changes::Spec package.
       - Added unit test changes.t file.

@@ -38,6 +38,7 @@ WriteMakefile(
             provides => {
                 'Map::Tube'            => { file => 'lib/Map/Tube.pm'           },
                 'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'      },
+                'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'      },
                 'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'     },
                 'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'     },
                 'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'     },
