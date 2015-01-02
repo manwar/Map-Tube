@@ -1,6 +1,7 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION = '2.51';
+$Map::Tube::Exception::VERSION   = '2.52';
+$Map::Tube::Exception::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
@@ -8,7 +9,7 @@ Map::Tube::Exception - Interface to exception class used by Map::Tube.
 
 =head1 VERSION
 
-Version 2.51
+Version 2.52
 
 =cut
 
@@ -82,7 +83,7 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 - 2014 Mohammad S Anwar.
+Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
 This  program  is  free software; you can redistribute it and/or modify it under
 the  terms  of the the Artistic License (2.0). You may obtain a copy of the full

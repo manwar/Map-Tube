@@ -7,9 +7,11 @@ lib/Map/Tube/Route.pm
 lib/Map/Tube/Error.pm
 lib/Map/Tube/Exception.pm
 Makefile.PL
+LICENSE
 MANIFEST
 MANIFEST.SKIP
 README
 t/00-load.t
 t/manifest.t
 t/pod.t
+t/changes.t
