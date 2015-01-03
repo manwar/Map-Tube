@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.57  2015-01-03T10:30:00+01:00
+      - Updated unit test meta-yml.t and meta-json.t to check the version of modules
+        in the 'provides' list agains the distribution version.
+
 2.56  2015-01-03T09:50:00+01:00
       - Explicitly assign version to the provides list in the Makefile.PL.
 
