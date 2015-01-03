@@ -1,5 +1,7 @@
 ^MYMETA.json$
 ^MYMETA.yml$
+^_eumm/META_new.*$
+^_eumm/Map-Tube.ppd$
 ^Makefile$
 ^blib/
 ^pm_to_blib

@@ -1,5 +1,14 @@
 Revision history for Map::Tube
 
+2.54  2015-01-03T00:25:00+01:00
+      - The recent package ExtUtils-MakeMaker-7.05_05 now generates the following files missing in MANIFEST:
+        - _eumm/Map-Tube.ppd
+        - _eumm/META_new.json
+        - _eumm/META_new.yml
+        as reported by CPANTESTER as below:
+        http://www.cpantesters.org/cpan/report/7d977ff4-9271-11e4-95d4-59833a6893cb
+      - Added the above files in the MANIFEST.SKIP file.
+
 2.53  2015-01-02T23:15:00+01:00
       - Added missing package Map::Tube::Line to the 'provides' key in the Makefile.PL file.
 
