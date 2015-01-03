@@ -12,6 +12,8 @@ MANIFEST
 MANIFEST.SKIP
 README
 t/00-load.t
+t/meta-yml.t
+t/meta-json.t
 t/manifest.t
 t/pod.t
 t/changes.t

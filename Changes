@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.55  2015-01-03T09:30:00+01:00
+      - Updated Makefile.PL to generate the key 'provides' for META file correctly.
+      - Added unit test to test META files.
+
 2.54  2015-01-03T00:25:00+01:00
       - The recent package ExtUtils-MakeMaker-7.05_05 now generates the following files missing in MANIFEST:
         - _eumm/Map-Tube.ppd
