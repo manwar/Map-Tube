@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.58  2015-01-06T17:10:20+01:00
+      - Tidied up the MANIFEST.SKIP file.
+
 2.57  2015-01-03T10:30:00+01:00
       - Updated unit test meta-yml.t and meta-json.t to check the version of modules
         in the 'provides' list agains the distribution version.
