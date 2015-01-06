@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.59  2015-01-06T17:30:20+01:00
+      - Tidied up the LICENSE file.
+
 2.58  2015-01-06T17:10:20+01:00
       - Tidied up the MANIFEST.SKIP file.
 
