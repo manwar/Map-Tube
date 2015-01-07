@@ -7,7 +7,7 @@ use Test::More;
 eval "use Test::CPAN::Meta::JSON";
 plan skip_all => "Test::CPAN::Meta::JSON required for testing MYMETA.json" if $@;
 
-my $meta    = meta_spec_ok('MYMETA.json', undef, @_);
+my $meta    = meta_spec_ok('MYMETA.json');
 my $version = $Map::Tube::VERSION;
 
 is($meta->{version},$version, 'MYMETA.json distribution version matches');

@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.61  2015-01-07T12:50:20+01:00
+      - Tidied up the test scripts meta-yml.t and meta-json.t.
+
 2.60  2015-01-06T17:40:20+01:00
       - Oops forgot to update Changes file.
 
