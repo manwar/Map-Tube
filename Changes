@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.62  2015-01-13T14:30:00+01:00
+      - Added missing 'use strict; use warnings;' to change.t script.
+      - Added missing 'use 5.006;' line to meta-json.t, meta-yml.t and change.t scripts.
+
 2.61  2015-01-07T12:50:20+01:00
       - Tidied up the test scripts meta-yml.t and meta-json.t.
 
