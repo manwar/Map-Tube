@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.62';
+$Map::Tube::VERSION   = '2.63';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.62
+Version 2.63
 
 =cut
 
@@ -110,7 +110,7 @@ sub get_shortest_route {
           nodes => [ reverse(@$nodes) ] } );
 }
 
-=head2 get_all_routes($from, $to) [EXPERIMENTAL]
+=head2 get_all_routes($from, $to) *** EXPERIMENTAL ***
 
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
 L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
@@ -537,6 +537,10 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 =head1 REPOSITORY
 
 L<https://github.com/Manwar/Map-Tube>
+
+=head1 SEE ALSO
+
+L<Map::Metro>
 
 =head1 BUGS
 

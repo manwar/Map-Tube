@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.63  2015-01-14T21:10:00+01:00
+      - Added "SEE ALSO" section to the pod document of the package Map::Tube.
+
 2.62  2015-01-13T14:30:00+01:00
       - Added missing 'use strict; use warnings;' to change.t script.
       - Added missing 'use 5.006;' line to meta-json.t, meta-yml.t and change.t scripts.
