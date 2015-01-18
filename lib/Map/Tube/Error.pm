@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION   = '2.63';
+$Map::Tube::Error::VERSION   = '2.64';
 $Map::Tube::Error::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.63
+Version 2.64
 
 =cut
 
@@ -30,6 +30,8 @@ my %Status = (
     105 => 'Invalid Line Name',
     106 => 'Missing Station',
     107 => 'Invalid Station',
+    108 => 'Missing Plugin Graph',
+    109 => 'Loading Plugin Graph',
 );
 
 my $mnemonic_code = '';
@@ -66,6 +68,10 @@ B<FOR INTERNAL USE ONLY>.
 =item * 106: Missing Station
 
 =item * 107: Invalid Station
+
+=item * 108: Missing Plugin Graph
+
+=item * 109: Loading Plugin Graph
 
 =back
 

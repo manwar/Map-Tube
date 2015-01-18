@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+2.64  2015-01-18T23:30:00+01:00
+      - Added method as_image() to return base64 encoded string of Line image
+        with the help of Map::Tube::Plugin::Graph.
+      - Added new error codes related to the above method.
+
 2.63  2015-01-14T21:10:00+01:00
       - Added "SEE ALSO" section to the pod document of the package Map::Tube.
 

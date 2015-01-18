@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.63';
+$Map::Tube::VERSION   = '2.64';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,11 +9,12 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.63
+Version 2.64
 
 =cut
 
 use 5.006;
+use Try::Tiny;
 use XML::Simple;
 use Data::Dumper;
 use Map::Tube::Node;
@@ -207,6 +208,56 @@ sub get_stations {
         unless (exists $self->_lines->{uc($line)});
 
     return $self->_lines->{uc($line)}->get_stations;
+}
+
+=head2 as_image($line_name)
+
+Returns line image as base64 encoded string. It expects the plugin L<Map::Tube::Plugin::Graph>
+to be installed.
+
+=cut
+
+sub as_image {
+    my ($self, $line) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Missing Line name.",
+        status      => ERROR_MISSING_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (defined $line);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Invalid Line name.",
+        status      => ERROR_INVALID_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (exists $self->_lines->{uc($line)});
+
+    eval "require Map::Tube::Plugin::Graph;";
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
+        status      => ERROR_MISSING_PLUGIN_GRAPH,
+        filename    => $caller[1],
+        line_number => $caller[2] }) if ($@);
+
+    my $graph = eval "Map::Tube::Plugin::Graph->new";
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Unable to load plugin Map::Tube::Plugin::Graph.",
+        status      => ERROR_LOADING_PLUGIN_GRAPH,
+        filename    => $caller[1],
+        line_number => $caller[2] }) if ($@);
+
+    $graph->tube($self);
+    $graph->line($self->_lines->{uc($line)});
+    return $graph->as_image;
 }
 
 #
