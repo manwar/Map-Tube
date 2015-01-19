@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.64';
+$Map::Tube::VERSION   = '2.65';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.64
+Version 2.65
 
 =cut
 
@@ -474,17 +474,76 @@ sub _validate_map_data {
     my $nodes = $self->nodes;
     foreach my $id (keys %$nodes) {
         my $node = $self->get_node_by_id($id);
-        die "ERROR: Node ID can't have ',' character.\n"
-            if ($id =~ /\,/);
+        die "ERROR: Node ID can't have ',' character.\n" if ($id =~ /\,/);
 
         my $link = $node->link;
         foreach (split /\,/,$link) {
             next if (exists $seen->{$_});
             my $_node = $self->get_node_by_id($_);
 
-            die "ERROR: Found invalid node id [$_].\n"
-                unless (defined $_node);
+            die "ERROR: Found invalid node id [$_].\n" unless (defined $_node);
             $seen->{$_} = 1;
+        }
+    }
+
+    $self->_validate_self_linked_nodes;
+
+    $self->_validate_multi_linked_nodes;
+
+    $self->_validate_multi_lined_nodes;
+}
+
+sub _validate_self_linked_nodes {
+    my ($self) = @_;
+
+    my $max_link = 0;
+    foreach my $id (keys %{$self->nodes}) {
+        if (grep { $_ eq $id } (split /\,/, $self->get_node_by_id($id)->link)) {
+            $max_link++;
+        }
+
+        if ($max_link > 0) {
+            die sprintf("ERRRO: %s is self linked,", $id);
+        }
+    }
+}
+
+sub _validate_multi_linked_nodes {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->nodes}) {
+        my %links = ();
+        foreach my $link (split( /\,/, $self->get_node_by_id($id)->link)) {
+            $links{$link}++;
+        }
+
+        my $max_link = 1;
+        foreach (keys %links) {
+            $max_link = $links{$_} if ($max_link < $links{$_});
+        }
+
+        if ($max_link > 1) {
+            die sprintf("ERRRO: %s linked to %s multiple times,",
+                        $id, join( ',', grep { $links{$_} > 1 } keys %links));
+        }
+    }
+}
+
+sub _validate_multi_lined_nodes {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->nodes}) {
+        my %lines = ();
+        $lines{$_}++ for split( /\,/, $self->get_node_by_id($id)->line);
+
+        my $max_link = 1;
+        foreach (keys %lines) {
+            $max_link = $lines{$_} if ($max_link < $lines{$_});
+        }
+
+        if ($max_link > 1) {
+            die sprintf("ERRRO: %s has multiple lines %s,",
+                        $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
         }
     }
 }
@@ -592,6 +651,14 @@ L<https://github.com/Manwar/Map-Tube>
 =head1 SEE ALSO
 
 L<Map::Metro>
+
+=head1 CONTRIBUTORS
+
+=over 2
+
+=item * Gisbert W. Selke (map data validation)
+
+=back
 
 =head1 BUGS
 

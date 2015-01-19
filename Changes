@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.65  2015-01-19T16:20:00+01:00
+      - Added map data validation code provided by Gisbert W. Selke.
+
 2.64  2015-01-18T23:30:00+01:00
       - Added method as_image() to return base64 encoded string of Line image
         with the help of Map::Tube::Plugin::Graph.
