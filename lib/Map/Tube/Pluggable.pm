@@ -1,11 +1,11 @@
-package Map::Tube::Line;
+package Map::Tube::Pluggable;
 
-$Map::Tube::Line::VERSION   = '2.66';
-$Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
+$Map::Tube::Pluggable::VERSION   = '2.66';
+$Map::Tube::Pluggable::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Line - Class to represent the line in the map.
+Map::Tube::Pluggable - Wrapper for Map::Tube plugin packages.
 
 =head1 VERSION
 
@@ -14,77 +14,10 @@ Version 2.66
 =cut
 
 use 5.006;
-use Data::Dumper;
-use Map::Tube::Exception;
-use Map::Tube::Error qw(:constants);
-
-use Moo;
-use namespace::clean;
-
-use overload q{""} => 'as_string', fallback => 1;
-
-has name     => (is => 'ro', required => 1);
-has color    => (is => 'ro');
-has stations => (is => 'rw');
+use strict; use warnings;
+use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1;
 
 =head1 METHODS
-
-=head2 name()
-
-Returns the line name.
-
-=head2 color()
-
-Returns the color name of the line, if available.
-
-=head2 add_station($station)
-
-Adds station (object of type L<Map::Tube::Node>) to the line.
-
-=cut
-
-sub add_station {
-    my ($self, $station) = @_;
-
-    my @caller = caller(0);
-    @caller = caller(2) if $caller[3] eq '(eval)';
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::add_station",
-        message     => "ERROR: Missing station.",
-        status      => ERROR_MISSING_STATION,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (defined $station);
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::add_station",
-        message     => "ERROR: Invalid station.",
-        status      => ERROR_INVALID_STATION,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (ref($station) eq 'Map::Tube::Node');
-
-    push @{$self->{stations}}, $station;
-}
-
-=head2 get_stations()
-
-Returns a ref to the list of stations (object of type L<Map::Tube::Node>) of the line.
-
-=cut
-
-sub get_stations {
-    my ($self) = @_;
-
-    return $self->stations;
-}
-
-sub as_string {
-    my ($self) = @_;
-
-    return $self->name;
-}
 
 =head1 AUTHOR
 
@@ -105,7 +38,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Line
+    perldoc Map::Tube::Pluggable
 
 You can also look for information at:
 
@@ -169,4 +102,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Line
+1; # End of Map::Tube::Pluggable

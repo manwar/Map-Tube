@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.66  2015-01-20T00:20:00+01:00
+      - Using Module::Pluggable to lookup and process Map::Tube::Plugin::Graph
+        instead of using eval {};
+
 2.65  2015-01-19T16:20:00+01:00
       - Added map data validation code provided by Gisbert W. Selke.
 

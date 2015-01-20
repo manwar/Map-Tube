@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.65';
+$Map::Tube::VERSION   = '2.66';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.65
+Version 2.66
 
 =cut
 
@@ -21,6 +21,7 @@ use Map::Tube::Node;
 use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
+use Map::Tube::Pluggable;
 use Map::Tube::Exception;
 use Map::Tube::Error qw(:constants);
 
@@ -239,15 +240,15 @@ sub as_image {
         line_number => $caller[2] })
         unless (exists $self->_lines->{uc($line)});
 
-    eval "require Map::Tube::Plugin::Graph;";
+    my @plugins = Map::Tube::Pluggable::plugins;
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
         message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
         status      => ERROR_MISSING_PLUGIN_GRAPH,
         filename    => $caller[1],
-        line_number => $caller[2] }) if ($@);
+        line_number => $caller[2] }) if (scalar(@plugins) == 0);
 
-    my $graph = eval "Map::Tube::Plugin::Graph->new";
+    my $graph = $plugins[0]->new;
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
         message     => "ERROR: Unable to load plugin Map::Tube::Plugin::Graph.",
