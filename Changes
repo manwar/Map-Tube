@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.68  2015-01-20T20:25:00+01:00
+      - Improved error handling in the method as_image().
+      - Updated test script 00-load.t.
+
 2.67  2015-01-20T10:35:00+01:00
       - Patched for issue RT: 101627.
 

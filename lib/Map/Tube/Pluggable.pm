@@ -1,6 +1,6 @@
 package Map::Tube::Pluggable;
 
-$Map::Tube::Pluggable::VERSION   = '2.67';
+$Map::Tube::Pluggable::VERSION   = '2.68';
 $Map::Tube::Pluggable::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Pluggable - Wrapper for Map::Tube plugin packages.
 
 =head1 VERSION
 
-Version 2.67
+Version 2.68
 
 =cut
 

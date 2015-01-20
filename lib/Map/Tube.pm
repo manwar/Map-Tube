@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.67';
+$Map::Tube::VERSION   = '2.68';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.67
+Version 2.68
 
 =cut
 
@@ -248,7 +248,8 @@ sub as_image {
         filename    => $caller[1],
         line_number => $caller[2] }) if (scalar(@plugins) == 0);
 
-    my $graph = $plugins[0]->new;
+    my $graph;
+    eval { $graph = $plugins[0]->new; };
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
         message     => "ERROR: Unable to load plugin Map::Tube::Plugin::Graph.",
@@ -256,9 +257,12 @@ sub as_image {
         filename    => $caller[1],
         line_number => $caller[2] }) if ($@);
 
-    $graph->tube($self);
-    $graph->line($self->_lines->{uc($line)});
-    return $graph->as_image;
+    if (defined $graph && ref($graph) && $graph->isa('Map::Tube::Plugin::Graph')) {
+        $graph->tube($self);
+        $graph->line($self->_lines->{uc($line)});
+
+        return $graph->as_image;
+    }
 }
 
 #
