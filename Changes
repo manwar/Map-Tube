@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.67  2015-01-20T10:35:00+01:00
+      - Patched for issue RT: 101627.
+
 2.66  2015-01-20T00:20:00+01:00
       - Using Module::Pluggable to lookup and process Map::Tube::Plugin::Graph
         instead of using eval {};

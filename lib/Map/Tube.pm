@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.66';
+$Map::Tube::VERSION   = '2.67';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.66
+Version 2.67
 
 =cut
 
@@ -504,7 +504,7 @@ sub _validate_self_linked_nodes {
         }
 
         if ($max_link > 0) {
-            die sprintf("ERRRO: %s is self linked,", $id);
+            die sprintf("ERROR: %s is self linked,", $id);
         }
     }
 }
@@ -524,7 +524,7 @@ sub _validate_multi_linked_nodes {
         }
 
         if ($max_link > 1) {
-            die sprintf("ERRRO: %s linked to %s multiple times,",
+            die sprintf("ERROR: %s linked to %s multiple times,",
                         $id, join( ',', grep { $links{$_} > 1 } keys %links));
         }
     }
@@ -543,7 +543,7 @@ sub _validate_multi_lined_nodes {
         }
 
         if ($max_link > 1) {
-            die sprintf("ERRRO: %s has multiple lines %s,",
+            die sprintf("ERROR: %s has multiple lines %s,",
                         $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
         }
     }
