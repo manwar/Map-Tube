@@ -1,15 +1,15 @@
 package Map::Tube::Pluggable;
 
-$Map::Tube::Pluggable::VERSION   = '2.68';
+$Map::Tube::Pluggable::VERSION   = '2.69';
 $Map::Tube::Pluggable::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Pluggable - Wrapper for Map::Tube plugin packages.
+Map::Tube::Pluggable - Wrapper for Map::Tube::Plugin::* packages.
 
 =head1 VERSION
 
-Version 2.68
+Version 2.69
 
 =cut
 
@@ -17,7 +17,9 @@ use 5.006;
 use strict; use warnings;
 use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1;
 
-=head1 METHODS
+=head1 DESCRIPTION
+
+B<FOR INTERNAL USE ONLY>
 
 =head1 AUTHOR
 

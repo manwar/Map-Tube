@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.69  2015-01-21T20:30:00+01:00
+      - Tidied up the pod document for Map::Tube::Pluggable.
+
 2.68  2015-01-20T20:25:00+01:00
       - Improved error handling in the method as_image().
       - Updated test script 00-load.t.
