@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.69';
+$Map::Tube::Line::VERSION   = '2.70';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.69
+Version 2.70
 
 =cut
 
@@ -23,11 +23,16 @@ use namespace::clean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
+has id       => (is => 'rw');
 has name     => (is => 'ro', required => 1);
-has color    => (is => 'ro');
+has color    => (is => 'rw');
 has stations => (is => 'rw');
 
 =head1 METHODS
+
+=head2 id()
+
+Returns the line id.
 
 =head2 name()
 

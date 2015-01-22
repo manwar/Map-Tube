@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+2.70  2015-01-22T16:40:00+01:00
+      - Updated method _init_map() to read xml data for detailed line information if available.
+      - Updated package Map::Tube::Line and added attribute 'id'.
+      - Updated package Map::Tube::Line and made attribute 'color' readwrite.
+
 2.69  2015-01-21T20:30:00+01:00
       - Tidied up the pod document for Map::Tube::Pluggable.
 

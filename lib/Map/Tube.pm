@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.69';
+$Map::Tube::VERSION   = '2.70';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.69
+Version 2.70
 
 =cut
 
@@ -404,6 +404,15 @@ sub _init_map {
             $line->add_station($node);
             $_lines->{uc($_line)} = $line;
             $lines->{uc($_line)}  = $line;
+        }
+    }
+
+    foreach my $_line (@{$xml->{lines}->{line}}) {
+        my $line = $_lines->{uc($_line->{name})};
+        if (defined $line) {
+            $line->id($_line->{id});
+            $line->color($_line->{color});
+            $_lines->{uc($_line->{name})} = $line;
         }
     }
 
