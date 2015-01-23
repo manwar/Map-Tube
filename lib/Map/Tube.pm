@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.70';
+$Map::Tube::VERSION   = '2.71';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.70
+Version 2.71
 
 =cut
 
@@ -388,22 +388,29 @@ sub _init_map {
     $self->name($xml->{name});
 
     foreach my $station (@{$xml->{stations}->{station}}) {
-        my $node = Map::Tube::Node->new($station);
-        my $id   = $node->id;
-        my $name = $node->name;
-        die "ERROR: Duplicate station name [$name].\n"
-            if (defined $self->_get_id($name));
+        my $id   = $station->{id};
+        my $name = $station->{name};
+        die "ERROR: Duplicate station name [$name].\n" if (defined $self->_get_id($name));
 
         $self->_map_node_name($name, $id);
-        $nodes->{$id}  = $node;
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
 
-        foreach my $_line (split /\,/,$node->line) {
-            my $line = $lines->{uc($_line)};
+        my $_station_lines = [];
+        foreach my $_line (split /\,/,$station->{line}) {
+            my $uc_line = uc($_line);
+            my $line    = $lines->{$uc_line};
             $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
-            $line->add_station($node);
-            $_lines->{uc($_line)} = $line;
-            $lines->{uc($_line)}  = $line;
+            $_lines->{$uc_line} = $line;
+            $lines->{$uc_line}  = $line;
+            push @$_station_lines, $line;
+        }
+
+        $station->{line} = $_station_lines;
+        my $node = Map::Tube::Node->new($station);
+        $nodes->{$id} = $node;
+
+        foreach (@{$_station_lines}) {
+            $_->add_station($node);
         }
     }
 

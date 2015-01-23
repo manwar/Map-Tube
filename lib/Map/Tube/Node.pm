@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.70';
+$Map::Tube::Node::VERSION   = '2.71';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.70
+Version 2.71
 
 =cut
 
@@ -48,7 +48,7 @@ Returns the linked station id as defined in the map data.
 
 =head2 line()
 
-Returns the line(s) the station linked to as defined in the map data.
+Returns ref to a list of objects of type L<Map::Tube::Line> of the node.
 
 =head1 AUTHOR
 
