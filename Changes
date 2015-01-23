@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.72  2015-01-23T20:45:00+01:00
+      - Merged pull request from Michal Špaček regarding fix to the method Map::Tube::Node::as_string().
+
 2.71  2015-01-23T16:45:00+01:00
       - Patched for issue RT: 101703.
 
