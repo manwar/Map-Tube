@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
@@ -17,18 +19,29 @@ WriteMakefile(
     BUILD_REQUIRES   => {
         'Test::More' => 0,
     },
-    PREREQ_PM              => {
-        'Moo'              => 0,
-        'Moo::Role'        => 0,
-        'namespace::clean' => 0,
-        'Throwable'        => 0,
-        'XML::Simple'      => 0,
-        'overload'         => 0
+    PREREQ_PM               => {
+        'Moo'               => 0,
+        'Moo::Role'         => 0,
+        'namespace::clean'  => 0,
+        'Throwable'         => 0,
+        'XML::Simple'       => 0,
+        'Module::Pluggable' => '5.1',
+        'overload'          => 0
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Map-Tube-*' },
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
+        provides    => {
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.71' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.71' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.71' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.71' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.71' },
+            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.71' },
+            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.71' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.71' },
+        },
         resources => {
             repository => {
                 type => 'git',

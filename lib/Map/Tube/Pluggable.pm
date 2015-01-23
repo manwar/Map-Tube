@@ -1,11 +1,11 @@
-package Map::Tube::Error;
+package Map::Tube::Pluggable;
 
-$Map::Tube::Error::VERSION   = '2.71';
-$Map::Tube::Error::AUTHORITY = 'cpan:MANWAR';
+$Map::Tube::Pluggable::VERSION   = '2.71';
+$Map::Tube::Pluggable::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Error - Error class for the library Map::Tube.
+Map::Tube::Pluggable - Wrapper for Map::Tube::Plugin::* packages.
 
 =head1 VERSION
 
@@ -15,65 +15,11 @@ Version 2.71
 
 use 5.006;
 use strict; use warnings;
-
-use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-
-require Exporter;
-@ISA = qw(Exporter);
-
-my %Status = (
-    100 => 'Missing Node Name',
-    101 => 'Invalid Node Name',
-    102 => 'Missing Node ID',
-    103 => 'Invalid Node ID',
-    104 => 'Missing Line Name',
-    105 => 'Invalid Line Name',
-    106 => 'Missing Station',
-    107 => 'Invalid Station',
-    108 => 'Missing Plugin Graph',
-    109 => 'Loading Plugin Graph',
-);
-
-my $mnemonic_code = '';
-while (my ($code, $message) = each %Status) {
-    $message =~ tr/a-z \-/A-Z__/;
-    $mnemonic_code .= "sub ERROR_$message () { $code }\n";
-    $mnemonic_code .= "push(\@EXPORT_OK, 'ERROR_$message');\n";
-}
-
-eval $mnemonic_code; die if $@;
-
-%EXPORT_TAGS = (constants => [grep /^ERROR_/, @EXPORT_OK]);
+use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1;
 
 =head1 DESCRIPTION
 
-B<FOR INTERNAL USE ONLY>.
-
-=head2 Error Codes
-
-=over 2
-
-=item * 100: Missing Node Name
-
-=item * 101: Invalid Noe Name
-
-=item * 102: Missing Node ID
-
-=item * 103: Invalid Node ID
-
-=item * 104: Missing Line Name
-
-=item * 105: Invalid Line Name
-
-=item * 106: Missing Station
-
-=item * 107: Invalid Station
-
-=item * 108: Missing Plugin Graph
-
-=item * 109: Loading Plugin Graph
-
-=back
+B<FOR INTERNAL USE ONLY>
 
 =head1 AUTHOR
 
@@ -87,14 +33,14 @@ L<https://github.com/Manwar/Map-Tube>
 
 Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,  or
 through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube>.
-I will be notified, and then you'll automatically be notified of progress on your
+I will  be notified and then you'll automatically be notified of progress on your
 bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Error
+    perldoc Map::Tube::Pluggable
 
 You can also look for information at:
 
@@ -158,4 +104,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Error
+1; # End of Map::Tube::Pluggable

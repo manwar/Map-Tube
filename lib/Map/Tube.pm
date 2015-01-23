@@ -1,6 +1,7 @@
 package Map::Tube;
 
-$Map::Tube::VERSION = '2.32';
+$Map::Tube::VERSION   = '2.71';
+$Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
@@ -8,17 +9,19 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.71
 
 =cut
 
-use utf8;
 use 5.006;
+use Try::Tiny;
 use XML::Simple;
 use Data::Dumper;
 use Map::Tube::Node;
+use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
+use Map::Tube::Pluggable;
 use Map::Tube::Exception;
 use Map::Tube::Error qw(:constants);
 
@@ -33,42 +36,46 @@ The core module defined as Role (Moo) to process  the map data.  It provides the
 the interface to find the shortest route in terms of stoppage between two nodes.
 Also you can get all possible routes between two given nodes.
 
-This role has been taken by the following modules:
+This role has been taken by the following modules (and many more):
 
-=over 4
+=over 2
 
-=item L<Map::Tube::London>
+=item * L<Map::Tube::London>
 
-=item L<Map::Tube::Tokyo>
+=item * L<Map::Tube::Tokyo>
 
-=item L<Map::Tube::NYC>
+=item * L<Map::Tube::NYC>
 
-=item L<Map::Tube::Delhi>
+=item * L<Map::Tube::Delhi>
 
-=item L<Map::Tube::Barcelona>
+=item * L<Map::Tube::Barcelona>
 
-=item L<Map::Tube::Prague>
+=item * L<Map::Tube::Prague>
 
-=item L<Map::Tube::Warsaw>
+=item * L<Map::Tube::Warsaw>
 
-=item L<Map::Tube::Sofia>
+=item * L<Map::Tube::Sofia>
 
-=item L<Map::Tube::Berlin>
+=item * L<Map::Tube::Berlin>
 
 =back
 
 =cut
 
-has nodes      => (is => 'rw');
-has tables     => (is => 'rw');
-has routes     => (is => 'rw');
-has name_to_id => (is => 'rw');
+has name          => (is => 'rw');
+has nodes         => (is => 'rw');
+has lines         => (is => 'rw');
+has _lines        => (is => 'rw');
+has tables        => (is => 'rw');
+has routes        => (is => 'rw');
+has name_to_id    => (is => 'rw');
+has _active_lines => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
 
-    $self->init_map;
-    $self->validate_map_data;
+    $self->_init_map;
+    $self->_validate_map_data;
 }
 
 =head1 METHODS
@@ -92,9 +99,9 @@ sub get_shortest_route {
     $self->_get_shortest_route($from);
 
     my $nodes = [];
-    while (defined($from) && defined($to) && !(_is_same($from, $to))) {
+    while (defined($to) && !(_is_same($from, $to))) {
         push @$nodes, $self->get_node_by_id($to);
-        $to = $self->get_path($to);
+        $to = $self->_get_path($to);
     }
 
     push @$nodes, $_from;
@@ -105,15 +112,13 @@ sub get_shortest_route {
           nodes => [ reverse(@$nodes) ] } );
 }
 
-=head2 get_all_routes($from, $to)
+=head2 get_all_routes($from, $to) *** EXPERIMENTAL ***
 
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
 L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
 
-=head3 NOTE
-
-Be carefull when using against a large map.  You may encountered warning as
-'deep-recursion'. It throws the following error when run against London map.
+Be carefull when using against a large map. You may encountered warning as 'deep-recursion'.
+It throws the following error when run against London map.
 
 Deep recursion on subroutine "Map::Tube::_get_all_routes"
 
@@ -136,70 +141,11 @@ sub get_all_routes {
     return $self->_get_all_routes([ $from ], $to);
 }
 
-sub init_map {
-    my ($self) = @_;
+=head2 get_node_by_id($node_id)
 
-    my $nodes  = {};
-    my $tables = {};
-    my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+Returns node object of type L<Map::Tube::Node> for the given node id.
 
-    foreach my $station (@{$xml->{stations}->{station}}) {
-        my $node = Map::Tube::Node->new($station);
-        my $id   = $node->id;
-        my $name = $node->name;
-        die "ERROR: Duplicate station name [$name].\n" if (defined $self->get_id($name));
-
-        $self->map_name($name, $id);
-        $nodes->{$id}  = $node;
-        $tables->{$id} = Map::Tube::Table->new({ id => $id });
-    }
-
-    $self->nodes($nodes);
-    $self->tables($tables);
-}
-
-sub init_table {
-    my ($self) = @_;
-
-    foreach my $id (keys %{$self->tables}) {
-        $self->tables->{$id}->path(undef);
-        $self->tables->{$id}->length(0);
-    }
-}
-
-sub validate_map_data {
-    my ($self) = @_;
-
-    my $seen  = {};
-    my $nodes = $self->nodes;
-    foreach my $id (keys %$nodes) {
-        my $node = $self->get_node_by_id($id);
-        die "ERROR: Node ID can't have ',' character.\n"
-            if ($id =~ /\,/);
-
-        my $link = $node->link;
-        foreach (split /\,/,$link) {
-            next if (exists $seen->{$_});
-            my $_node = $self->get_node_by_id($_);
-
-            die "ERROR: Found invalid node id [$_].\n"
-                unless (defined $_node);
-            $seen->{$_} = 1;
-        }
-    }
-}
-
-sub map_name {
-    my ($self, $name, $id) = @_;
-
-    $self->{name_to_id}->{uc($name)} = $id;
-}
-
-sub get_id {
-    my ($self, $name) = @_;
-
-    return $self->{name_to_id}->{uc($name)};
-}
+=cut
 
 sub get_node_by_id {
     my ($self, $id) = @_;
@@ -207,57 +153,116 @@ sub get_node_by_id {
     return $self->nodes->{$id};
 }
 
+=head2 get_node_by_name($node_name)
+
+Returns node object of type L<Map::Tube::Node> for the given node name.
+
+=cut
+
+
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && defined $self->get_id($name));
+    return unless (defined $name && defined $self->_get_id($name));
 
-    return $self->get_node_by_id($self->get_id($name));
+    return $self->get_node_by_id($self->_get_id($name));
 }
 
-sub set_routes {
-    my ($self, $routes) = @_;
+=head2 get_lines()
 
-    my $_routes = [];
-    foreach my $id (@$routes) {
-        push @$_routes, $self->get_node_by_id($id);
+Returns ref to a list of objects of type L<Map::Tube::Line>.
+
+=cut
+
+sub get_lines {
+    my ($self) = @_;
+
+    return $self->lines;
+}
+
+=head2 get_stations($line_name)
+
+Returns ref to a list of objects of type L<Map::Tube::Node> for the given line.
+
+=cut
+
+sub get_stations {
+    my ($self, $line) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::get_stations",
+        message     => "ERROR: Missing Line name.",
+        status      => ERROR_MISSING_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (defined $line);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::get_stations",
+        message     => "ERROR: Invalid Line name.",
+        status      => ERROR_INVALID_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (exists $self->_lines->{uc($line)});
+
+    return $self->_lines->{uc($line)}->get_stations;
+}
+
+=head2 as_image($line_name)
+
+Returns line image as base64 encoded string. It expects the plugin L<Map::Tube::Plugin::Graph>
+to be installed.
+
+=cut
+
+sub as_image {
+    my ($self, $line) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Missing Line name.",
+        status      => ERROR_MISSING_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (defined $line);
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Invalid Line name.",
+        status      => ERROR_INVALID_LINE_NAME,
+        filename    => $caller[1],
+        line_number => $caller[2] })
+        unless (exists $self->_lines->{uc($line)});
+
+    my @plugins = Map::Tube::Pluggable::plugins;
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
+        status      => ERROR_MISSING_PLUGIN_GRAPH,
+        filename    => $caller[1],
+        line_number => $caller[2] }) if (scalar(@plugins) == 0);
+
+    my $graph;
+    eval { $graph = $plugins[0]->new; };
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Unable to load plugin Map::Tube::Plugin::Graph.",
+        status      => ERROR_LOADING_PLUGIN_GRAPH,
+        filename    => $caller[1],
+        line_number => $caller[2] }) if ($@);
+
+    if (defined $graph && ref($graph) && $graph->isa('Map::Tube::Plugin::Graph')) {
+        $graph->tube($self);
+        $graph->line($self->_lines->{uc($line)});
+
+        return $graph->as_image;
     }
-
-    my $from  = $_routes->[0];
-    my $to    = $_routes->[-1];
-    my $route = Map::Tube::Route->new({ from => $from, to => $to, nodes => $_routes });
-    push @{$self->{routes}}, $route;
-}
-
-sub get_path {
-    my ($self, $id) = @_;
-
-    return $self->tables->{$id}->path;
-}
-
-sub set_path {
-    my ($self, $id, $node_id) = @_;
-
-    $self->tables->{$id}->path($node_id);
-}
-
-sub get_length {
-    my ($self, $id) = @_;
-
-    return 0 unless defined $self->tables->{$id};
-    return $self->tables->{$id}->length;
-}
-
-sub set_length {
-    my ($self, $id, $value) = @_;
-
-    $self->tables->{$id}->length($value);
-}
-
-sub get_table {
-    my ($self, $id) = @_;
-
-    return $self->tables->{$id};
 }
 
 #
@@ -269,27 +274,36 @@ sub _get_shortest_route {
 
     my $nodes = [];
     my $index = 0;
+    my $seen  = {};
 
-    $self->init_table;
-    $self->set_length($from, $index);
-    $self->set_path($from, $from);
+    $self->_init_table;
+    $self->_set_length($from, $index);
+    $self->_set_path($from, $from);
 
     while (defined($from)) {
-        my $length = $self->get_length($from);
+        my $length = $self->_get_length($from);
         my $f_node = $self->get_node_by_id($from);
+        $self->_set_active_lines($f_node);
+
         if (defined $f_node) {
-            foreach my $link (split /\,/, $f_node->link) {
-                if (($self->get_length($link) == 0) || ($length > ($index + 1))) {
-                    $self->set_length($link, $length + 1);
-                    $self->set_path($link, $from);
+            my $links = [ split /\,/,$f_node->link ];
+            while (scalar(@$links) > 0) {
+                my ($success, $link) = $self->_get_next_link($from, $seen, $links);
+                $success or ($links = [ grep(!/$link/, @$links) ]) and next;
+
+                if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
+                    $self->_set_length($link, $length + 1);
+                    $self->_set_path($link, $from);
                     push @$nodes, $link;
                 }
+                $seen->{$link} = 1;
+                $links = [ grep(!/$link/, @$links) ];
             }
         }
 
         $index = $length + 1;
         $from  = shift @$nodes;
-        $nodes = [ grep(!/$from/, @$nodes) ];
+        $nodes = [ grep(!/$from/, @$nodes) ] if defined $from;
     }
 }
 
@@ -303,7 +317,7 @@ sub _get_all_routes {
 
         if (_is_same($id, $to)) {
             push @$visited, $id;
-            $self->set_routes($visited);
+            $self->_set_routes($visited);
             pop @$visited;
             last;
         }
@@ -318,6 +332,12 @@ sub _get_all_routes {
     }
 
     return $self->{routes};
+}
+
+sub _map_node_name {
+    my ($self, $name, $id) = @_;
+
+    $self->{name_to_id}->{uc($name)} = $id;
 }
 
 sub _validate_input {
@@ -355,6 +375,249 @@ sub _validate_input {
         unless (defined $_to);
 
     return ($_from->id, $_to->id);
+}
+
+sub _init_map {
+    my ($self) = @_;
+
+    my $_lines = {};
+    my $lines  = {};
+    my $nodes  = {};
+    my $tables = {};
+    my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+    $self->name($xml->{name});
+
+    foreach my $station (@{$xml->{stations}->{station}}) {
+        my $id   = $station->{id};
+        my $name = $station->{name};
+        die "ERROR: Duplicate station name [$name].\n" if (defined $self->_get_id($name));
+
+        $self->_map_node_name($name, $id);
+        $tables->{$id} = Map::Tube::Table->new({ id => $id });
+
+        my $_station_lines = [];
+        foreach my $_line (split /\,/,$station->{line}) {
+            my $uc_line = uc($_line);
+            my $line    = $lines->{$uc_line};
+            $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
+            $_lines->{$uc_line} = $line;
+            $lines->{$uc_line}  = $line;
+            push @$_station_lines, $line;
+        }
+
+        $station->{line} = $_station_lines;
+        my $node = Map::Tube::Node->new($station);
+        $nodes->{$id} = $node;
+
+        foreach (@{$_station_lines}) {
+            $_->add_station($node);
+        }
+    }
+
+    foreach my $_line (@{$xml->{lines}->{line}}) {
+        my $line = $_lines->{uc($_line->{name})};
+        if (defined $line) {
+            $line->id($_line->{id});
+            $line->color($_line->{color});
+            $_lines->{uc($_line->{name})} = $line;
+        }
+    }
+
+    $self->lines([ values %$lines ]);
+    $self->_lines($_lines);
+    $self->nodes($nodes);
+    $self->tables($tables);
+}
+
+sub _init_table {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->tables}) {
+        $self->tables->{$id}->path(undef);
+        $self->tables->{$id}->length(0);
+    }
+
+    $self->_active_lines(undef);
+}
+
+sub _common_lines {
+    my ($array1, $array2) = @_;
+
+    my %element = map { $_ => undef } @{$array1};
+    return grep { exists($element{$_}) } @{$array2};
+}
+
+sub _get_next_link {
+    my ($self, $from, $seen, $links) = @_;
+
+    my $active_lines = $self->_active_lines;
+    my @common_lines = _common_lines($active_lines->[0], $active_lines->[1]);
+    my $link         = undef;
+    foreach my $_link (@$links) {
+        return (0,  $_link)
+            if ((exists $seen->{$_link}) || ($from eq $_link));
+
+        my $node = $self->get_node_by_id($_link);
+        next unless defined $node;
+
+        my @lines  = (split /\,/, $node->line);
+        my @common = _common_lines(\@common_lines, \@lines);
+        return (1, $_link) if (scalar(@common) > 0);
+
+        $link = $_link;
+    }
+
+    return (1, $link);
+}
+
+sub _set_active_lines {
+    my ($self, $node) = @_;
+
+    my $active_lines = $self->_active_lines;
+    my $links        = [ split /\,/, $node->link ];
+
+    if (defined $active_lines) {
+        shift @$active_lines;
+        push @$active_lines, $links;
+    }
+    else {
+        push @$active_lines, $links;
+        push @$active_lines, $links;
+    }
+
+    $self->_active_lines($active_lines);
+}
+
+sub _validate_map_data {
+    my ($self) = @_;
+
+    my $seen  = {};
+    my $nodes = $self->nodes;
+    foreach my $id (keys %$nodes) {
+        my $node = $self->get_node_by_id($id);
+        die "ERROR: Node ID can't have ',' character.\n" if ($id =~ /\,/);
+
+        my $link = $node->link;
+        foreach (split /\,/,$link) {
+            next if (exists $seen->{$_});
+            my $_node = $self->get_node_by_id($_);
+
+            die "ERROR: Found invalid node id [$_].\n" unless (defined $_node);
+            $seen->{$_} = 1;
+        }
+    }
+
+    $self->_validate_self_linked_nodes;
+
+    $self->_validate_multi_linked_nodes;
+
+    $self->_validate_multi_lined_nodes;
+}
+
+sub _validate_self_linked_nodes {
+    my ($self) = @_;
+
+    my $max_link = 0;
+    foreach my $id (keys %{$self->nodes}) {
+        if (grep { $_ eq $id } (split /\,/, $self->get_node_by_id($id)->link)) {
+            $max_link++;
+        }
+
+        if ($max_link > 0) {
+            die sprintf("ERROR: %s is self linked,", $id);
+        }
+    }
+}
+
+sub _validate_multi_linked_nodes {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->nodes}) {
+        my %links = ();
+        foreach my $link (split( /\,/, $self->get_node_by_id($id)->link)) {
+            $links{$link}++;
+        }
+
+        my $max_link = 1;
+        foreach (keys %links) {
+            $max_link = $links{$_} if ($max_link < $links{$_});
+        }
+
+        if ($max_link > 1) {
+            die sprintf("ERROR: %s linked to %s multiple times,",
+                        $id, join( ',', grep { $links{$_} > 1 } keys %links));
+        }
+    }
+}
+
+sub _validate_multi_lined_nodes {
+    my ($self) = @_;
+
+    foreach my $id (keys %{$self->nodes}) {
+        my %lines = ();
+        $lines{$_}++ for split( /\,/, $self->get_node_by_id($id)->line);
+
+        my $max_link = 1;
+        foreach (keys %lines) {
+            $max_link = $lines{$_} if ($max_link < $lines{$_});
+        }
+
+        if ($max_link > 1) {
+            die sprintf("ERROR: %s has multiple lines %s,",
+                        $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
+        }
+    }
+}
+
+sub _set_routes {
+    my ($self, $routes) = @_;
+
+    my $_routes = [];
+    foreach my $id (@$routes) {
+        push @$_routes, $self->get_node_by_id($id);
+    }
+
+    my $from  = $_routes->[0];
+    my $to    = $_routes->[-1];
+    my $route = Map::Tube::Route->new({ from => $from, to => $to, nodes => $_routes });
+    push @{$self->{routes}}, $route;
+}
+
+sub _get_path {
+    my ($self, $id) = @_;
+
+    return $self->tables->{$id}->path;
+}
+
+sub _set_path {
+    my ($self, $id, $node_id) = @_;
+
+    $self->tables->{$id}->path($node_id);
+}
+
+sub _get_length {
+    my ($self, $id) = @_;
+
+    return 0 unless defined $self->tables->{$id};
+    return $self->tables->{$id}->length;
+}
+
+sub _set_length {
+    my ($self, $id, $value) = @_;
+
+    $self->tables->{$id}->length($value);
+}
+
+sub _get_table {
+    my ($self, $id) = @_;
+
+    return $self->tables->{$id};
+}
+
+sub _get_id {
+    my ($self, $name) = @_;
+
+    return $self->{name_to_id}->{uc($name)};
 }
 
 sub _format {
@@ -406,6 +669,18 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 L<https://github.com/Manwar/Map-Tube>
 
+=head1 SEE ALSO
+
+L<Map::Metro>
+
+=head1 CONTRIBUTORS
+
+=over 2
+
+=item * Gisbert W. Selke (map data validation)
+
+=back
+
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,  or
@@ -443,7 +718,7 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 - 2014 Mohammad S Anwar.
+Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
 This  program  is  free software; you can redistribute it and/or modify it under
 the  terms  of the the Artistic License (2.0). You may obtain a copy of the full

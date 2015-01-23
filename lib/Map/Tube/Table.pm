@@ -1,6 +1,7 @@
 package Map::Tube::Table;
 
-$Map::Tube::Table::VERSION = '2.32';
+$Map::Tube::Table::VERSION   = '2.71';
+$Map::Tube::Table::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
@@ -8,11 +9,10 @@ Map::Tube::Table - Class to represent the table in the map.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.71
 
 =cut
 
-use utf8;
 use 5.006;
 use Moo;
 use namespace::clean;
@@ -20,6 +20,10 @@ use namespace::clean;
 has id     => (is => 'ro', required => 1);
 has path   => (is => 'rw');
 has length => (is => 'rw');
+
+=head1 DESCRIPTION
+
+B<FOR INTERNAL USE ONLY>.
 
 =head1 AUTHOR
 
@@ -66,7 +70,7 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 - 2014 Mohammad S Anwar.
+Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
 This  program  is  free software; you can redistribute it and/or modify it under
 the  terms  of the the Artistic License (2.0). You may obtain a copy of the full

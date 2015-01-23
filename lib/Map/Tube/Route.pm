@@ -1,6 +1,7 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION = '2.32';
+$Map::Tube::Route::VERSION   = '2.71';
+$Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
@@ -8,11 +9,10 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.32
+Version 2.71
 
 =cut
 
-use utf8;
 use 5.006;
 use Data::Dumper;
 use Moo;
@@ -40,10 +40,10 @@ Returns an object of type L<Map::Tube::Node> representing the start station.
 
 Returns an object of type L<Map::Tube::Node> representing the end station.
 
-hade2 nodes()
+=head2 nodes()
 
 Returns the ref to a list of objects of type L<Map::Tube::Node> representing  the
-path from "start" and "end" station.
+path from "start" to "end" station.
 
 =head1 AUTHOR
 
@@ -90,7 +90,7 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 - 2014 Mohammad S Anwar.
+Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
 This  program  is  free software; you can redistribute it and/or modify it under
 the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
