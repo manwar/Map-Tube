@@ -29,7 +29,8 @@ has line => (is => 'ro', required => 1);
 sub as_string {
     my ($self) = @_;
 
-    return sprintf("%s (%s)", $self->name, $self->line);
+    my $line = join ', ', @{$self->line};
+    return sprintf("%s (%s)", $self->name, $line);
 }
 
 =head1 METHODS
