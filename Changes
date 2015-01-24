@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.73  2015-01-25T02:55:00+01:00
+      - Cherry picked commit from the pull request from TUPINEK to the method Map::Tube::_init_map().
+
 2.72  2015-01-23T20:45:00+01:00
       - Merged pull request from Michal Špaček regarding fix to the method Map::Tube::Node::as_string().
 
