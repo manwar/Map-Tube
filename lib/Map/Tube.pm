@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.71';
+$Map::Tube::VERSION   = '2.72';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.71
+Version 2.72
 
 =cut
 
@@ -29,6 +29,8 @@ use Moo::Role;
 use namespace::clean;
 
 requires 'xml';
+
+=encoding utf8
 
 =head1 DESCRIPTION
 
@@ -678,6 +680,8 @@ L<Map::Metro>
 =over 2
 
 =item * Gisbert W. Selke (map data validation)
+
+=item * Michal Špaček
 
 =back
 
