@@ -416,9 +416,14 @@ sub _init_map {
         }
     }
 
-    my @lines = (ref $xml->{lines}->{line} eq 'HASH')
-        ? ($xml->{lines}->{line})
-        : @{$xml->{lines}->{line}};
+    my @lines;
+    if (exists $xml->{lines}
+        && exists $xml->{lines}->{line}) {
+
+        @lines = (ref $xml->{lines}->{line} eq 'HASH')
+            ? ($xml->{lines}->{line})
+            : @{$xml->{lines}->{line}};
+    }
     foreach my $_line (@lines) {
         my $line = $_lines->{uc($_line->{name})};
         if (defined $line) {
