@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.71';
+$Map::Tube::Node::VERSION   = '2.72';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.71
+Version 2.72
 
 =cut
 
@@ -29,7 +29,8 @@ has line => (is => 'ro', required => 1);
 sub as_string {
     my ($self) = @_;
 
-    return sprintf("%s (%s)", $self->name, $self->line);
+    my $line = join ', ', @{$self->line};
+    return sprintf("%s (%s)", $self->name, $line);
 }
 
 =head1 METHODS

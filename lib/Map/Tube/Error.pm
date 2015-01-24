@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION   = '2.71';
+$Map::Tube::Error::VERSION   = '2.72';
 $Map::Tube::Error::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.71
+Version 2.72
 
 =cut
 
