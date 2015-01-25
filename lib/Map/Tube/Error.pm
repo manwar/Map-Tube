@@ -1,6 +1,6 @@
 package Map::Tube::Error;
 
-$Map::Tube::Error::VERSION   = '2.73';
+$Map::Tube::Error::VERSION   = '2.74';
 $Map::Tube::Error::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Error - Error class for the library Map::Tube.
 
 =head1 VERSION
 
-Version 2.73
+Version 2.74
 
 =cut
 
@@ -32,6 +32,10 @@ my %Status = (
     107 => 'Invalid Station',
     108 => 'Missing Plugin Graph',
     109 => 'Loading Plugin Graph',
+    110 => 'Duplicate Node Name',
+    111 => 'Found Self Linked Node',
+    112 => 'Found Multi Linked Node',
+    113 => 'Found Multi Lined Node',
 );
 
 my $mnemonic_code = '';
@@ -72,6 +76,14 @@ B<FOR INTERNAL USE ONLY>.
 =item * 108: Missing Plugin Graph
 
 =item * 109: Loading Plugin Graph
+
+=item * 110: Duplicate Node Name
+
+=item * 111: Found Self Linked Node
+
+=item * 112: Found Multi Linked Node
+
+=item * 113: Found Multi Lined Node
 
 =back
 

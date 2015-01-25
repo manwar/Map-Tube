@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.73';
+$Map::Tube::VERSION   = '2.74';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.73
+Version 2.74
 
 =cut
 
@@ -389,10 +389,19 @@ sub _init_map {
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
     $self->name($xml->{name});
 
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
     foreach my $station (@{$xml->{stations}->{station}}) {
         my $id   = $station->{id};
         my $name = $station->{name};
-        die "ERROR: Duplicate station name [$name].\n" if (defined $self->_get_id($name));
+
+        Map::Tube::Exception->throw({
+            method      => __PACKAGE__."::_init_method",
+            message     => "ERROR: Duplicate station name [$name].",
+            status      => ERROR_DUPLICATE_NODE_NAME,
+            filename    => $caller[1],
+            line_number => $caller[2] }) if (defined $self->_get_id($name));
 
         $self->_map_node_name($name, $id);
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
@@ -502,18 +511,33 @@ sub _set_active_lines {
 sub _validate_map_data {
     my ($self) = @_;
 
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
     my $seen  = {};
     my $nodes = $self->nodes;
     foreach my $id (keys %$nodes) {
         my $node = $self->get_node_by_id($id);
-        die "ERROR: Node ID can't have ',' character.\n" if ($id =~ /\,/);
+
+        Map::Tube::Exception->throw({
+            method      => __PACKAGE__."::_validate_map_data",
+            message     => "ERROR: Node ID can't have ',' character.",
+            status      => ERROR_INVALID_NODE_ID,
+            filename    => $caller[1],
+            line_number => $caller[2] }) if ($id =~ /\,/);
 
         my $link = $node->link;
         foreach (split /\,/,$link) {
             next if (exists $seen->{$_});
             my $_node = $self->get_node_by_id($_);
 
-            die "ERROR: Found invalid node id [$_].\n" unless (defined $_node);
+            Map::Tube::Exception->throw({
+                method      => __PACKAGE__."::_validate_map_data",
+                message     => "ERROR: Found invalid node id [$_].",
+                status      => ERROR_INVALID_NODE_ID,
+                filename    => $caller[1],
+                line_number => $caller[2] }) unless (defined $_node);
+
             $seen->{$_} = 1;
         }
     }
@@ -528,20 +552,29 @@ sub _validate_map_data {
 sub _validate_self_linked_nodes {
     my ($self) = @_;
 
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
+
     my $max_link = 0;
     foreach my $id (keys %{$self->nodes}) {
         if (grep { $_ eq $id } (split /\,/, $self->get_node_by_id($id)->link)) {
             $max_link++;
         }
 
-        if ($max_link > 0) {
-            die sprintf("ERROR: %s is self linked,", $id);
-        }
+        Map::Tube::Exception->throw({
+            method      => __PACKAGE__."::_validate_self_linked_nodes",
+            message     => sprintf("ERROR: %s is self linked,", $id),
+            status      => ERROR_FOUND_SELF_LINKED_NODE,
+            filename    => $caller[1],
+            line_number => $caller[2] }) if ($max_link > 0);
     }
 }
 
 sub _validate_multi_linked_nodes {
     my ($self) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
 
     foreach my $id (keys %{$self->nodes}) {
         my %links = ();
@@ -555,14 +588,24 @@ sub _validate_multi_linked_nodes {
         }
 
         if ($max_link > 1) {
-            die sprintf("ERROR: %s linked to %s multiple times,",
-                        $id, join( ',', grep { $links{$_} > 1 } keys %links));
+            my $message = sprintf("ERROR: %s linked to %s multiple times,",
+                                  $id, join( ',', grep { $links{$_} > 1 } keys %links));
+
+            Map::Tube::Exception->throw({
+                method      => __PACKAGE__."::_validate_multi_linked_nodes",
+                message     => $message,
+                status      => ERROR_FOUND_MULTI_LINKED_NODE,
+                filename    => $caller[1],
+                line_number => $caller[2] });
         }
     }
 }
 
 sub _validate_multi_lined_nodes {
     my ($self) = @_;
+
+    my @caller = caller(0);
+    @caller = caller(2) if $caller[3] eq '(eval)';
 
     foreach my $id (keys %{$self->nodes}) {
         my %lines = ();
@@ -574,8 +617,15 @@ sub _validate_multi_lined_nodes {
         }
 
         if ($max_link > 1) {
-            die sprintf("ERROR: %s has multiple lines %s,",
-                        $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
+            my $message = sprintf("ERROR: %s has multiple lines %s,",
+                                  $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
+
+            Map::Tube::Exception->throw({
+                method      => __PACKAGE__."::_validate_multi_lined_nodes",
+                message     => $message,
+                status      => ERROR_FOUND_MULTI_LINED_NODE,
+                filename    => $caller[1],
+                line_number => $caller[2] });
         }
     }
 }

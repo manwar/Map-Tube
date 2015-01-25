@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.74  2015-01-25T08:15:00+01:00
+      - Making use of Map::Tube::Exception instead of die to be consistent as raised by GWS.
+
 2.73  2015-01-25T02:55:00+01:00
       - Cherry picked commit from the pull request from TUPINEK to the method Map::Tube::_init_map().
 
