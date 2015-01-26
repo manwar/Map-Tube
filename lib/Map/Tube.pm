@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.74';
+$Map::Tube::VERSION   = '2.75';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.74
+Version 2.75
 
 =cut
 
@@ -71,7 +71,7 @@ has _lines        => (is => 'rw');
 has tables        => (is => 'rw');
 has routes        => (is => 'rw');
 has name_to_id    => (is => 'rw');
-has _active_lines => (is => 'rw');
+has _active_links => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
@@ -152,7 +152,7 @@ Returns node object of type L<Map::Tube::Node> for the given node id.
 sub get_node_by_id {
     my ($self, $id) = @_;
 
-    return $self->nodes->{$id};
+    return $self->{nodes}->{$id};
 }
 
 =head2 get_node_by_name($node_name)
@@ -165,9 +165,9 @@ Returns node object of type L<Map::Tube::Node> for the given node name.
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && defined $self->_get_id($name));
+    return unless (defined $name && defined $self->_get_node_id($name));
 
-    return $self->get_node_by_id($self->_get_id($name));
+    return $self->get_node_by_id($self->_get_node_id($name));
 }
 
 =head2 get_lines()
@@ -179,7 +179,7 @@ Returns ref to a list of objects of type L<Map::Tube::Line>.
 sub get_lines {
     my ($self) = @_;
 
-    return $self->lines;
+    return $self->{lines};
 }
 
 =head2 get_stations($line_name)
@@ -210,7 +210,7 @@ sub get_stations {
         line_number => $caller[2] })
         unless (exists $self->_lines->{uc($line)});
 
-    return $self->_lines->{uc($line)}->get_stations;
+    return $self->{_lines}->{uc($line)}->get_stations;
 }
 
 =head2 as_image($line_name)
@@ -282,10 +282,11 @@ sub _get_shortest_route {
     $self->_set_length($from, $index);
     $self->_set_path($from, $from);
 
+    my $all_nodes = $self->{nodes};
     while (defined($from)) {
         my $length = $self->_get_length($from);
-        my $f_node = $self->get_node_by_id($from);
-        $self->_set_active_lines($f_node);
+        my $f_node = $all_nodes->{$from};
+        $self->_set_active_links($f_node);
 
         if (defined $f_node) {
             my $links = [ split /\,/,$f_node->link ];
@@ -298,6 +299,7 @@ sub _get_shortest_route {
                     $self->_set_path($link, $from);
                     push @$nodes, $link;
                 }
+
                 $seen->{$link} = 1;
                 $links = [ grep(!/$link/, @$links) ];
             }
@@ -376,7 +378,7 @@ sub _validate_input {
         line_number => $caller[2] })
         unless (defined $_to);
 
-    return ($_from->id, $_to->id);
+    return ($_from->{id}, $_to->{id});
 }
 
 sub _init_map {
@@ -387,11 +389,12 @@ sub _init_map {
     my $nodes  = {};
     my $tables = {};
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
-    $self->name($xml->{name});
+    $self->{name} = $xml->{name};
 
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
+    my $name_to_id = $self->{name_to_id};
     foreach my $station (@{$xml->{stations}->{station}}) {
         my $id   = $station->{id};
         my $name = $station->{name};
@@ -401,7 +404,7 @@ sub _init_map {
             message     => "ERROR: Duplicate station name [$name].",
             status      => ERROR_DUPLICATE_NODE_NAME,
             filename    => $caller[1],
-            line_number => $caller[2] }) if (defined $self->_get_id($name));
+            line_number => $caller[2] }) if (defined $name_to_id->{uc($name)});
 
         $self->_map_node_name($name, $id);
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
@@ -421,7 +424,7 @@ sub _init_map {
         $nodes->{$id} = $node;
 
         foreach (@{$_station_lines}) {
-            $_->add_station($node);
+            push @{$_->{stations}}, $node;
         }
     }
 
@@ -452,12 +455,12 @@ sub _init_map {
 sub _init_table {
     my ($self) = @_;
 
-    foreach my $id (keys %{$self->tables}) {
-        $self->tables->{$id}->path(undef);
-        $self->tables->{$id}->length(0);
+    foreach my $id (keys %{$self->{tables}}) {
+        $self->{tables}->{$id}->{path}   = undef;
+        $self->{tables}->{$id}->{length} = 0;
     }
 
-    $self->_active_lines(undef);
+    $self->{_active_links} = undef;
 }
 
 sub _common_lines {
@@ -470,17 +473,20 @@ sub _common_lines {
 sub _get_next_link {
     my ($self, $from, $seen, $links) = @_;
 
-    my $active_lines = $self->_active_lines;
-    my @common_lines = _common_lines($active_lines->[0], $active_lines->[1]);
+    my $nodes        = $self->{nodes};
+    my $active_links = $self->{_active_links};
+    my @common_lines = _common_lines($active_links->[0], $active_links->[1]);
     my $link         = undef;
-    foreach my $_link (@$links) {
-        return (0,  $_link)
-            if ((exists $seen->{$_link}) || ($from eq $_link));
 
-        my $node = $self->get_node_by_id($_link);
+    foreach my $_link (@$links) {
+        return (0,  $_link) if ((exists $seen->{$_link}) || ($from eq $_link));
+
+        my $node = $nodes->{$_link};
         next unless defined $node;
 
-        my @lines  = (split /\,/, $node->line);
+        my @lines = ();
+        foreach (@{$node->{line}}) { push @lines, $_->{name}; }
+
         my @common = _common_lines(\@common_lines, \@lines);
         return (1, $_link) if (scalar(@common) > 0);
 
@@ -490,34 +496,47 @@ sub _get_next_link {
     return (1, $link);
 }
 
-sub _set_active_lines {
+sub _set_active_links {
     my ($self, $node) = @_;
 
-    my $active_lines = $self->_active_lines;
-    my $links        = [ split /\,/, $node->link ];
+    my $active_links = $self->{_active_links};
+    my $links        = [ split /\,/, $node->{link} ];
 
-    if (defined $active_lines) {
-        shift @$active_lines;
-        push @$active_lines, $links;
+    if (defined $active_links) {
+        shift @$active_links;
+        push @$active_links, $links;
     }
     else {
-        push @$active_lines, $links;
-        push @$active_lines, $links;
+        push @$active_links, $links;
+        push @$active_links, $links;
     }
 
-    $self->_active_lines($active_lines);
+    $self->_active_links($active_links);
 }
 
 sub _validate_map_data {
     my ($self) = @_;
 
+    my $nodes = $self->{nodes};
+
+    $self->_validate_nodes($nodes);
+
+    $self->_validate_self_linked_nodes($nodes);
+
+    $self->_validate_multi_linked_nodes($nodes);
+
+    $self->_validate_multi_lined_nodes($nodes);
+}
+
+sub _validate_nodes {
+    my ($self, $nodes) = @_;
+
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
     my $seen  = {};
-    my $nodes = $self->nodes;
     foreach my $id (keys %$nodes) {
-        my $node = $self->get_node_by_id($id);
+        my $node = $nodes->{$id};
 
         Map::Tube::Exception->throw({
             method      => __PACKAGE__."::_validate_map_data",
@@ -526,10 +545,10 @@ sub _validate_map_data {
             filename    => $caller[1],
             line_number => $caller[2] }) if ($id =~ /\,/);
 
-        my $link = $node->link;
+        my $link = $node->{link};
         foreach (split /\,/,$link) {
             next if (exists $seen->{$_});
-            my $_node = $self->get_node_by_id($_);
+            my $_node = $nodes->{$_};
 
             Map::Tube::Exception->throw({
                 method      => __PACKAGE__."::_validate_map_data",
@@ -541,44 +560,36 @@ sub _validate_map_data {
             $seen->{$_} = 1;
         }
     }
-
-    $self->_validate_self_linked_nodes;
-
-    $self->_validate_multi_linked_nodes;
-
-    $self->_validate_multi_lined_nodes;
 }
 
 sub _validate_self_linked_nodes {
-    my ($self) = @_;
+    my ($self, $nodes) = @_;
 
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
     my $max_link = 0;
-    foreach my $id (keys %{$self->nodes}) {
-        if (grep { $_ eq $id } (split /\,/, $self->get_node_by_id($id)->link)) {
-            $max_link++;
+    foreach my $id (keys %{$nodes}) {
+        if (grep { $_ eq $id } (split /\,/, $nodes->{$id}->{link})) {
+            Map::Tube::Exception->throw({
+                method      => __PACKAGE__."::_validate_self_linked_nodes",
+                message     => sprintf("ERROR: %s is self linked,", $id),
+                status      => ERROR_FOUND_SELF_LINKED_NODE,
+                filename    => $caller[1],
+                line_number => $caller[2] }) if ($max_link > 0);
         }
-
-        Map::Tube::Exception->throw({
-            method      => __PACKAGE__."::_validate_self_linked_nodes",
-            message     => sprintf("ERROR: %s is self linked,", $id),
-            status      => ERROR_FOUND_SELF_LINKED_NODE,
-            filename    => $caller[1],
-            line_number => $caller[2] }) if ($max_link > 0);
     }
 }
 
 sub _validate_multi_linked_nodes {
-    my ($self) = @_;
+    my ($self, $nodes) = @_;
 
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
-    foreach my $id (keys %{$self->nodes}) {
+    foreach my $id (keys %{$nodes}) {
         my %links = ();
-        foreach my $link (split( /\,/, $self->get_node_by_id($id)->link)) {
+        foreach my $link (split( /\,/, $nodes->{$id}->{link})) {
             $links{$link}++;
         }
 
@@ -602,14 +613,14 @@ sub _validate_multi_linked_nodes {
 }
 
 sub _validate_multi_lined_nodes {
-    my ($self) = @_;
+    my ($self, $nodes) = @_;
 
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
-    foreach my $id (keys %{$self->nodes}) {
+    foreach my $id (keys %{$nodes}) {
         my %lines = ();
-        $lines{$_}++ for split( /\,/, $self->get_node_by_id($id)->line);
+        foreach (@{$nodes->{$id}->{line}}) { $lines{$_->{name}}++; }
 
         my $max_link = 1;
         foreach (keys %lines) {
@@ -634,8 +645,9 @@ sub _set_routes {
     my ($self, $routes) = @_;
 
     my $_routes = [];
+    my $nodes   = $self->nodes;
     foreach my $id (@$routes) {
-        push @$_routes, $self->get_node_by_id($id);
+        push @$_routes, $nodes->{$id};
     }
 
     my $from  = $_routes->[0];
@@ -647,35 +659,35 @@ sub _set_routes {
 sub _get_path {
     my ($self, $id) = @_;
 
-    return $self->tables->{$id}->path;
+    return $self->{tables}->{$id}->{path};
 }
 
 sub _set_path {
     my ($self, $id, $node_id) = @_;
 
-    $self->tables->{$id}->path($node_id);
+    $self->{tables}->{$id}->path($node_id);
 }
 
 sub _get_length {
     my ($self, $id) = @_;
 
-    return 0 unless defined $self->tables->{$id};
-    return $self->tables->{$id}->length;
+    return 0 unless defined $self->{tables}->{$id};
+    return $self->{tables}->{$id}->{length};
 }
 
 sub _set_length {
     my ($self, $id, $value) = @_;
 
-    $self->tables->{$id}->length($value);
+    $self->{tables}->{$id}->length($value);
 }
 
 sub _get_table {
     my ($self, $id) = @_;
 
-    return $self->tables->{$id};
+    return $self->{tables}->{$id};
 }
 
-sub _get_id {
+sub _get_node_id {
     my ($self, $name) = @_;
 
     return $self->{name_to_id}->{uc($name)};
