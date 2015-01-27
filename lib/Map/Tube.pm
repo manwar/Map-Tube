@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.76';
+$Map::Tube::VERSION   = '2.77';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.76
+Version 2.77
 
 =cut
 
@@ -190,8 +190,9 @@ Returns ref to a list of objects of type L<Map::Tube::Node> for the given line.
 sub get_stations {
     my ($self, $line) = @_;
 
-    my @caller = caller(0);
-    @caller = caller(2) if $caller[3] eq '(eval)';
+    my @caller  = caller(0);
+    @caller     = caller(2) if $caller[3] eq '(eval)';
+    my $uc_line = uc($line);
 
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::get_stations",
@@ -207,9 +208,9 @@ sub get_stations {
         status      => ERROR_INVALID_LINE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless (exists $self->_lines->{uc($line)});
+        unless (exists $self->{_lines}->{$uc_line});
 
-    return $self->{_lines}->{uc($line)}->get_stations;
+    return $self->{_lines}->{$uc_line}->{stations};
 }
 
 =head2 as_image($line_name)
@@ -222,8 +223,9 @@ to be installed.
 sub as_image {
     my ($self, $line) = @_;
 
-    my @caller = caller(0);
-    @caller = caller(2) if $caller[3] eq '(eval)';
+    my @caller  = caller(0);
+    @caller     = caller(2) if $caller[3] eq '(eval)';
+    my $uc_line = uc($line);
 
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
@@ -239,7 +241,7 @@ sub as_image {
         status      => ERROR_INVALID_LINE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless (exists $self->_lines->{uc($line)});
+        unless (exists $self->{_lines}->{$uc_line});
 
     my @plugins = Map::Tube::Pluggable::plugins;
     Map::Tube::Exception->throw({
@@ -259,8 +261,8 @@ sub as_image {
         line_number => $caller[2] }) if ($@);
 
     if (defined $graph && ref($graph) && $graph->isa('Map::Tube::Plugin::Graph')) {
-        $graph->tube($self);
-        $graph->line($self->_lines->{uc($line)});
+        $graph->{tube} = $self;
+        $graph->{line} = $self->{_lines}->{$uc_line};
 
         return $graph->as_image;
     }
@@ -288,7 +290,7 @@ sub _get_shortest_route {
         $self->_set_active_links($f_node);
 
         if (defined $f_node) {
-            my $links = [ split /\,/,$f_node->link ];
+            my $links = [ split /\,/, $f_node->{link} ];
             while (scalar(@$links) > 0) {
                 my ($success, $link) = $self->_get_next_link($from, $seen, $links);
                 $success or ($links = [ grep(!/$link/, @$links) ]) and next;
@@ -399,7 +401,7 @@ sub _init_map {
         my $name = $station->{name};
 
         Map::Tube::Exception->throw({
-            method      => __PACKAGE__."::_init_method",
+            method      => __PACKAGE__."::_init_map",
             message     => "ERROR: Duplicate station name [$name].",
             status      => ERROR_DUPLICATE_NODE_NAME,
             filename    => $caller[1],
@@ -409,7 +411,7 @@ sub _init_map {
         $tables->{$id} = Map::Tube::Table->new({ id => $id });
 
         my $_station_lines = [];
-        foreach my $_line (split /\,/,$station->{line}) {
+        foreach my $_line (split /\,/, $station->{line}) {
             my $uc_line = uc($_line);
             my $line    = $lines->{$uc_line};
             $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
@@ -428,20 +430,19 @@ sub _init_map {
     }
 
     my @lines;
-    if (exists $xml->{lines}
-        && exists $xml->{lines}->{line}) {
-
+    if (exists $xml->{lines} && exists $xml->{lines}->{line}) {
         @lines = (ref $xml->{lines}->{line} eq 'HASH')
             ? ($xml->{lines}->{line})
             : @{$xml->{lines}->{line}};
     }
 
     foreach my $_line (@lines) {
-        my $line = $_lines->{uc($_line->{name})};
+        my $uc_line = uc($_line->{name});
+        my $line    = $_lines->{$uc_line};
         if (defined $line) {
-            $line->id($_line->{id});
-            $line->color($_line->{color});
-            $_lines->{uc($_line->{name})} = $line;
+            $line->{id}         = $_line->{id};
+            $line->{color}      = $_line->{color};
+            $_lines->{$uc_line} = $line;
         }
     }
 
@@ -510,7 +511,7 @@ sub _set_active_links {
         push @$active_links, $links;
     }
 
-    $self->_active_links($active_links);
+    $self->{_active_links} = $active_links;
 }
 
 sub _validate_map_data {
@@ -589,7 +590,7 @@ sub _validate_multi_linked_nodes {
                               $id, join( ',', grep { $links{$_} > 1 } keys %links));
 
         Map::Tube::Exception->throw({
-            method      => __PACKAGE__."::_validate_multi_linked_nodes",
+            method      => __PACKAGE__."::_validate_map_data",
             message     => $message,
             status      => ERROR_FOUND_MULTI_LINKED_NODE,
             filename    => $caller->[1],
@@ -613,7 +614,7 @@ sub _validate_multi_lined_nodes {
                               $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
 
         Map::Tube::Exception->throw({
-            method      => __PACKAGE__."::_validate_multi_lined_nodes",
+            method      => __PACKAGE__."::_validate_map_data",
             message     => $message,
             status      => ERROR_FOUND_MULTI_LINED_NODE,
             filename    => $caller->[1],
