@@ -1,7 +1,10 @@
 Revision history for Map::Tube
 
+2.76  2015-01-27T13:13:00+01:00
+      - Further improvement to the method get_shortest_route(), down to 17 wallclock seconds.
+
 2.75  2015-01-26T17:15:00+01:00
-      - Improved performance from 33 wall seconds to 25 wall seconds for method get_shortest_route()
+      - Improved performance from 33 wallclock seconds to 25 wallclock seconds for method get_shortest_route()
         as recent changes to data validation was adding the load.
 
 2.74  2015-01-25T08:15:00+01:00
