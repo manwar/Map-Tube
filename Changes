@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.78  2015-02-05T17:30:00+01:00
+      - Updated method Map::Tube::as_image() the way it gets graph plugin and process it.
+
 2.77  2015-01-27T16:30:00+01:00
       - Ongoing improvement work on method get_shortest_route().
 

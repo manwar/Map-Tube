@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.77';
+$Map::Tube::VERSION   = '2.78';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.77
+Version 2.78
 
 =cut
 
@@ -71,6 +71,7 @@ has tables        => (is => 'rw');
 has routes        => (is => 'rw');
 has name_to_id    => (is => 'rw');
 has _active_links => (is => 'rw');
+has graph         => (is => 'rw', default => sub { _graph() });
 
 sub BUILD {
     my ($self) = @_;
@@ -225,7 +226,14 @@ sub as_image {
 
     my @caller  = caller(0);
     @caller     = caller(2) if $caller[3] eq '(eval)';
-    my $uc_line = uc($line);
+    my $graph   = $self->graph;
+
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::as_image",
+        message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
+        status      => ERROR_MISSING_PLUGIN_GRAPH,
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless (defined $graph);
 
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
@@ -235,6 +243,7 @@ sub as_image {
         line_number => $caller[2] })
         unless (defined $line);
 
+    my $uc_line = uc($line);
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::as_image",
         message     => "ERROR: Invalid Line name.",
@@ -243,29 +252,10 @@ sub as_image {
         line_number => $caller[2] })
         unless (exists $self->{_lines}->{$uc_line});
 
-    my @plugins = Map::Tube::Pluggable::plugins;
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::as_image",
-        message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
-        status      => ERROR_MISSING_PLUGIN_GRAPH,
-        filename    => $caller[1],
-        line_number => $caller[2] }) if (scalar(@plugins) == 0);
+    $graph->{tube} = $self;
+    $graph->{line} = $self->{_lines}->{$uc_line};
 
-    my $graph;
-    eval { $graph = $plugins[0]->new; };
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::as_image",
-        message     => "ERROR: Unable to load plugin Map::Tube::Plugin::Graph.",
-        status      => ERROR_LOADING_PLUGIN_GRAPH,
-        filename    => $caller[1],
-        line_number => $caller[2] }) if ($@);
-
-    if (defined $graph && ref($graph) && $graph->isa('Map::Tube::Plugin::Graph')) {
-        $graph->{tube} = $self;
-        $graph->{line} = $self->{_lines}->{$uc_line};
-
-        return $graph->as_image;
-    }
+    return $graph->as_image;
 }
 
 #
@@ -337,6 +327,20 @@ sub _get_all_routes {
     }
 
     return $self->{routes};
+}
+
+sub _graph {
+
+    my @plugins = Map::Tube::Pluggable::plugins;
+    foreach my $plugin (@plugins) {
+        if ($plugin eq 'Map::Tube::Plugin::Graph') {
+            my $graph = undef;
+            eval { $graph = $plugin->new; };
+            return $graph if (defined $graph && $graph->can('as_image'));
+        }
+    }
+
+    return;
 }
 
 sub _map_node_name {
