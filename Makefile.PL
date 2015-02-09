@@ -22,6 +22,7 @@ WriteMakefile(
     PREREQ_PM               => {
         'Moo'               => 0,
         'Moo::Role'         => 0,
+        'Role::Tiny'        => 0,
         'namespace::clean'  => 0,
         'Throwable'         => 0,
         'XML::Simple'       => 0,
@@ -33,14 +34,14 @@ WriteMakefile(
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.78' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.78' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.78' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.78' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.78' },
-            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.78' },
-            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.78' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.78' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.79' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.79' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.79' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.79' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.79' },
+            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.79' },
+            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.79' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.79' },
         },
         resources => {
             repository => {

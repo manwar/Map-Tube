@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.78';
+$Map::Tube::VERSION   = '2.79';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.78
+Version 2.79
 
 =cut
 
@@ -25,6 +25,7 @@ use Map::Tube::Exception;
 use Map::Tube::Error qw(:constants);
 
 use Moo::Role;
+use Role::Tiny qw();
 use namespace::clean;
 
 requires 'xml';
@@ -71,13 +72,14 @@ has tables        => (is => 'rw');
 has routes        => (is => 'rw');
 has name_to_id    => (is => 'rw');
 has _active_links => (is => 'rw');
-has graph         => (is => 'rw', default => sub { _graph() });
+has plugins       => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
 
     $self->_init_map;
     $self->_validate_map_data;
+    $self->_load_plugins;
 }
 
 =head1 METHODS
@@ -214,50 +216,6 @@ sub get_stations {
     return $self->{_lines}->{$uc_line}->{stations};
 }
 
-=head2 as_image($line_name)
-
-Returns line image as base64 encoded string. It expects the plugin L<Map::Tube::Plugin::Graph>
-to be installed.
-
-=cut
-
-sub as_image {
-    my ($self, $line) = @_;
-
-    my @caller  = caller(0);
-    @caller     = caller(2) if $caller[3] eq '(eval)';
-    my $graph   = $self->graph;
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::as_image",
-        message     => "ERROR: Missing graph plugin Map::Tube::Plugin::Graph.",
-        status      => ERROR_MISSING_PLUGIN_GRAPH,
-        filename    => $caller[1],
-        line_number => $caller[2] }) unless (defined $graph);
-
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::as_image",
-        message     => "ERROR: Missing Line name.",
-        status      => ERROR_MISSING_LINE_NAME,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (defined $line);
-
-    my $uc_line = uc($line);
-    Map::Tube::Exception->throw({
-        method      => __PACKAGE__."::as_image",
-        message     => "ERROR: Invalid Line name.",
-        status      => ERROR_INVALID_LINE_NAME,
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (exists $self->{_lines}->{$uc_line});
-
-    $graph->{tube} = $self;
-    $graph->{line} = $self->{_lines}->{$uc_line};
-
-    return $graph->as_image;
-}
-
 #
 #
 # PRIVATE METHODS
@@ -327,20 +285,6 @@ sub _get_all_routes {
     }
 
     return $self->{routes};
-}
-
-sub _graph {
-
-    my @plugins = Map::Tube::Pluggable::plugins;
-    foreach my $plugin (@plugins) {
-        if ($plugin eq 'Map::Tube::Plugin::Graph') {
-            my $graph = undef;
-            eval { $graph = $plugin->new; };
-            return $graph if (defined $graph && $graph->can('as_image'));
-        }
-    }
-
-    return;
 }
 
 sub _map_node_name {
@@ -465,6 +409,15 @@ sub _init_table {
     }
 
     $self->{_active_links} = undef;
+}
+
+sub _load_plugins {
+    my ($self) = @_;
+
+    $self->{plugins} = [ Map::Tube::Pluggable::plugins ];
+    foreach (@{$self->plugins}) {
+        Role::Tiny->apply_roles_to_object($self, $_);
+    }
 }
 
 sub _common_lines {

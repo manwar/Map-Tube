@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.79  2015-02-09T22:55:00+01:00
+      - Refactored the plugin integration code as conceived by Gisbert W. Selke.
+
 2.78  2015-02-05T17:30:00+01:00
       - Updated method Map::Tube::as_image() the way it gets graph plugin and process it.
 
