@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.79';
+$Map::Tube::VERSION   = '2.80';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.79
+Version 2.80
 
 =cut
 
@@ -215,6 +215,17 @@ sub get_stations {
 
     return $self->{_lines}->{$uc_line}->{stations};
 }
+
+=head1 PLUGINS
+
+=head2 L<Map::Tube::Plugin::Graph>
+
+The L<Map::Tube::Plugin::Graph> plugin add the support to generate the entire map
+or map for a particular line as base64 encoded string (png image).
+
+Please refer the L<documentation|Map::Tube::Plugin::Graph> for more details.
+
+=cut
 
 #
 #

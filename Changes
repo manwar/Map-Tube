@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.80  2015-02-10T11:55:00+01:00
+      - Updated pod document of Map::Tube regarding the plugin Map::Tube::Plugin::Graph.
+
 2.79  2015-02-09T22:55:00+01:00
       - Refactored the plugin integration code as conceived by Gisbert W. Selke.
 
