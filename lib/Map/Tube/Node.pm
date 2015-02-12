@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.80';
+$Map::Tube::Node::VERSION   = '2.81';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.80
+Version 2.81
 
 =cut
 
@@ -33,23 +33,27 @@ sub as_string {
     return sprintf("%s (%s)", $self->name, $line);
 }
 
+=head1 DESCRIPTION
+
+B<FOR INTERNAL USE ONLY>
+
 =head1 METHODS
 
 =head2 id()
 
-Returns the station id as defined in the map data.
+Returns the station id.
 
 =head2 name()
 
-Returns the station name as defined in the map data.
+Returns the station name.
 
 =head2 link()
 
-Returns the linked station id as defined in the map data.
+Returns comma seperated linked station id.
 
 =head2 line()
 
-Returns ref to a list of objects of type L<Map::Tube::Line> of the node.
+Returns ref to a list of objects of type L<Map::Tube::Line>.
 
 =head1 AUTHOR
 

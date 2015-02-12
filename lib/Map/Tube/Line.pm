@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.80';
+$Map::Tube::Line::VERSION   = '2.81';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.80
+Version 2.81
 
 =cut
 
@@ -28,6 +28,10 @@ has name     => (is => 'ro', required => 1);
 has color    => (is => 'rw');
 has stations => (is => 'rw');
 
+=head1 DESCRIPTION
+
+B<FOR INTERNAL USE ONLY>
+
 =head1 METHODS
 
 =head2 id()
@@ -40,11 +44,11 @@ Returns the line name.
 
 =head2 color()
 
-Returns the color name of the line, if available.
+Returns the color name of the line.
 
 =head2 add_station($station)
 
-Adds station (object of type L<Map::Tube::Node>) to the line.
+Adds station, an object of type L<Map::Tube::Node>, to the line.
 
 =cut
 
@@ -75,7 +79,7 @@ sub add_station {
 
 =head2 get_stations()
 
-Returns a ref to the list of stations (object of type L<Map::Tube::Node>) of the line.
+Returns ref to a list of stations i.e. object of type L<Map::Tube::Node>.
 
 =cut
 

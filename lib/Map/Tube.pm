@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.80';
+$Map::Tube::VERSION   = '2.81';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.80
+Version 2.81
 
 =cut
 
@@ -67,12 +67,13 @@ This role has been taken by the following modules (and many more):
 has name          => (is => 'rw');
 has nodes         => (is => 'rw');
 has lines         => (is => 'rw');
-has _lines        => (is => 'rw');
 has tables        => (is => 'rw');
 has routes        => (is => 'rw');
 has name_to_id    => (is => 'rw');
-has _active_links => (is => 'rw');
 has plugins       => (is => 'rw');
+
+has _active_links => (is => 'rw');
+has _lines        => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
@@ -218,7 +219,7 @@ sub get_stations {
 
 =head1 PLUGINS
 
-=head2 L<Map::Tube::Plugin::Graph>
+=head2 * L<Map::Tube::Plugin::Graph>
 
 The L<Map::Tube::Plugin::Graph> plugin add the support to generate the entire map
 or map for a particular line as base64 encoded string (png image).
@@ -648,8 +649,7 @@ sub _format {
     return unless defined $data;
 
     $data =~ s/\s+/ /g;
-    $data =~ s/^\s+//g;
-    $data =~ s/\s+$//g;
+    $data =~ s/^\s+|\s+$//g;
 
     return $data;
 }
@@ -699,7 +699,7 @@ L<Map::Metro>
 
 =over 2
 
-=item * Gisbert W. Selke (map data validation)
+=item * Gisbert W. Selke
 
 =item * Michal Špaček
 
