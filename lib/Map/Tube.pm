@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.81';
+$Map::Tube::VERSION   = '2.82';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.81
+Version 2.82
 
 =cut
 
@@ -120,10 +120,10 @@ sub get_shortest_route {
 =head2 get_all_routes($from, $to) *** EXPERIMENTAL ***
 
 Expects 'from' and 'to' station name and returns ref to a list of objects of type
-L<Map::Tube::Route>. On error it returns an object of type L<Map::Tube::Exception>.
+L<Map::Tube::Route>.On error it returns an object of type L<Map::Tube::Exception>.
 
-Be carefull when using against a large map. You may encountered warning as 'deep-recursion'.
-It throws the following error when run against London map.
+Be carefull when using against a large map. You  may encounter warning similar to
+as shown below when run against London map.
 
 Deep recursion on subroutine "Map::Tube::_get_all_routes"
 
@@ -146,9 +146,13 @@ sub get_all_routes {
     return $self->_get_all_routes([ $from ], $to);
 }
 
+=head2 get_name()
+
+Returns map name.
+
 =head2 get_node_by_id($node_id)
 
-Returns node object of type L<Map::Tube::Node> for the given node id.
+Returns an object of type L<Map::Tube::Node>.
 
 =cut
 
@@ -160,7 +164,7 @@ sub get_node_by_id {
 
 =head2 get_node_by_name($node_name)
 
-Returns node object of type L<Map::Tube::Node> for the given node name.
+Returns an object of type L<Map::Tube::Node>.
 
 =cut
 
@@ -187,7 +191,7 @@ sub get_lines {
 
 =head2 get_stations($line_name)
 
-Returns ref to a list of objects of type L<Map::Tube::Node> for the given line.
+Returns ref to a list of objects of type L<Map::Tube::Node>.
 
 =cut
 
@@ -224,7 +228,7 @@ sub get_stations {
 The L<Map::Tube::Plugin::Graph> plugin add the support to generate the entire map
 or map for a particular line as base64 encoded string (png image).
 
-Please refer the L<documentation|Map::Tube::Plugin::Graph> for more details.
+Please refer to the L<documentation|Map::Tube::Plugin::Graph> for more details.
 
 =cut
 
