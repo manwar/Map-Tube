@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '2.82';
+$Map::Tube::Route::VERSION   = '2.83';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.82
+Version 2.83
 
 =cut
 
@@ -96,8 +96,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This  program  is  free software;  you can redistribute it and/or modify it under
+the  terms  of the the Artistic  License (2.0). You may obtain a copy of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>

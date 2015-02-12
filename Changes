@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.83  2015-02-12T23:20:00+01:00
+      - Fixed the typo in class description of Map::Tube::Error and Map::Tube::Exception.
+
 2.82  2015-02-12T17:50:00+01:00
       - Documented method get_name() in the pod document of Map::Tube.
       - Tidied up description of some other methods as well in the pod document.
