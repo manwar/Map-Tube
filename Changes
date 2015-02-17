@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.84  2015-02-17T17:25:00+01:00
+      - Documented plugin Map::Tube::Plugin::FuzzyFind by Gisbert W. Selke in the pod document of Map::Tube.
+
 2.83  2015-02-12T23:20:00+01:00
       - Fixed the typo in class description of Map::Tube::Error and Map::Tube::Exception.
 

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.83';
+$Map::Tube::VERSION   = '2.84';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.83
+Version 2.84
 
 =cut
 
@@ -229,6 +229,14 @@ The L<Map::Tube::Plugin::Graph> plugin add the support to generate the entire ma
 or map for a particular line as base64 encoded string (png image).
 
 Please refer to the L<documentation|Map::Tube::Plugin::Graph> for more details.
+
+=head2 * L<Map::Tube::Plugin::FuzzyFind>
+
+Gisbert W. Selke, built the add-on for L<Map::Tube> to find stations and lines by
+name, possibly partly or inexactly specified. The module is a Moo role which gets
+plugged into the Map::Tube::* family automatically once it is installed.
+
+Please refer to the L<documentation|Map::Tube::Plugin::FuzzyFind> for more info.
 
 =cut
 
