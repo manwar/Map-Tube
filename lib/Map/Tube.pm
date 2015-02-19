@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.84';
+$Map::Tube::VERSION   = '2.85';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.84
+Version 2.85
 
 =cut
 
@@ -265,7 +265,7 @@ sub _get_shortest_route {
             my $links = [ split /\,/, $f_node->{link} ];
             while (scalar(@$links) > 0) {
                 my ($success, $link) = $self->_get_next_link($from, $seen, $links);
-                $success or ($links = [ grep(!/$link/, @$links) ]) and next;
+                $success or ($links = [ grep(!/\b$link\b/, @$links) ]) and next;
 
                 if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
                     $self->_set_length($link, $length + 1);
@@ -274,13 +274,13 @@ sub _get_shortest_route {
                 }
 
                 $seen->{$link} = 1;
-                $links = [ grep(!/$link/, @$links) ];
+                $links = [ grep(!/\b$link\b/, @$links) ];
             }
         }
 
         $index = $length + 1;
         $from  = shift @$nodes;
-        $nodes = [ grep(!/$from/, @$nodes) ] if defined $from;
+        $nodes = [ grep(!/\b$from\b/, @$nodes) ] if defined $from;
     }
 }
 

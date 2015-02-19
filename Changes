@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.85  2015-02-18T17:25:00+01:00
+      - Fixed the nasty regex bug in the method Map::Tube::_get_shortest_route(), issue
+        raised by Map::Tube::Beijing (author Gisbert W. Selke).
+
 2.84  2015-02-17T17:25:00+01:00
       - Documented plugin Map::Tube::Plugin::FuzzyFind by Gisbert W. Selke in the pod document of Map::Tube.
 
