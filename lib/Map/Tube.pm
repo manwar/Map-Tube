@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.85';
+$Map::Tube::VERSION   = '2.86';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.85
+Version 2.86
 
 =cut
 
@@ -79,7 +79,6 @@ sub BUILD {
     my ($self) = @_;
 
     $self->_init_map;
-    $self->_validate_map_data;
     $self->_load_plugins;
 }
 
@@ -237,6 +236,22 @@ name, possibly partly or inexactly specified. The module is a Moo role which get
 plugged into the Map::Tube::* family automatically once it is installed.
 
 Please refer to the L<documentation|Map::Tube::Plugin::FuzzyFind> for more info.
+
+=head1 How to validate raw map data (xml)?
+
+The package L<Test::Map::Tube> can easily be used to validate raw map data.Anyone
+building a new map using L<Map::Tube> is advised to have a unit test as a part of
+their distribution. Just like in L<London Map|Map::Tube::London>, there is a unit
+test something like below:
+
+    use strict; use warnings;
+    use Test::More;
+    use Map::Tube::London;
+
+    eval "use Test::Map::Tube";
+    plan skip_all => "Skipping, required Test::Map::Tube" if $@;
+
+    ok_map(Map::Tube::London->new);
 
 =cut
 

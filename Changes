@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+2.86  2015-02-20T16:05:00+01:00
+      - Removed call to method _validate_map_data() at the point of object creation,
+        instead it would now be validated at the build time if you have Test::Map::Tube
+        installed.
+
 2.85  2015-02-18T17:25:00+01:00
       - Fixed the nasty regex bug in the method Map::Tube::_get_shortest_route(), issue
         raised by Map::Tube::Beijing (author Gisbert W. Selke).
