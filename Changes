@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.87  2015-02-22T17:45:00+01:00
+      - Tidied up the pod document.
+
 2.86  2015-02-20T16:05:00+01:00
       - Removed call to method _validate_map_data() at the point of object creation,
         instead it would now be validated at the build time if you have Test::Map::Tube

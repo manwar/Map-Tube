@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.86';
+$Map::Tube::Line::VERSION   = '2.87';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.86
+Version 2.87
 
 =cut
 
@@ -48,7 +48,7 @@ Returns the color name of the line.
 
 =head2 add_station($station)
 
-Adds station, an object of type L<Map::Tube::Node>, to the line.
+Adds C<$station>, an object of type L<Map::Tube::Node>, to the line.
 
 =cut
 

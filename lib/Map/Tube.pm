@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.86';
+$Map::Tube::VERSION   = '2.87';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.86
+Version 2.87
 
 =cut
 
@@ -86,8 +86,8 @@ sub BUILD {
 
 =head2 get_shortest_routes($from, $to)
 
-Expects 'from' and 'to' station name and returns an object of type L<Map::Tube::Route>.
-On error it returns an object of type L<Map::Tube::Exception>.
+It expects C<$from> and C<$to> station name, required param. It returns an object
+of type L<Map::Tube::Route>. On error it throws exception of type L<Map::Tube::Exception>.
 
 =cut
 
@@ -118,8 +118,9 @@ sub get_shortest_route {
 
 =head2 get_all_routes($from, $to) *** EXPERIMENTAL ***
 
-Expects 'from' and 'to' station name and returns ref to a list of objects of type
-L<Map::Tube::Route>.On error it returns an object of type L<Map::Tube::Exception>.
+It expects C<$from> and C<$to> station name, required param. It  returns ref to a
+list of objects of type L<Map::Tube::Route>. On error it throws exception of type
+L<Map::Tube::Exception>.
 
 Be carefull when using against a large map. You  may encounter warning similar to
 as shown below when run against London map.
@@ -237,19 +238,19 @@ plugged into the Map::Tube::* family automatically once it is installed.
 
 Please refer to the L<documentation|Map::Tube::Plugin::FuzzyFind> for more info.
 
-=head1 How to validate raw map data (xml)?
+=head1 MAP DATA VALIDATION
 
 The package L<Test::Map::Tube> can easily be used to validate raw map data.Anyone
 building a new map using L<Map::Tube> is advised to have a unit test as a part of
-their distribution. Just like in L<London Map|Map::Tube::London>, there is a unit
-test something like below:
+their distribution.Just like in L<Map::Tube::London> package,there is a unit test
+something like below:
 
     use strict; use warnings;
     use Test::More;
     use Map::Tube::London;
 
     eval "use Test::Map::Tube";
-    plan skip_all => "Skipping, required Test::Map::Tube" if $@;
+    plan skip_all => "Test::Map::Tube required" if $@;
 
     ok_map(Map::Tube::London->new);
 
@@ -771,8 +772,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This program  is  free software; you can redistribute it and / or modify it under
+the  terms  of the the Artistic License (2.0). You may obtain a  copy of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
