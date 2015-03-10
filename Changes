@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+2.88  2015-03-10T12:20:00+01:00
+      - Added new package Map::Tube::Utils.
+      - Updated unit test t/00-load.t to load the new package.
+      - Updated Map::Tube::Pluggable to set the max_depth to 4.
+
 2.87  2015-02-22T17:45:00+01:00
       - Tidied up the pod document.
 

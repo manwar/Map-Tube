@@ -1,11 +1,11 @@
-package Map::Tube::Node;
+package Map::Tube::Utils;
 
-$Map::Tube::Node::VERSION   = '2.88';
-$Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
+$Map::Tube::Utils::VERSION   = '2.88';
+$Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Node - Class to represent the node in the map.
+Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
@@ -14,46 +14,59 @@ Version 2.88
 =cut
 
 use 5.006;
-use Data::Dumper;
+use strict; use warnings;
 
-use Moo;
-use namespace::clean;
-
-use overload q{""} => 'as_string', fallback => 1;
-
-has id   => (is => 'ro', required => 1);
-has name => (is => 'ro', required => 1);
-has link => (is => 'ro', required => 1);
-has line => (is => 'ro', required => 1);
-
-sub as_string {
-    my ($self) = @_;
-
-    my $line = join ', ', @{$self->line};
-    return sprintf("%s (%s)", $self->name, $line);
-}
+use vars qw(@ISA @EXPORT_OK);
+require Exporter;
+@ISA       = qw(Exporter);
+@EXPORT_OK = qw(is_same trim common_lines);
 
 =head1 DESCRIPTION
 
-B<FOR INTERNAL USE ONLY>
+B<FOR INTERNAL USE ONLY>.
 
-=head1 METHODS
+=cut
 
-=head2 id()
+sub trim {
+    my ($data) = @_;
 
-Returns the station id.
+    return unless defined $data;
 
-=head2 name()
+    $data =~ s/\s+/ /g;
+    $data =~ s/^\s+|\s+$//g;
 
-Returns the station name.
+    return $data;
+}
 
-=head2 link()
+sub is_same {
+    my ($this, $that) = @_;
 
-Returns comma seperated linked station id.
+    return 0 unless (defined($this) && defined($that));
 
-=head2 line()
+    (_is_number($this) && _is_number($that))
+    ?
+    (return ($this == $that))
+    :
+    (uc($this) eq uc($that));
+}
 
-Returns ref to a list of objects of type L<Map::Tube::Line>.
+sub common_lines {
+    my ($array1, $array2) = @_;
+
+    my %element = map { $_ => undef } @{$array1};
+    return grep { exists($element{$_}) } @{$array2};
+}
+
+#
+#
+# PRIVATE METHODS
+
+sub _is_number {
+    my ($this) = @_;
+
+    return (defined($this)
+            && ($this =~ /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/));
+}
 
 =head1 AUTHOR
 
@@ -67,14 +80,14 @@ L<https://github.com/Manwar/Map-Tube>
 
 Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,  or
 through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube>.
-I will  be notified and then you'll automatically be notified of progress on your
+I will be notified, and then you'll automatically be notified of progress on your
 bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Node
+    perldoc Map::Tube::Utils
 
 You can also look for information at:
 
@@ -102,9 +115,9 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This program is free software;you can  redistribute it and/or modify it under the
-terms of the the Artistic License(2.0). You may obtain a copy of the full license
-at:
+This program  is  free software; you can redistribute it and / or modify it under
+the  terms  of the the Artistic License  (2.0). You may obtain a copy of the full
+license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 
@@ -138,4 +151,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Node
+1; # End of Map::Tube::Utils

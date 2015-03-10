@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.87';
+$Map::Tube::VERSION   = '2.88';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.87
+Version 2.88
 
 =cut
 
@@ -23,6 +23,7 @@ use Map::Tube::Route;
 use Map::Tube::Pluggable;
 use Map::Tube::Exception;
 use Map::Tube::Error qw(:constants);
+use Map::Tube::Utils qw(is_same trim common_lines);
 
 use Moo::Role;
 use Role::Tiny qw();
@@ -103,7 +104,7 @@ sub get_shortest_route {
     $self->_get_shortest_route($from);
 
     my $nodes = [];
-    while (defined($to) && !(_is_same($from, $to))) {
+    while (defined($to) && !(is_same($from, $to))) {
         push @$nodes, $self->get_node_by_id($to);
         $to = $self->_get_path($to);
     }
@@ -308,7 +309,7 @@ sub _get_all_routes {
     foreach my $id (split /\,/, $nodes) {
         next if _is_visited($id, $visited);
 
-        if (_is_same($id, $to)) {
+        if (is_same($id, $to)) {
             push @$visited, $id;
             $self->_set_routes($visited);
             pop @$visited;
@@ -317,7 +318,7 @@ sub _get_all_routes {
     }
 
     foreach my $id (split /\,/, $nodes) {
-        next if (_is_visited($id, $visited) || _is_same($id, $to));
+        next if (_is_visited($id, $visited) || is_same($id, $to));
 
         push @$visited, $id;
         $self->_get_all_routes($visited, $to);
@@ -347,7 +348,7 @@ sub _validate_input {
         line_number => $caller[2] })
         unless (defined($from) && defined($to));
 
-    $from = _format($from);
+    $from = trim($from);
     my $_from = $self->get_node_by_name($from);
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::$method",
@@ -357,7 +358,7 @@ sub _validate_input {
         line_number => $caller[2] })
         unless (defined $_from);
 
-    $to = _format($to);
+    $to = trim($to);
     my $_to = $self->get_node_by_name($to);
     Map::Tube::Exception->throw({
         method      => __PACKAGE__."::$method",
@@ -460,19 +461,12 @@ sub _load_plugins {
     }
 }
 
-sub _common_lines {
-    my ($array1, $array2) = @_;
-
-    my %element = map { $_ => undef } @{$array1};
-    return grep { exists($element{$_}) } @{$array2};
-}
-
 sub _get_next_link {
     my ($self, $from, $seen, $links) = @_;
 
     my $nodes        = $self->{nodes};
     my $active_links = $self->{_active_links};
-    my @common_lines = _common_lines($active_links->[0], $active_links->[1]);
+    my @common_lines = common_lines($active_links->[0], $active_links->[1]);
     my $link         = undef;
 
     foreach my $_link (@$links) {
@@ -484,7 +478,7 @@ sub _get_next_link {
         my @lines = ();
         foreach (@{$node->{line}}) { push @lines, $_->{name}; }
 
-        my @common = _common_lines(\@common_lines, \@lines);
+        my @common = common_lines(\@common_lines, \@lines);
         return (1, $_link) if (scalar(@common) > 0);
 
         $link = $_link;
@@ -671,44 +665,14 @@ sub _get_node_id {
     return $self->{name_to_id}->{uc($name)};
 }
 
-sub _format {
-    my ($data) = @_;
-
-    return unless defined $data;
-
-    $data =~ s/\s+/ /g;
-    $data =~ s/^\s+|\s+$//g;
-
-    return $data;
-}
-
-sub _is_same {
-    my ($this, $that) = @_;
-
-    return 0 unless (defined($this) && defined($that));
-
-    (_is_number($this) && _is_number($that))
-    ?
-    (return ($this == $that))
-    :
-    (uc($this) eq uc($that));
-}
-
 sub _is_visited {
     my ($id, $list) = @_;
 
     foreach (@$list) {
-        return 1 if _is_same($_, $id);
+        return 1 if is_same($_, $id);
     }
 
     return 0;
-}
-
-sub _is_number {
-    my ($this) = @_;
-
-    return (defined($this)
-            && ($this =~ /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/));
 }
 
 =head1 AUTHOR

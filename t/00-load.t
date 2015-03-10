@@ -2,7 +2,7 @@
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 BEGIN {
     use_ok('Map::Tube')            || print "Bail out!\n";
@@ -11,6 +11,7 @@ BEGIN {
     use_ok('Map::Tube::Table')     || print "Bail out!\n";
     use_ok('Map::Tube::Route')     || print "Bail out!\n";
     use_ok('Map::Tube::Error')     || print "Bail out!\n";
+    use_ok('Map::Tube::Utils')     || print "Bail out!\n";
     use_ok('Map::Tube::Exception') || print "Bail out!\n";
     use_ok('Map::Tube::Pluggable') || print "Bail out!\n";
 }
