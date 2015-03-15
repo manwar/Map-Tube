@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.88';
+$Map::Tube::VERSION   = '2.89';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.88
+Version 2.89
 
 =cut
 
@@ -407,6 +407,23 @@ sub _init_map {
             $_lines->{$uc_line} = $line;
             $lines->{$uc_line}  = $line;
             push @$_station_lines, $line;
+        }
+
+        if (exists $station->{other_link} && defined $station->{other_link}) {
+            my @link_nodes = ();
+            foreach my $_entry (split /\,/, $station->{other_link}) {
+                my ($_link_type, $_nodes) = split /\:/, $_entry, 2;
+                my $uc_link_type = uc($_link_type);
+                my $line    = $lines->{$uc_link_type};
+                $line = Map::Tube::Line->new({ name => $_link_type }) unless defined $line;
+                $_lines->{$uc_link_type} = $line;
+                $lines->{$uc_link_type}  = $line;
+
+                push @$_station_lines, $line;
+                push @link_nodes, (split /\|/, $_nodes);
+            }
+
+            $station->{link} .= "," . join(",", @link_nodes);
         }
 
         $station->{line} = $_station_lines;

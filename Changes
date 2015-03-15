@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.89  2015-03-15T17:15:00+01:00
+      - Proposed solution for issue RT: #102438 subject to feedbacks.
+
 2.88  2015-03-10T12:20:00+01:00
       - Added new package Map::Tube::Utils.
       - Updated unit test t/00-load.t to load the new package.
