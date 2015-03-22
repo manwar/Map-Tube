@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.91  2015-03-22T11:05:00+01:00
+      - Added section "SYNOPSIS" to the package Map::Tube.
+
 2.90  2015-03-22T09:45:00+01:00
       - Added new method preferred() to the package Map::Tube::Route.
 

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.90';
+$Map::Tube::VERSION   = '2.91';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.90
+Version 2.91
 
 =cut
 
@@ -82,6 +82,32 @@ sub BUILD {
     $self->_init_map;
     $self->_load_plugins;
 }
+
+=head1 SYNOPSIS
+
+=head2 Common Usage
+
+    use strict; use warnings;
+    use Map::Tube::London;
+
+    my $tube = Map::Tube::London->new;
+    print $tube->get_shortest_route('Baker Street', 'Farringdon'), "\n";
+
+You should expect the result like below:
+
+    Baker Street (Circle, Hammersmith & City, Bakerloo, Metropolitan, Jubilee), Great Portland Street (Circle, Hammersmith & City, Metropolitan), Euston Square (Circle, Hammersmith & City, Metropolitan), King's Cross St. Pancras (Circle, Hammersmith & City, Victoria, Metropolitan, Piccadilly, Northern, Street), Farringdon (Circle, Hammersmith & City, Metropolitan)
+
+=head2 Special Usage
+
+    use strict; use warnings;
+    use Map::Tube::London;
+
+    my $tube = Map::Tube::London->new;
+    print $tube->get_shortest_route('Baker Street', 'Farringdon')->preferred, "\n";
+
+You should now expect the result like below:
+
+    Baker Street (Circle), Great Portland Street (Circle), Euston Square (Circle), King's Cross St. Pancras (Circle), Farringdon (Circle)
 
 =head1 METHODS
 
