@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.92  2015-03-22T11:45:00+01:00
+      - Documented new plugin Map::Tube::Plugin::Formatter in the package Map::Tube.
+
 2.91  2015-03-22T11:05:00+01:00
       - Added section "SYNOPSIS" to the package Map::Tube.
 
