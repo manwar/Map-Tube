@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '2.89';
+$Map::Tube::Utils::VERSION   = '2.90';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 2.89
+Version 2.90
 
 =cut
 
@@ -19,7 +19,7 @@ use strict; use warnings;
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT_OK = qw(is_same trim common_lines);
+@EXPORT_OK = qw(is_same trim common_lines intersect);
 
 =head1 DESCRIPTION
 
@@ -51,10 +51,20 @@ sub is_same {
 }
 
 sub common_lines {
-    my ($array1, $array2) = @_;
+    my ($a, $b) = @_;
 
-    my %element = map { $_ => undef } @{$array1};
-    return grep { exists($element{$_}) } @{$array2};
+    my %element = map { $_ => undef } @{$a};
+    return grep { exists($element{$_}) } @{$b};
+}
+
+sub intersect {
+    my ($a, $b) = @_;
+
+    my $union = {};
+    my $isect = {};
+
+    foreach my $e (@$a, @$b) { $union->{$e}++ && $isect->{$e}++; }
+    return (sort keys %$isect);
 }
 
 #

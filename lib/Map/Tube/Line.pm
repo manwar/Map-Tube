@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.89';
+$Map::Tube::Line::VERSION   = '2.90';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.89
+Version 2.90
 
 =cut
 
@@ -30,7 +30,7 @@ has stations => (is => 'rw');
 
 =head1 DESCRIPTION
 
-B<FOR INTERNAL USE ONLY>
+It provides simple interface to the 'line' of the map.
 
 =head1 METHODS
 

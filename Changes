@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.90  2015-03-22T09:45:00+01:00
+      - Added new method preferred() to the package Map::Tube::Route.
+
 2.89  2015-03-15T17:15:00+01:00
       - Proposed solution for issue RT: #102438 subject to feedbacks.
 

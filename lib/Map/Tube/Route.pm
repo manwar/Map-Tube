@@ -15,6 +15,8 @@ Version 2.89
 
 use 5.006;
 use Data::Dumper;
+use Map::Tube::Utils qw(intersect);
+
 use Moo;
 use namespace::clean;
 
@@ -24,15 +26,9 @@ has from  => (is => 'ro', required => 1);
 has to    => (is => 'ro', required => 1);
 has nodes => (is => 'ro', required => 1);
 
-sub as_string {
-    my ($self) = @_;
-
-    return join ", ", @{$self->nodes};
-}
-
 =head1 DESCRIPTION
 
-B<FOR INTERNAL USE ONLY>
+It provides simple access to the route.
 
 =head1 METHODS
 
@@ -48,6 +44,41 @@ Returns an object of type L<Map::Tube::Node> representing the end station.
 
 Returns ref to a list of objects of type L<Map::Tube::Node> representing the path
 from "start" to "end" station.
+
+=head2 preferred()
+
+Returns preferred route as string.
+
+=cut
+
+sub preferred {
+    my ($self) = @_;
+
+    my $nodes  = [];
+    foreach my $node (@{$self->nodes}) {
+        push @$nodes, { name => $node->name, line => [ map { $_->name } @{$node->line} ] };
+    }
+
+    my $route = [];
+    for my $i (0..$#$nodes-1) {
+        my @intersection = intersect($nodes->[$i]->{line}, $nodes->[$i+1]->{line});
+
+        if (scalar @intersection) {
+            my $isect = shift @intersection;
+
+            push @$route, sprintf("%s (%s)", $nodes->[$i]->{name},   $isect) if ($i == 0);
+            push @$route, sprintf("%s (%s)", $nodes->[$i+1]->{name}, $isect);
+        }
+    }
+
+    return join(", ", @$route);
+}
+
+sub as_string {
+    my ($self) = @_;
+
+    return join ", ", @{$self->nodes};
+}
 
 =head1 AUTHOR
 
