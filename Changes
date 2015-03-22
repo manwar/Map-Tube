@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.93  2015-03-22T22:00:00+01:00
+      - Updated method get_lines() in the package Map::Tube to filter out other links.
+
 2.92  2015-03-22T11:45:00+01:00
       - Documented new plugin Map::Tube::Plugin::Formatter in the package Map::Tube.
 

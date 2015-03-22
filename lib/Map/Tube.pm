@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.92';
+$Map::Tube::VERSION   = '2.93';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.92
+Version 2.93
 
 =cut
 
@@ -74,6 +74,7 @@ has name_to_id    => (is => 'rw');
 has plugins       => (is => 'rw');
 
 has _active_links => (is => 'rw');
+has _other_links  => (is => 'rw');
 has _lines        => (is => 'rw');
 
 sub BUILD {
@@ -212,7 +213,18 @@ Returns ref to a list of objects of type L<Map::Tube::Line>.
 sub get_lines {
     my ($self) = @_;
 
-    return $self->{lines};
+    my $lines = [];
+    if (defined $self->{_other_links} && scalar(keys %{$self->{_other_links}})) {
+        foreach (@{$self->{lines}}) {
+            push @$lines, $_
+                unless (exists $self->{_other_links}->{uc($_->name)});
+        }
+    }
+    else {
+        $lines = $self->{lines};
+    }
+
+    return $lines;
 }
 
 =head2 get_stations($line_name)
@@ -410,6 +422,7 @@ sub _init_map {
     my $lines  = {};
     my $nodes  = {};
     my $tables = {};
+    my $_other_links = {};
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
     $self->{name} = $xml->{name};
 
@@ -450,6 +463,7 @@ sub _init_map {
                 $line = Map::Tube::Line->new({ name => $_link_type }) unless defined $line;
                 $_lines->{$uc_link_type} = $line;
                 $lines->{$uc_link_type}  = $line;
+                $_other_links->{$uc_link_type} = 1;
 
                 push @$_station_lines, $line;
                 push @link_nodes, (split /\|/, $_nodes);
@@ -486,6 +500,7 @@ sub _init_map {
 
     $self->lines([ values %$lines ]);
     $self->_lines($_lines);
+    $self->_other_links($_other_links);
     $self->nodes($nodes);
     $self->tables($tables);
 }
