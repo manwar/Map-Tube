@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.93';
+$Map::Tube::VERSION   = '2.94';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.93
+Version 2.94
 
 =cut
 
@@ -757,7 +757,7 @@ L<Map::Metro>
 
 =item * Gisbert W. Selke, C<< <gws at cpan.org> >>
 
-=item * Michal Špaček, C<< <skim @ cpan.org> >>
+=item * Michal Špaček, C<< <skim at cpan.org> >>
 
 =back
 

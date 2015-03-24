@@ -34,15 +34,15 @@ WriteMakefile(
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.93' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.93' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.93' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.93' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.93' },
-            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.93' },
-            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '2.93' },
-            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.93' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.93' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.94' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.94' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.94' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.94' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.94' },
+            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.94' },
+            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '2.94' },
+            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.94' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.94' },
         },
         resources => {
             repository => {

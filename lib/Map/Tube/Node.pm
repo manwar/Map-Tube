@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.93';
+$Map::Tube::Node::VERSION   = '2.94';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.93
+Version 2.94
 
 =cut
 
@@ -35,7 +35,7 @@ sub as_string {
 
 =head1 DESCRIPTION
 
-B<FOR INTERNAL USE ONLY>
+It provides simple interface to the 'node' of the map.
 
 =head1 METHODS
 
