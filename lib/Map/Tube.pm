@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.94';
+$Map::Tube::VERSION   = '2.95';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.94
+Version 2.95
 
 =cut
 
@@ -92,11 +92,11 @@ sub BUILD {
     use Map::Tube::London;
 
     my $tube = Map::Tube::London->new;
-    print $tube->get_shortest_route('Baker Street', 'Farringdon'), "\n";
+    print $tube->get_shortest_route('Baker Street', 'Euston Square'), "\n";
 
 You should expect the result like below:
 
-    Baker Street (Circle, Hammersmith & City, Bakerloo, Metropolitan, Jubilee), Great Portland Street (Circle, Hammersmith & City, Metropolitan), Euston Square (Circle, Hammersmith & City, Metropolitan), King's Cross St. Pancras (Circle, Hammersmith & City, Victoria, Metropolitan, Piccadilly, Northern, Street), Farringdon (Circle, Hammersmith & City, Metropolitan)
+    Baker Street (Circle, Hammersmith & City, Bakerloo, Metropolitan, Jubilee), Great Portland Street (Circle, Hammersmith & City, Metropolitan), Euston Square (Circle, Hammersmith & City, Metropolitan)
 
 =head2 Special Usage
 
@@ -104,11 +104,11 @@ You should expect the result like below:
     use Map::Tube::London;
 
     my $tube = Map::Tube::London->new;
-    print $tube->get_shortest_route('Baker Street', 'Farringdon')->preferred, "\n";
+    print $tube->get_shortest_route('Baker Street', 'Euston Square')->preferred, "\n";
 
 You should now expect the result like below:
 
-    Baker Street (Circle), Great Portland Street (Circle), Euston Square (Circle), King's Cross St. Pancras (Circle), Farringdon (Circle)
+    Baker Street (Circle, Hammersmith & City, Metropolitan), Great Portland Street (Circle, Hammersmith & City, Metropolitan), Euston Square (Circle, Hammersmith & City, Metropolitan)
 
 =head1 METHODS
 

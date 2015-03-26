@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '2.94';
+$Map::Tube::Route::VERSION   = '2.95';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,13 +9,13 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.94
+Version 2.95
 
 =cut
 
 use 5.006;
 use Data::Dumper;
-use Map::Tube::Utils qw(intersect);
+use Map::Tube::Utils qw(filter);
 
 use Moo;
 use namespace::clean;
@@ -54,21 +54,17 @@ Returns preferred route as string.
 sub preferred {
     my ($self) = @_;
 
-    my $nodes  = [];
+    my $nodes = [];
+    my $lines = [];
     foreach my $node (@{$self->nodes}) {
-        push @$nodes, { name => $node->name, line => [ map { $_->name } @{$node->line} ] };
+        push @$nodes, { name => $node->name };
+        push @$lines, [ map { $_->name } @{$node->{line}} ];
     }
 
+    my $data  = filter($lines);
     my $route = [];
-    for my $i (0..$#$nodes-1) {
-        my @intersection = intersect($nodes->[$i]->{line}, $nodes->[$i+1]->{line});
-
-        if (scalar @intersection) {
-            my $isect = shift @intersection;
-
-            push @$route, sprintf("%s (%s)", $nodes->[$i]->{name},   $isect) if ($i == 0);
-            push @$route, sprintf("%s (%s)", $nodes->[$i+1]->{name}, $isect);
-        }
+    for my $i (0..$#$nodes) {
+        push @$route, sprintf("%s (%s)", $nodes->[$i]->{name}, join(", ", @{$data->[$i]}));
     }
 
     return join(", ", @$route);

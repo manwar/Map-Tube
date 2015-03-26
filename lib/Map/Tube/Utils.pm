@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '2.94';
+$Map::Tube::Utils::VERSION   = '2.95';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 2.94
+Version 2.95
 
 =cut
 
@@ -19,7 +19,7 @@ use strict; use warnings;
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT_OK = qw(is_same trim common_lines intersect);
+@EXPORT_OK = qw(is_same trim common_lines filter);
 
 =head1 DESCRIPTION
 
@@ -57,14 +57,36 @@ sub common_lines {
     return grep { exists($element{$_}) } @{$b};
 }
 
-sub intersect {
-    my ($a, $b) = @_;
+sub filter {
+    my ($data) = @_;
 
-    my $union = {};
-    my $isect = {};
+    my %c;
+    for my $i (0 .. $#$data) {
+        for my $m (@{ $data->[$i] }) {
+            undef $c{$m}{$i};
+        }
+    }
 
-    foreach my $e (@$a, @$b) { $union->{$e}++ && $isect->{$e}++; }
-    return (sort keys %$isect);
+    my @common = sort { $a cmp $b }
+    grep @$data == keys %{ $c{$_} },
+    keys %c;
+
+    return [ map [@common], @$data ] if @common;
+
+    my %r;
+    for my $i (0 .. $#$data - 1) {
+        for my $m (@{ $data->[$i] }) {
+            if (exists $c{$m}{ $i + 1 }) {
+                undef $r{$_}{$m} for $i, $i + 1;
+            }
+        }
+    }
+
+    return [
+        map [ sort { $a cmp $b }
+              keys %{ $r{$_} } ],
+        sort { $a cmp $b } keys %r
+    ];
 }
 
 #
