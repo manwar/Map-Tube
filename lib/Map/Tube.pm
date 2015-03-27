@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.95';
+$Map::Tube::VERSION   = '2.96';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.95
+Version 2.96
 
 =cut
 
@@ -202,6 +202,40 @@ sub get_node_by_name {
     return unless (defined $name && defined $self->_get_node_id($name));
 
     return $self->get_node_by_id($self->_get_node_id($name));
+}
+
+=head2 get_line_by_id($line_id)
+
+Returns an object of type L<Map::Tube::Line>.
+
+=cut
+
+sub get_line_by_id {
+    my ($self, $id) = @_;
+
+    return unless defined $id;
+
+    foreach my $name (keys %{$self->{_lines}}) {
+        return $self->{_lines}->{$name}
+            if ($id == $self->{_lines}->{$name}->id);
+    }
+
+    return;
+}
+
+=head2 get_line_by_name($line_name)
+
+Returns an object of type L<Map::Tube::Line>.
+
+=cut
+
+sub get_line_by_name {
+    my ($self, $name) = @_;
+
+    return unless defined $name;
+    return unless exists $self->{_lines}->{uc($name)};
+
+    return $self->{_lines}->{uc($name)};
 }
 
 =head2 get_lines()

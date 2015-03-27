@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '2.95';
+$Map::Tube::Route::VERSION   = '2.96';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.95
+Version 2.96
 
 =cut
 
