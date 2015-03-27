@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.96';
+$Map::Tube::VERSION   = '2.97';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.96
+Version 2.97
 
 =cut
 
@@ -295,21 +295,21 @@ sub get_stations {
 
 =head1 PLUGINS
 
-=head2 L<Map::Tube::Plugin::Graph>
+=head2 * L<Map::Tube::Plugin::Graph>
 
 The L<Map::Tube::Plugin::Graph> plugin add the support to generate the entire map
 or map for a particular line as base64 encoded string (png image).
 
 Please refer to the L<documentation|Map::Tube::Plugin::Graph> for more details.
 
-=head2 L<Map::Tube::Plugin::Formatter>
+=head2 * L<Map::Tube::Plugin::Formatter>
 
 The L<Map::Tube::Plugin::Formatter> plugin adds the  support to format the object
 supported by the plugin.
 
 Please refer to the L<documentation|Map::Tube::Plugin::Formatter> for more info.
 
-=head2 L<Map::Tube::Plugin::FuzzyFind>
+=head2 * L<Map::Tube::Plugin::FuzzyFind>
 
 Gisbert W. Selke, built the add-on for L<Map::Tube> to find stations and lines by
 name, possibly partly or inexactly specified. The module is a Moo role which gets
