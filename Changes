@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+2.98  2015-03-29T17:35:00+01:00
+      - Proposed solution for issue RT: #103168 subject to feedbacks.
+
 2.97  2015-03-27T20:30:00+01:00
       - Updated method Map::Tube::Route::preferred() to return an object of type L<Map::Tube::Route>.
 

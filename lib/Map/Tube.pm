@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.97';
+$Map::Tube::VERSION   = '2.98';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.97
+Version 2.98
 
 =cut
 
@@ -192,16 +192,31 @@ sub get_node_by_id {
 
 =head2 get_node_by_name($node_name)
 
-Returns an object of type L<Map::Tube::Node>.
+Returns a list of object(s) of type L<Map::Tube::Node> matching node name C<$node_name>.
 
 =cut
 
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless (defined $name && defined $self->_get_node_id($name));
+    return unless defined $name;
 
-    return $self->get_node_by_id($self->_get_node_id($name));
+    my @nodes = $self->_get_node_id($name);
+    return unless scalar(@nodes);
+
+    my $nodes = [];
+    foreach (@nodes) {
+        push @$nodes, $self->get_node_by_id($_);
+    }
+
+    return unless scalar(@$nodes);
+
+    if (wantarray) {
+        return @{$nodes};
+    }
+    else {
+        return $nodes->[0];
+    }
 }
 
 =head2 get_line_by_id($line_id)
@@ -409,7 +424,7 @@ sub _get_all_routes {
 sub _map_node_name {
     my ($self, $name, $id) = @_;
 
-    $self->{name_to_id}->{uc($name)} = $id;
+    push @{$self->{name_to_id}->{uc($name)}}, $id;
 }
 
 sub _validate_input {
@@ -493,7 +508,7 @@ sub _init_map {
             foreach my $_entry (split /\,/, $station->{other_link}) {
                 my ($_link_type, $_nodes) = split /\:/, $_entry, 2;
                 my $uc_link_type = uc($_link_type);
-                my $line    = $lines->{$uc_link_type};
+                my $line = $lines->{$uc_link_type};
                 $line = Map::Tube::Line->new({ name => $_link_type }) unless defined $line;
                 $_lines->{$uc_link_type} = $line;
                 $lines->{$uc_link_type}  = $line;
@@ -760,7 +775,15 @@ sub _get_table {
 sub _get_node_id {
     my ($self, $name) = @_;
 
-    return $self->{name_to_id}->{uc($name)};
+    my $nodes = $self->{name_to_id}->{uc($name)};
+    return unless defined $nodes;
+
+    if (wantarray) {
+        return @{$nodes};
+    }
+    else {
+        return $nodes->[0];
+    }
 }
 
 sub _is_visited {
