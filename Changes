@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+2.99  2015-03-30T10:35:00+01:00
+      - Updated method get_node_by_id() to check if the given node id is defined.
+      - Updated private method _init_map) to check if the node id is duplicate.
+
 2.98  2015-03-29T17:35:00+01:00
       - Proposed solution for issue RT: #103168 subject to feedbacks.
 

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '2.98';
+$Map::Tube::VERSION   = '2.99';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 2.98
+Version 2.99
 
 =cut
 
@@ -186,6 +186,15 @@ Returns an object of type L<Map::Tube::Node>.
 
 sub get_node_by_id {
     my ($self, $id) = @_;
+
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
+    Map::Tube::Exception->throw({
+        method      => __PACKAGE__."::get_node_by_id",
+        message     => "ERROR: Missing station id.",
+        status      => ERROR_MISSING_NODE_ID,
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $id;
 
     return $self->{nodes}->{$id};
 }
@@ -472,6 +481,7 @@ sub _init_map {
     my $nodes  = {};
     my $tables = {};
     my $_other_links = {};
+    my $_seen_nodes  = {};
     my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
     $self->{name} = $xml->{name};
 
@@ -480,7 +490,16 @@ sub _init_map {
 
     my $name_to_id = $self->{name_to_id};
     foreach my $station (@{$xml->{stations}->{station}}) {
-        my $id   = $station->{id};
+        my $id = $station->{id};
+
+        Map::Tube::Exception->throw({
+            method      => __PACKAGE__."::_init_map",
+            message     => "ERROR: Duplicate station id [$id].",
+            status      => ERROR_DUPLICATE_NODE_ID,
+            filename    => $caller[1],
+            line_number => $caller[2] }) if (exists $_seen_nodes->{$id});
+
+        $_seen_nodes->{$id} = 1;
         my $name = $station->{name};
 
         Map::Tube::Exception->throw({
