@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.99';
+$Map::Tube::Node::VERSION   = '3.00';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.99
+Version 3.00
 
 =cut
 
@@ -36,6 +36,29 @@ sub as_string {
 =head1 DESCRIPTION
 
 It provides simple interface to the 'node' of the map.
+
+=head1 SYNOPSIS
+
+    use strict; use warnings;
+    use Map::Tube::Node;
+
+    my $line = Map::Tube::Line->new({ id => 1, name => 'L1', color => 'red'                  });
+    my $node = Map::Tube::Node->new({ id => 1, name => 'N1', link  => '2,3', line => [$line] });
+
+    print "Node: $node\n";
+
+=head1 CONSTRUCTOR
+
+The following possible attributes for an object of type L<Map::Tube::Node>.
+
+    +------+--------------------------------------------------------------------+
+    | Key  | Description                                                        |
+    +------+--------------------------------------------------------------------+
+    | id   | Unique Node ID (required).                                         |
+    | name | Node name (required).                                              |
+    | link | Comman seperated Node ID (required).                               |
+    | line | Ref to a list of objects of type Map::Tube::Line (required).       |
+    +------+--------------------------------------------------------------------+
 
 =head1 METHODS
 

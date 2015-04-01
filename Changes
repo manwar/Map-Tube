@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+3.00  2015-04-01T10:10:00+00:00
+      - Proposed solution for issue RT: #103169 subject to feedbacks.
+      - Added section "SYNOPSIS" to the pod document of packages Map::Tube::Node and Map::Tube::Line.
+      - Added section "CONSTRUCTOR" to the pod document of package Map::Tube::Node.
+
 2.99  2015-03-30T10:35:00+01:00
       - Updated method get_node_by_id() to check if the given node id is defined.
       - Updated private method _init_map) to check if the node id is duplicate.

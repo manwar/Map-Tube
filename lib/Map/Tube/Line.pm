@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.99';
+$Map::Tube::Line::VERSION   = '3.00';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.99
+Version 3.00
 
 =cut
 
@@ -31,6 +31,30 @@ has stations => (is => 'rw');
 =head1 DESCRIPTION
 
 It provides simple interface to the 'line' of the map.
+
+=head1 SYNOPSIS
+
+    use strict; use warnings;
+    use Map::Tube::Node;
+    use Map::Tube::Line;
+
+    my $line = Map::Tube::Line->new({ id => 1, name => 'L1', color => 'red'                  });
+    my $node = Map::Tube::Node->new({ id => 1, name => 'N1', link  => '2,3', line => [$line] });
+
+    $line->add_station($node);
+
+=head1 CONSTRUCTOR
+
+The following possible attributes for an object of type L<Map::Tube::Line>.
+
+    +----------+--------------------------------------------------------------+
+    | Key      | Description                                                  |
+    +----------+--------------------------------------------------------------+
+    | id       | Unique Line ID (optional).                                   |
+    | name     | Unique Line name (required).                                 |
+    | color    | Line color name or hash code (optional).                     |
+    | stations | Ref to a list of objects of type Map::Tube::Node (optional). |
+    +----------+--------------------------------------------------------------+
 
 =head1 METHODS
 

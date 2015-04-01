@@ -1,6 +1,6 @@
 package Map::Tube::Exception;
 
-$Map::Tube::Exception::VERSION   = '2.99';
+$Map::Tube::Exception::VERSION   = '3.00';
 $Map::Tube::Exception::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Exception - Class to represent the exception raised by Map::Tube.
 
 =head1 VERSION
 
-Version 2.99
+Version 3.00
 
 =cut
 
