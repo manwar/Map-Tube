@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+3.01  2015-09-17T10:25:00+00:00
+      - Removed local package Map::Tube::Exception.
+      - Removed local package Map::Tube::Error.
+      - Updated to use new external package Map::Tube::Exception::*.
+
 3.00  2015-04-01T10:10:00+00:00
       - Proposed solution for issue RT: #103169 subject to feedbacks.
       - Added section "SYNOPSIS" to the pod document of packages Map::Tube::Node and Map::Tube::Line.

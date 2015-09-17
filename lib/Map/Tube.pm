@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.00';
+$Map::Tube::VERSION   = '3.01';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.00
+Version 3.01
 
 =cut
 
@@ -21,8 +21,18 @@ use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
 use Map::Tube::Pluggable;
-use Map::Tube::Exception;
-use Map::Tube::Error qw(:constants);
+use Map::Tube::Exception::FoundMultiLinedStation;
+use Map::Tube::Exception::FoundMultiLinkedStation;
+use Map::Tube::Exception::InvalidStationId;
+use Map::Tube::Exception::FoundSelfLinkedStation;
+use Map::Tube::Exception::InvalidStationId;
+use Map::Tube::Exception::DuplicateStationId;
+use Map::Tube::Exception::DuplicateStationName;
+use Map::Tube::Exception::MissingStationName;
+use Map::Tube::Exception::InvalidStationName;
+use Map::Tube::Exception::MissingLineName;
+use Map::Tube::Exception::InvalidLineName;
+use Map::Tube::Exception::MissingStationId;
 use Map::Tube::Utils qw(is_same trim common_lines);
 
 use Moo::Role;
@@ -189,10 +199,9 @@ sub get_node_by_id {
 
     my @caller = caller(0);
     @caller    = caller(2) if $caller[3] eq '(eval)';
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::MissingStationId->throw({
         method      => __PACKAGE__."::get_node_by_id",
         message     => "ERROR: Missing station id.",
-        status      => ERROR_MISSING_NODE_ID,
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $id;
 
@@ -298,18 +307,16 @@ sub get_stations {
     @caller     = caller(2) if $caller[3] eq '(eval)';
     my $uc_line = uc($line);
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::MissingLineName->throw({
         method      => __PACKAGE__."::get_stations",
         message     => "ERROR: Missing Line name.",
-        status      => ERROR_MISSING_LINE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $line);
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_stations",
         message     => "ERROR: Invalid Line name.",
-        status      => ERROR_INVALID_LINE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (exists $self->{_lines}->{$uc_line});
@@ -442,30 +449,27 @@ sub _validate_input {
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::MissingStationName->throw({
         method      => __PACKAGE__."::$method",
         message     => "ERROR: Either FROM/TO node is undefined",
-        status      => ERROR_MISSING_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined($from) && defined($to));
 
     $from = trim($from);
     my $_from = $self->get_node_by_name($from);
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::InvalidStationName->throw({
         method      => __PACKAGE__."::$method",
         message     => "ERROR: Received invalid FROM node '$from'",
-        status      => ERROR_INVALID_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $_from);
 
     $to = trim($to);
     my $_to = $self->get_node_by_name($to);
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::InvalidStationName->throw({
         method      => __PACKAGE__."::$method",
         message     => "ERROR: Received invalid TO node '$to'",
-        status      => ERROR_INVALID_NODE_NAME,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $_to);
@@ -492,20 +496,18 @@ sub _init_map {
     foreach my $station (@{$xml->{stations}->{station}}) {
         my $id = $station->{id};
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::DuplicateStationId->throw({
             method      => __PACKAGE__."::_init_map",
             message     => "ERROR: Duplicate station id [$id].",
-            status      => ERROR_DUPLICATE_NODE_ID,
             filename    => $caller[1],
             line_number => $caller[2] }) if (exists $_seen_nodes->{$id});
 
         $_seen_nodes->{$id} = 1;
         my $name = $station->{name};
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::DuplicateStationName->throw({
             method      => __PACKAGE__."::_init_map",
             message     => "ERROR: Duplicate station name [$name].",
-            status      => ERROR_DUPLICATE_NODE_NAME,
             filename    => $caller[1],
             line_number => $caller[2] }) if (defined $name_to_id->{uc($name)});
 
@@ -647,10 +649,9 @@ sub _validate_map_data {
 
     foreach my $id (keys %$nodes) {
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::InvalidStationId->throw({
             method      => __PACKAGE__."::_validate_map_data",
             message     => "ERROR: Node ID can't have ',' character.",
-            status      => ERROR_INVALID_NODE_ID,
             filename    => $caller[1],
             line_number => $caller[2] }) if ($id =~ /\,/);
 
@@ -670,10 +671,9 @@ sub _validate_nodes {
         next if (exists $seen->{$_});
         my $_node = $nodes->{$_};
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::InvalidStationId->throw({
             method      => __PACKAGE__."::_validate_map_data",
             message     => "ERROR: Found invalid node id [$_].",
-            status      => ERROR_INVALID_NODE_ID,
             filename    => $caller->[1],
             line_number => $caller->[2] }) unless (defined $_node);
 
@@ -685,10 +685,9 @@ sub _validate_self_linked_nodes {
     my ($self, $caller, $node, $id) = @_;
 
     if (grep { $_ eq $id } (split /\,/, $node->{link})) {
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::FoundSelfLinkedStation->throw({
             method      => __PACKAGE__."::_validate_map_data",
             message     => sprintf("ERROR: %s is self linked,", $id),
-            status      => ERROR_FOUND_SELF_LINKED_NODE,
             filename    => $caller->[1],
             line_number => $caller->[2] });
     }
@@ -712,10 +711,9 @@ sub _validate_multi_linked_nodes {
         my $message = sprintf("ERROR: %s linked to %s multiple times,",
                               $id, join( ',', grep { $links{$_} > 1 } keys %links));
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::FoundMultiLinkedStation->throw({
             method      => __PACKAGE__."::_validate_map_data",
             message     => $message,
-            status      => ERROR_FOUND_MULTI_LINKED_NODE,
             filename    => $caller->[1],
             line_number => $caller->[2] });
     }
@@ -736,10 +734,9 @@ sub _validate_multi_lined_nodes {
         my $message = sprintf("ERROR: %s has multiple lines %s,",
                               $id, join( ',', grep { $lines{$_} > 1 } keys %lines));
 
-        Map::Tube::Exception->throw({
+        Map::Tube::Exception::FoundMultiLinedStation->throw({
             method      => __PACKAGE__."::_validate_map_data",
             message     => $message,
-            status      => ERROR_FOUND_MULTI_LINED_NODE,
             filename    => $caller->[1],
             line_number => $caller->[2] });
     }

@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '3.00';
+$Map::Tube::Line::VERSION   = '3.01';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,14 +9,15 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 3.00
+Version 3.01
 
 =cut
 
 use 5.006;
 use Data::Dumper;
-use Map::Tube::Exception;
-use Map::Tube::Error qw(:constants);
+
+use Map::Tube::Exception::MissingNodeObject;
+use Map::Tube::Exception::InvalidNodeObject;
 
 use Moo;
 use namespace::clean;
@@ -82,18 +83,16 @@ sub add_station {
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::MissingNodeObject->throw({
         method      => __PACKAGE__."::add_station",
         message     => "ERROR: Missing station.",
-        status      => ERROR_MISSING_STATION,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $station);
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::InvalidNodeObject->throw({
         method      => __PACKAGE__."::add_station",
         message     => "ERROR: Invalid station.",
-        status      => ERROR_INVALID_STATION,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (ref($station) eq 'Map::Tube::Node');
