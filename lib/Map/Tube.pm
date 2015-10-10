@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.01';
+$Map::Tube::VERSION   = '3.02';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,12 +9,12 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.01
+Version 3.02
 
 =cut
 
 use 5.006;
-use XML::Simple;
+use XML::Twig;
 use Data::Dumper;
 use Map::Tube::Node;
 use Map::Tube::Line;
@@ -486,7 +486,7 @@ sub _init_map {
     my $tables = {};
     my $_other_links = {};
     my $_seen_nodes  = {};
-    my $xml    = XMLin($self->xml, KeyAttr => 'stations', ForceArray => 0);
+    my $xml = XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
     $self->{name} = $xml->{name};
 
     my @caller = caller(0);

@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+3.02  2015-10-10T08:35:00+00:00
+      - Replaced XML::Simple with XML::Twig, long pending task, as XML::Simple
+        can't cope with unicode characters under XML::SAX v0.99 as reported by
+        the report below:
+        http://www.cpantesters.org/cpan/report/968a3680-6e00-11e5-aa10-096acfe82091
+
 3.01  2015-09-17T10:25:00+00:00
       - Removed local package Map::Tube::Exception.
       - Removed local package Map::Tube::Error.
