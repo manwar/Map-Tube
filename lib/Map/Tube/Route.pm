@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '2.72';
+$Map::Tube::Route::VERSION   = '3.02';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,12 +9,14 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 2.72
+Version 3.02
 
 =cut
 
 use 5.006;
 use Data::Dumper;
+use Map::Tube::Utils qw(filter);
+
 use Moo;
 use namespace::clean;
 
@@ -24,11 +26,9 @@ has from  => (is => 'ro', required => 1);
 has to    => (is => 'ro', required => 1);
 has nodes => (is => 'ro', required => 1);
 
-sub as_string {
-    my ($self) = @_;
+=head1 DESCRIPTION
 
-    return join ", ", @{$self->nodes};
-}
+It provides simple interface to the 'route' of the map.
 
 =head1 METHODS
 
@@ -42,8 +42,62 @@ Returns an object of type L<Map::Tube::Node> representing the end station.
 
 =head2 nodes()
 
-Returns the ref to a list of objects of type L<Map::Tube::Node> representing  the
-path from "start" to "end" station.
+Returns ref to a list of objects of type L<Map::Tube::Node> representing the path
+from "start" to "end" station.
+
+=head2 preferred()
+
+Returns an object of type L<Map::Tube::Route> as preferred route.
+
+=cut
+
+sub preferred {
+    my ($self) = @_;
+
+    my $index = 0;
+    my $nodes = [];
+    my $lines = [];
+    my $nodes_object = {};
+    my $lines_object = {};
+    foreach my $node (@{$self->nodes}) {
+        push @$nodes, { name => $node->name };
+        $nodes_object->{$node->name} = $node;
+
+        foreach my $line (@{$node->{line}}) {
+            push @{$lines->[$index]}, $line->name;
+            $lines_object->{$line->name} = $line;
+        }
+
+        $index++;
+    }
+
+    my $data   = filter($lines);
+    my $_nodes = [];
+    foreach my $i (0..$#$nodes) {
+        my $_node = {
+            id   => $nodes_object->{$nodes->[$i]->{name}}->id,
+            name => $nodes->[$i]->{name},
+            link => $nodes_object->{$nodes->[$i]->{name}}->link,
+        };
+
+        foreach (@{$data->[$i]}) {
+            push @{$_node->{line}}, $lines_object->{$_};
+        }
+
+        push @$_nodes, Map::Tube::Node->new($_node);
+    }
+
+    return Map::Tube::Route->new({
+        from  => $self->from,
+        to    => $self->to,
+        nodes => $_nodes });
+}
+
+sub as_string {
+    my ($self) = @_;
+
+    return join ", ", @{$self->nodes};
+}
 
 =head1 AUTHOR
 
@@ -92,8 +146,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This  program  is  free software;  you can redistribute it and/or modify it under
+the  terms  of the the Artistic  License (2.0). You may obtain a copy of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>

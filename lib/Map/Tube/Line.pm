@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '2.72';
+$Map::Tube::Line::VERSION   = '3.02';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,14 +9,15 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 2.72
+Version 3.02
 
 =cut
 
 use 5.006;
 use Data::Dumper;
-use Map::Tube::Exception;
-use Map::Tube::Error qw(:constants);
+
+use Map::Tube::Exception::MissingNodeObject;
+use Map::Tube::Exception::InvalidNodeObject;
 
 use Moo;
 use namespace::clean;
@@ -27,6 +28,34 @@ has id       => (is => 'rw');
 has name     => (is => 'ro', required => 1);
 has color    => (is => 'rw');
 has stations => (is => 'rw');
+
+=head1 DESCRIPTION
+
+It provides simple interface to the 'line' of the map.
+
+=head1 SYNOPSIS
+
+    use strict; use warnings;
+    use Map::Tube::Node;
+    use Map::Tube::Line;
+
+    my $line = Map::Tube::Line->new({ id => 1, name => 'L1', color => 'red'                  });
+    my $node = Map::Tube::Node->new({ id => 1, name => 'N1', link  => '2,3', line => [$line] });
+
+    $line->add_station($node);
+
+=head1 CONSTRUCTOR
+
+The following possible attributes for an object of type L<Map::Tube::Line>.
+
+    +----------+--------------------------------------------------------------+
+    | Key      | Description                                                  |
+    +----------+--------------------------------------------------------------+
+    | id       | Unique Line ID (optional).                                   |
+    | name     | Unique Line name (required).                                 |
+    | color    | Line color name or hash code (optional).                     |
+    | stations | Ref to a list of objects of type Map::Tube::Node (optional). |
+    +----------+--------------------------------------------------------------+
 
 =head1 METHODS
 
@@ -40,11 +69,11 @@ Returns the line name.
 
 =head2 color()
 
-Returns the color name of the line, if available.
+Returns the color name of the line.
 
 =head2 add_station($station)
 
-Adds station (object of type L<Map::Tube::Node>) to the line.
+Adds C<$station>, an object of type L<Map::Tube::Node>, to the line.
 
 =cut
 
@@ -54,18 +83,16 @@ sub add_station {
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::MissingNodeObject->throw({
         method      => __PACKAGE__."::add_station",
         message     => "ERROR: Missing station.",
-        status      => ERROR_MISSING_STATION,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $station);
 
-    Map::Tube::Exception->throw({
+    Map::Tube::Exception::InvalidNodeObject->throw({
         method      => __PACKAGE__."::add_station",
         message     => "ERROR: Invalid station.",
-        status      => ERROR_INVALID_STATION,
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (ref($station) eq 'Map::Tube::Node');
@@ -75,7 +102,7 @@ sub add_station {
 
 =head2 get_stations()
 
-Returns a ref to the list of stations (object of type L<Map::Tube::Node>) of the line.
+Returns ref to a list of stations i.e. object of type L<Map::Tube::Node>.
 
 =cut
 
@@ -138,8 +165,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This  program  is  free software;  you can redistribute it and/or modify it under
+the  terms  of the the Artistic License (2.0). You  may obtain a copy of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>

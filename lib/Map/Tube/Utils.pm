@@ -1,79 +1,104 @@
-package Map::Tube::Error;
+package Map::Tube::Utils;
 
-$Map::Tube::Error::VERSION   = '2.72';
-$Map::Tube::Error::AUTHORITY = 'cpan:MANWAR';
+$Map::Tube::Utils::VERSION   = '3.02';
+$Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Error - Error class for the library Map::Tube.
+Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 2.72
+Version 3.02
 
 =cut
 
 use 5.006;
 use strict; use warnings;
 
-use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-
+use vars qw(@ISA @EXPORT_OK);
 require Exporter;
-@ISA = qw(Exporter);
-
-my %Status = (
-    100 => 'Missing Node Name',
-    101 => 'Invalid Node Name',
-    102 => 'Missing Node ID',
-    103 => 'Invalid Node ID',
-    104 => 'Missing Line Name',
-    105 => 'Invalid Line Name',
-    106 => 'Missing Station',
-    107 => 'Invalid Station',
-    108 => 'Missing Plugin Graph',
-    109 => 'Loading Plugin Graph',
-);
-
-my $mnemonic_code = '';
-while (my ($code, $message) = each %Status) {
-    $message =~ tr/a-z \-/A-Z__/;
-    $mnemonic_code .= "sub ERROR_$message () { $code }\n";
-    $mnemonic_code .= "push(\@EXPORT_OK, 'ERROR_$message');\n";
-}
-
-eval $mnemonic_code; die if $@;
-
-%EXPORT_TAGS = (constants => [grep /^ERROR_/, @EXPORT_OK]);
+@ISA       = qw(Exporter);
+@EXPORT_OK = qw(is_same trim common_lines filter);
 
 =head1 DESCRIPTION
 
 B<FOR INTERNAL USE ONLY>.
 
-=head2 Error Codes
+=cut
 
-=over 2
+sub trim {
+    my ($data) = @_;
 
-=item * 100: Missing Node Name
+    return unless defined $data;
 
-=item * 101: Invalid Noe Name
+    $data =~ s/\s+/ /g;
+    $data =~ s/^\s+|\s+$//g;
 
-=item * 102: Missing Node ID
+    return $data;
+}
 
-=item * 103: Invalid Node ID
+sub is_same {
+    my ($this, $that) = @_;
 
-=item * 104: Missing Line Name
+    return 0 unless (defined($this) && defined($that));
 
-=item * 105: Invalid Line Name
+    (_is_number($this) && _is_number($that))
+    ?
+    (return ($this == $that))
+    :
+    (uc($this) eq uc($that));
+}
 
-=item * 106: Missing Station
+sub common_lines {
+    my ($a, $b) = @_;
 
-=item * 107: Invalid Station
+    my %element = map { $_ => undef } @{$a};
+    return grep { exists($element{$_}) } @{$b};
+}
 
-=item * 108: Missing Plugin Graph
+sub filter {
+    my ($data) = @_;
 
-=item * 109: Loading Plugin Graph
+    my %c;
+    for my $i (0 .. $#$data) {
+        for my $m (@{ $data->[$i] }) {
+            undef $c{$m}{$i};
+        }
+    }
 
-=back
+    my @common = sort { $a cmp $b }
+    grep @$data == keys %{ $c{$_} },
+    keys %c;
+
+    return [ map [@common], @$data ] if @common;
+
+    my %r;
+    for my $i (0 .. $#$data - 1) {
+        for my $m (@{ $data->[$i] }) {
+            if (exists $c{$m}{ $i + 1 }) {
+                undef $r{$_}{$m} for $i, $i + 1;
+            }
+        }
+    }
+
+    return [
+        map [ sort { $a cmp $b }
+              keys %{ $r{$_} } ],
+        sort { $a cmp $b } keys %r
+    ];
+}
+
+#
+#
+# PRIVATE METHODS
+
+sub _is_number {
+    my ($this) = @_;
+
+    return (defined($this)
+            && ($this =~ /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/));
+}
 
 =head1 AUTHOR
 
@@ -94,7 +119,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Error
+    perldoc Map::Tube::Utils
 
 You can also look for information at:
 
@@ -122,8 +147,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This program  is  free software; you can redistribute it and / or modify it under
+the  terms  of the the Artistic License  (2.0). You may obtain a copy of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
@@ -158,4 +183,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Error
+1; # End of Map::Tube::Utils

@@ -1,5 +1,113 @@
 Revision history for Map::Tube
 
+3.02  2015-10-10T08:35:00+00:00
+      - Replaced XML::Simple with XML::Twig, long pending task, as XML::Simple
+        can't cope with unicode characters under XML::SAX v0.99 as reported by
+        the report below:
+        http://www.cpantesters.org/cpan/report/968a3680-6e00-11e5-aa10-096acfe82091
+
+3.01  2015-09-17T10:25:00+00:00
+      - Removed local package Map::Tube::Exception.
+      - Removed local package Map::Tube::Error.
+      - Updated to use new external package Map::Tube::Exception::*.
+
+3.00  2015-04-01T10:10:00+00:00
+      - Proposed solution for issue RT: #103169 subject to feedbacks.
+      - Added section "SYNOPSIS" to the pod document of packages Map::Tube::Node and Map::Tube::Line.
+      - Added section "CONSTRUCTOR" to the pod document of package Map::Tube::Node.
+
+2.99  2015-03-30T10:35:00+01:00
+      - Updated method get_node_by_id() to check if the given node id is defined.
+      - Updated private method _init_map) to check if the node id is duplicate.
+
+2.98  2015-03-29T17:35:00+01:00
+      - Proposed solution for issue RT: #103168 subject to feedbacks.
+
+2.97  2015-03-27T20:30:00+01:00
+      - Updated method Map::Tube::Route::preferred() to return an object of type L<Map::Tube::Route>.
+
+2.96  2015-03-27T12:00:00+01:00
+      - Added the following methods to the package Map::Tube.
+        - get_line_by_id()
+        - get_line_by_name()
+
+2.95  2015-03-26T11:05:00+01:00
+      - Proposed solution for issue RT: #103103 subject to feedbacks.
+
+2.94  2015-03-24T11:35:00+01:00
+      - Tidied up pod document in general.
+
+2.93  2015-03-22T22:00:00+01:00
+      - Updated method get_lines() in the package Map::Tube to filter out other links.
+
+2.92  2015-03-22T11:45:00+01:00
+      - Documented new plugin Map::Tube::Plugin::Formatter in the package Map::Tube.
+
+2.91  2015-03-22T11:05:00+01:00
+      - Added section "SYNOPSIS" to the package Map::Tube.
+
+2.90  2015-03-22T09:45:00+01:00
+      - Added new method preferred() to the package Map::Tube::Route.
+
+2.89  2015-03-15T17:15:00+01:00
+      - Proposed solution for issue RT: #102438 subject to feedbacks.
+
+2.88  2015-03-10T12:20:00+01:00
+      - Added new package Map::Tube::Utils.
+      - Updated unit test t/00-load.t to load the new package.
+      - Updated Map::Tube::Pluggable to set the max_depth to 4.
+
+2.87  2015-02-22T17:45:00+01:00
+      - Tidied up the pod document.
+
+2.86  2015-02-20T16:05:00+01:00
+      - Removed call to method _validate_map_data() at the point of object creation,
+        instead it would now be validated at the build time if you have Test::Map::Tube
+        installed.
+
+2.85  2015-02-18T17:25:00+01:00
+      - Fixed the nasty regex bug in the method Map::Tube::_get_shortest_route(), issue
+        raised by Map::Tube::Beijing (author Gisbert W. Selke).
+
+2.84  2015-02-17T17:25:00+01:00
+      - Documented plugin Map::Tube::Plugin::FuzzyFind by Gisbert W. Selke in the pod document of Map::Tube.
+
+2.83  2015-02-12T23:20:00+01:00
+      - Fixed the typo in class description of Map::Tube::Error and Map::Tube::Exception.
+
+2.82  2015-02-12T17:50:00+01:00
+      - Documented method get_name() in the pod document of Map::Tube.
+      - Tidied up description of some other methods as well in the pod document.
+
+2.81  2015-02-12T13:05:00+01:00
+      - Tidied up pod document, in general.
+      - Optimised method Map::Tube::_format().
+
+2.80  2015-02-10T11:55:00+01:00
+      - Updated pod document of Map::Tube regarding the plugin Map::Tube::Plugin::Graph.
+
+2.79  2015-02-09T22:55:00+01:00
+      - Refactored the plugin integration code as conceived by Gisbert W. Selke.
+
+2.78  2015-02-05T17:30:00+01:00
+      - Updated method Map::Tube::as_image() the way it gets graph plugin and process it.
+
+2.77  2015-01-27T16:30:00+01:00
+      - Ongoing improvement work on method get_shortest_route().
+
+2.76  2015-01-27T13:13:00+01:00
+      - Further improvement to the method get_shortest_route(), down to 17 wallclock seconds.
+
+2.75  2015-01-26T17:15:00+01:00
+      - Improved performance from 33 wallclock seconds to 25 wallclock seconds for method get_shortest_route()
+        as recent changes to data validation was adding the load.
+
+2.74  2015-01-25T08:15:00+01:00
+      - Making use of Map::Tube::Exception instead of die to be consistent as raised by GWS.
+
+2.73  2015-01-25T02:55:00+01:00
+      - Cherry picked commit from the pull request from TUPINEK to the method Map::Tube::_init_map().
+
 2.72  2015-01-23T20:45:00+01:00
       - Merged pull request from Michal Špaček regarding fix to the method Map::Tube::Node::as_string().
 

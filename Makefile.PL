@@ -19,28 +19,29 @@ WriteMakefile(
     BUILD_REQUIRES   => {
         'Test::More' => 0,
     },
-    PREREQ_PM               => {
-        'Moo'               => 0,
-        'Moo::Role'         => 0,
-        'namespace::clean'  => 0,
-        'Throwable'         => 0,
-        'XML::Simple'       => 0,
-        'Module::Pluggable' => '5.1',
-        'overload'          => 0
+    PREREQ_PM                  => {
+        'Moo'                  => '2.000000',
+        'Moo::Role'            => '2.000000',
+        'Role::Tiny'           => '2.000000',
+        'namespace::clean'     => '0.24',
+        'Throwable'            => '0.200011',
+        'XML::Twig'            => '3.48',
+        'Module::Pluggable'    => '5.1',
+        'overload'             => '1.07',
+        'Map::Tube::Exception' => '3.02',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Map-Tube-*' },
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '2.72' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '2.72' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '2.72' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '2.72' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '2.72' },
-            'Map::Tube::Error'     => { file => 'lib/Map/Tube/Error.pm'    , version => '2.72' },
-            'Map::Tube::Exception' => { file => 'lib/Map/Tube/Exception.pm', version => '2.72' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '2.72' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.02' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.02' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.02' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.02' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.02' },
+            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.02' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.02' },
         },
         resources => {
             repository => {

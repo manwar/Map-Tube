@@ -1,6 +1,6 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '2.72';
+$Map::Tube::Node::VERSION   = '3.02';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Node - Class to represent the node in the map.
 
 =head1 VERSION
 
-Version 2.72
+Version 3.02
 
 =cut
 
@@ -33,23 +33,50 @@ sub as_string {
     return sprintf("%s (%s)", $self->name, $line);
 }
 
+=head1 DESCRIPTION
+
+It provides simple interface to the 'node' of the map.
+
+=head1 SYNOPSIS
+
+    use strict; use warnings;
+    use Map::Tube::Node;
+
+    my $line = Map::Tube::Line->new({ id => 1, name => 'L1', color => 'red'                  });
+    my $node = Map::Tube::Node->new({ id => 1, name => 'N1', link  => '2,3', line => [$line] });
+
+    print "Node: $node\n";
+
+=head1 CONSTRUCTOR
+
+The following possible attributes for an object of type L<Map::Tube::Node>.
+
+    +------+--------------------------------------------------------------------+
+    | Key  | Description                                                        |
+    +------+--------------------------------------------------------------------+
+    | id   | Unique Node ID (required).                                         |
+    | name | Node name (required).                                              |
+    | link | Comman seperated Node ID (required).                               |
+    | line | Ref to a list of objects of type Map::Tube::Line (required).       |
+    +------+--------------------------------------------------------------------+
+
 =head1 METHODS
 
 =head2 id()
 
-Returns the station id as defined in the map data.
+Returns the station id.
 
 =head2 name()
 
-Returns the station name as defined in the map data.
+Returns the station name.
 
 =head2 link()
 
-Returns the linked station id as defined in the map data.
+Returns comma seperated linked station id.
 
 =head2 line()
 
-Returns ref to a list of objects of type L<Map::Tube::Line> of the node.
+Returns ref to a list of objects of type L<Map::Tube::Line>.
 
 =head1 AUTHOR
 
@@ -98,9 +125,9 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
-license at:
+This program is free software;you can  redistribute it and/or modify it under the
+terms of the the Artistic License(2.0). You may obtain a copy of the full license
+at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 

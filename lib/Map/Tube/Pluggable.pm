@@ -1,21 +1,21 @@
 package Map::Tube::Pluggable;
 
-$Map::Tube::Pluggable::VERSION   = '2.72';
+$Map::Tube::Pluggable::VERSION   = '3.02';
 $Map::Tube::Pluggable::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Pluggable - Wrapper for Map::Tube::Plugin::* packages.
+Map::Tube::Pluggable - Class to load plugins for Map::Tube.
 
 =head1 VERSION
 
-Version 2.72
+Version 3.02
 
 =cut
 
 use 5.006;
 use strict; use warnings;
-use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1;
+use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1, max_depth => 4;
 
 =head1 DESCRIPTION
 
@@ -68,8 +68,8 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2015 Mohammad S Anwar.
 
-This  program  is  free software; you can redistribute it and/or modify it under
-the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+This  program  is  free software; you can redistribute it and/or modify it  under
+the  terms  of the the Artistic License (2.0). You may obtain a copy  of the full
 license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
