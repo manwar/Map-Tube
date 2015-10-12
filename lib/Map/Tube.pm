@@ -250,7 +250,7 @@ sub get_line_by_id {
 
     foreach my $name (keys %{$self->{_lines}}) {
         return $self->{_lines}->{$name}
-            if ($id == $self->{_lines}->{$name}->id);
+            if ($id eq $self->{_lines}->{$name}->id);
     }
 
     return;
