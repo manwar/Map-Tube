@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.02';
+$Map::Tube::VERSION   = '3.03';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.02
+Version 3.03
 
 =cut
 
@@ -296,16 +296,15 @@ sub get_lines {
 
 =head2 get_stations($line_name)
 
-Returns ref to a list of objects of type L<Map::Tube::Node>.
+Returns ref to a list of objects of type L<Map::Tube::Node> for the C<$line_name>.
 
 =cut
 
 sub get_stations {
     my ($self, $line) = @_;
 
-    my @caller  = caller(0);
-    @caller     = caller(2) if $caller[3] eq '(eval)';
-    my $uc_line = uc($line);
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
 
     Map::Tube::Exception::MissingLineName->throw({
         method      => __PACKAGE__."::get_stations",
@@ -314,6 +313,7 @@ sub get_stations {
         line_number => $caller[2] })
         unless (defined $line);
 
+    my $uc_line = uc($line);
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_stations",
         message     => "ERROR: Invalid Line name.",
