@@ -21,20 +21,19 @@ use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
 use Map::Tube::Pluggable;
-use Map::Tube::Exception::FoundMultiLinedStation;
-use Map::Tube::Exception::FoundMultiLinkedStation;
-use Map::Tube::Exception::InvalidStationId;
-use Map::Tube::Exception::FoundSelfLinkedStation;
-use Map::Tube::Exception::InvalidStationId;
-use Map::Tube::Exception::DuplicateStationId;
-use Map::Tube::Exception::DuplicateStationName;
 use Map::Tube::Exception::MissingStationName;
 use Map::Tube::Exception::InvalidStationName;
-use Map::Tube::Exception::MissingLineName;
+use Map::Tube::Exception::MissingStationId;
+use Map::Tube::Exception::InvalidStationId;
 use Map::Tube::Exception::MissingLineId;
 use Map::Tube::Exception::InvalidLineId;
+use Map::Tube::Exception::MissingLineName;
 use Map::Tube::Exception::InvalidLineName;
-use Map::Tube::Exception::MissingStationId;
+use Map::Tube::Exception::FoundMultiLinedStation;
+use Map::Tube::Exception::FoundMultiLinkedStation;
+use Map::Tube::Exception::FoundSelfLinkedStation;
+use Map::Tube::Exception::DuplicateStationId;
+use Map::Tube::Exception::DuplicateStationName;
 use Map::Tube::Utils qw(is_same trim common_lines);
 
 use Moo::Role;
@@ -203,14 +202,14 @@ sub get_node_by_id {
     @caller    = caller(2) if $caller[3] eq '(eval)';
     Map::Tube::Exception::MissingStationId->throw({
         method      => __PACKAGE__."::get_node_by_id",
-        message     => "ERROR: Missing station id.",
+        message     => "ERROR: Missing Station ID.",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $id;
 
     my $node = $self->{nodes}->{$id};
     Map::Tube::Exception::InvalidStationId->throw({
         method      => __PACKAGE__."::get_node_by_id",
-        message     => "ERROR: Invalid station id.",
+        message     => "ERROR: Invalid Station ID [$id].",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $node;
 
@@ -230,14 +229,14 @@ sub get_node_by_name {
     @caller    = caller(2) if $caller[3] eq '(eval)';
     Map::Tube::Exception::MissingStationName->throw({
         method      => __PACKAGE__."::get_node_by_name",
-        message     => "ERROR: Missing station name.",
+        message     => "ERROR: Missing Station Name.",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $name;
 
     my @nodes = $self->_get_node_id($name);
     Map::Tube::Exception::InvalidStationName->throw({
         method      => __PACKAGE__."::get_node_by_name",
-        message     => "ERROR: Invalid station name.",
+        message     => "ERROR: Invalid Station Name [$name].",
         filename    => $caller[1],
         line_number => $caller[2] }) unless scalar(@nodes);
 
@@ -267,7 +266,7 @@ sub get_line_by_id {
     @caller    = caller(2) if $caller[3] eq '(eval)';
     Map::Tube::Exception::MissingLineId->throw({
         method      => __PACKAGE__."::get_line_by_id",
-        message     => "ERROR: Missing line id.",
+        message     => "ERROR: Missing Line ID.",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $id;
 
@@ -278,7 +277,7 @@ sub get_line_by_id {
 
     Map::Tube::Exception::InvalidLineId->throw({
         method      => __PACKAGE__."::get_line_by_id",
-        message     => "ERROR: Invalid line id.",
+        message     => "ERROR: Invalid Line ID [$id].",
         filename    => $caller[1],
         line_number => $caller[2] });
 }
@@ -296,14 +295,14 @@ sub get_line_by_name {
     @caller    = caller(2) if $caller[3] eq '(eval)';
     Map::Tube::Exception::MissingLineName->throw({
         method      => __PACKAGE__."::get_line_by_name",
-        message     => "ERROR: Missing line name.",
+        message     => "ERROR: Missing Line Name.",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $name;
 
     my $line = $self->{_lines}->{uc($name)};
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_line_by_name",
-        message     => "ERROR: Invalid line name.",
+        message     => "ERROR: Invalid Line Name [$name].",
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $line;
 
@@ -347,7 +346,7 @@ sub get_stations {
 
     Map::Tube::Exception::MissingLineName->throw({
         method      => __PACKAGE__."::get_stations",
-        message     => "ERROR: Missing Line name.",
+        message     => "ERROR: Missing Line Name.",
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined $line);
@@ -355,7 +354,7 @@ sub get_stations {
     my $uc_line = uc($line);
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_stations",
-        message     => "ERROR: Invalid Line name.",
+        message     => "ERROR: Invalid Line Name [$line].",
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (exists $self->{_lines}->{$uc_line});
@@ -490,28 +489,16 @@ sub _validate_input {
 
     Map::Tube::Exception::MissingStationName->throw({
         method      => __PACKAGE__."::$method",
-        message     => "ERROR: Either FROM/TO node is undefined",
+        message     => "ERROR: Missing Station Name.",
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (defined($from) && defined($to));
 
     $from = trim($from);
     my $_from = $self->get_node_by_name($from);
-    Map::Tube::Exception::InvalidStationName->throw({
-        method      => __PACKAGE__."::$method",
-        message     => "ERROR: Received invalid FROM node '$from'",
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (defined $_from);
 
     $to = trim($to);
     my $_to = $self->get_node_by_name($to);
-    Map::Tube::Exception::InvalidStationName->throw({
-        method      => __PACKAGE__."::$method",
-        message     => "ERROR: Received invalid TO node '$to'",
-        filename    => $caller[1],
-        line_number => $caller[2] })
-        unless (defined $_to);
 
     return ($_from->{id}, $_to->{id});
 }
@@ -537,7 +524,7 @@ sub _init_map {
 
         Map::Tube::Exception::DuplicateStationId->throw({
             method      => __PACKAGE__."::_init_map",
-            message     => "ERROR: Duplicate station id [$id].",
+            message     => "ERROR: Duplicate Station ID [$id].",
             filename    => $caller[1],
             line_number => $caller[2] }) if (exists $_seen_nodes->{$id});
 
@@ -546,7 +533,7 @@ sub _init_map {
 
         Map::Tube::Exception::DuplicateStationName->throw({
             method      => __PACKAGE__."::_init_map",
-            message     => "ERROR: Duplicate station name [$name].",
+            message     => "ERROR: Duplicate Station Name [$name].",
             filename    => $caller[1],
             line_number => $caller[2] }) if (defined $name_to_id->{uc($name)});
 
@@ -690,7 +677,7 @@ sub _validate_map_data {
 
         Map::Tube::Exception::InvalidStationId->throw({
             method      => __PACKAGE__."::_validate_map_data",
-            message     => "ERROR: Node ID can't have ',' character.",
+            message     => "ERROR: Station ID can't have ',' character.",
             filename    => $caller[1],
             line_number => $caller[2] }) if ($id =~ /\,/);
 
@@ -712,7 +699,7 @@ sub _validate_nodes {
 
         Map::Tube::Exception::InvalidStationId->throw({
             method      => __PACKAGE__."::_validate_map_data",
-            message     => "ERROR: Found invalid node id [$_].",
+            message     => "ERROR: Invalid Station ID [$_].",
             filename    => $caller->[1],
             line_number => $caller->[2] }) unless (defined $_node);
 
