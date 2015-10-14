@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.03';
+$Map::Tube::VERSION   = '3.04';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.03
+Version 3.04
 
 =cut
 
@@ -205,7 +205,14 @@ sub get_node_by_id {
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $id;
 
-    return $self->{nodes}->{$id};
+    my $node = $self->{nodes}->{$id};
+    Map::Tube::Exception::InvalidStationId->throw({
+        method      => __PACKAGE__."::get_node_by_id",
+        message     => "ERROR: Invalid station id.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $node;
+
+    return $node;
 }
 
 =head2 get_node_by_name($node_name)
@@ -217,17 +224,25 @@ Returns a list of object(s) of type L<Map::Tube::Node> matching node name C<$nod
 sub get_node_by_name {
     my ($self, $name) = @_;
 
-    return unless defined $name;
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
+    Map::Tube::Exception::MissingStationName->throw({
+        method      => __PACKAGE__."::get_node_by_name",
+        message     => "ERROR: Missing station name.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $name;
 
     my @nodes = $self->_get_node_id($name);
-    return unless scalar(@nodes);
+    Map::Tube::Exception::InvalidStationName->throw({
+        method      => __PACKAGE__."::get_node_by_name",
+        message     => "ERROR: Invalid station name.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless scalar(@nodes);
 
     my $nodes = [];
     foreach (@nodes) {
         push @$nodes, $self->get_node_by_id($_);
     }
-
-    return unless scalar(@$nodes);
 
     if (wantarray) {
         return @{$nodes};
@@ -246,14 +261,24 @@ Returns an object of type L<Map::Tube::Line>.
 sub get_line_by_id {
     my ($self, $id) = @_;
 
-    return unless defined $id;
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
+    Map::Tube::Exception::MissingLineId->throw({
+        method      => __PACKAGE__."::get_line_by_id",
+        message     => "ERROR: Missing line id.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $id;
 
     foreach my $name (keys %{$self->{_lines}}) {
         return $self->{_lines}->{$name}
             if ($id == $self->{_lines}->{$name}->id);
     }
 
-    return;
+    Map::Tube::Exception::InvalidLineId->throw({
+        method      => __PACKAGE__."::get_line_by_id",
+        message     => "ERROR: Invalid line id.",
+        filename    => $caller[1],
+        line_number => $caller[2] });
 }
 
 =head2 get_line_by_name($line_name)
@@ -265,10 +290,22 @@ Returns an object of type L<Map::Tube::Line>.
 sub get_line_by_name {
     my ($self, $name) = @_;
 
-    return unless defined $name;
-    return unless exists $self->{_lines}->{uc($name)};
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
+    Map::Tube::Exception::MissingLineName->throw({
+        method      => __PACKAGE__."::get_line_by_name",
+        message     => "ERROR: Missing line name.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $name;
 
-    return $self->{_lines}->{uc($name)};
+    my $line = $self->{_lines}->{uc($name)};
+    Map::Tube::Exception::InvalidLineName->throw({
+        method      => __PACKAGE__."::get_line_by_name",
+        message     => "ERROR: Invalid line name.",
+        filename    => $caller[1],
+        line_number => $caller[2] }) unless defined $line;
+
+    return $line;
 }
 
 =head2 get_lines()

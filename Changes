@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.04  2015-10-14T10:25:00+00:00
+      - Patched issue RT# 107752.
+
 3.03  2015-10-13T13:00:00+00:00
       - Updated method get_stations() in the package Map::Tube, to check if the
         line name is defined before applying uc() and raise exception accordingly.
