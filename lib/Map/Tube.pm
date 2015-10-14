@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.04';
+$Map::Tube::VERSION   = '3.05';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.04
+Version 3.05
 
 =cut
 
@@ -31,6 +31,8 @@ use Map::Tube::Exception::DuplicateStationName;
 use Map::Tube::Exception::MissingStationName;
 use Map::Tube::Exception::InvalidStationName;
 use Map::Tube::Exception::MissingLineName;
+use Map::Tube::Exception::MissingLineId;
+use Map::Tube::Exception::InvalidLineId;
 use Map::Tube::Exception::InvalidLineName;
 use Map::Tube::Exception::MissingStationId;
 use Map::Tube::Utils qw(is_same trim common_lines);

@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.05  2015-10-14T12:55:00+00:00
+      - Import the missing exceptions (Map::Tube::Exception::InvalidLineId and Map::Tube::Exception::MissingLineId).
+      - Upgraded to use Map::Tube::Exception v3.05.
+
 3.04  2015-10-14T10:25:00+00:00
       - Patched issue RT# 107752.
 
