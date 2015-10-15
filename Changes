@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+3.06  2015-10-15T11:50:00+00:00
+      - Removed the minimum version requirements from 'overload' and 'Throwable'.
+      - Removed redundant exception handling code.
+      - Made exception error message consistent.
+      - Fix comparison of line IDs, thanks to Michal Spacek.
+
 3.05  2015-10-14T12:55:00+00:00
       - Import the missing exceptions (Map::Tube::Exception::InvalidLineId and Map::Tube::Exception::MissingLineId).
       - Upgraded to use Map::Tube::Exception v3.05.
