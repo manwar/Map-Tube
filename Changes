@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+3.07  2015-10-18T12:15:00+00:00
+      - Added new method _xml_data() to the package Map::Tube.
+      - Updated method get_line_by_id() to fixed the warning.
+      - Updated method _init_map() to make use of new method _xml_data().
+      - Updated pod document about method name(), earlier it was documented as get_name().
+
 3.06  2015-10-15T11:50:00+00:00
       - Removed the minimum version requirements from 'overload' and 'Throwable'.
       - Removed redundant exception handling code.

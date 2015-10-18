@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.06';
+$Map::Tube::VERSION   = '3.07';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.06
+Version 3.07
 
 =cut
 
@@ -185,7 +185,7 @@ sub get_all_routes {
     return $self->_get_all_routes([ $from ], $to);
 }
 
-=head2 get_name()
+=head2 name()
 
 Returns map name.
 
@@ -271,8 +271,10 @@ sub get_line_by_id {
         line_number => $caller[2] }) unless defined $id;
 
     foreach my $name (keys %{$self->{_lines}}) {
-        return $self->{_lines}->{$name}
-            if ($id eq $self->{_lines}->{$name}->id);
+        if (defined $self->{_lines}->{$name}->id) {
+            return $self->{_lines}->{$name}
+                if ($id eq $self->{_lines}->{$name}->id);
+        }
     }
 
     Map::Tube::Exception::InvalidLineId->throw({
@@ -503,6 +505,12 @@ sub _validate_input {
     return ($_from->{id}, $_to->{id});
 }
 
+sub _xml_data {
+    my ($self) = @_;
+
+    return XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
+}
+
 sub _init_map {
     my ($self) = @_;
 
@@ -512,7 +520,7 @@ sub _init_map {
     my $tables = {};
     my $_other_links = {};
     my $_seen_nodes  = {};
-    my $xml = XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
+    my $xml = $self->_xml_data;
     $self->{name} = $xml->{name};
 
     my @caller = caller(0);
