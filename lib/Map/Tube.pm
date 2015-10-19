@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.07';
+$Map::Tube::VERSION   = '3.08';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.07
+Version 3.08
 
 =cut
 
@@ -388,7 +388,9 @@ plugged into the Map::Tube::* family automatically once it is installed.
 
 Please refer to the L<documentation|Map::Tube::Plugin::FuzzyFind> for more info.
 
-=head1 MAP DATA VALIDATION
+=head1 MAP VALIDATION
+
+=head2 DATA VALIDATION
 
 The package L<Test::Map::Tube> can easily be used to validate raw map data.Anyone
 building a new map using L<Map::Tube> is advised to have a unit test as a part of
@@ -403,6 +405,21 @@ something like below:
     plan skip_all => "Test::Map::Tube required" if $@;
 
     ok_map(Map::Tube::London->new);
+
+=head2 FUNCTIONAL VALIDATION
+
+The package L<Test::Map::Tube> v0.09 or above  can easily be used to validate map
+basic functions provided by L<Map::Tube>.
+
+    use strict; use warnings;
+    use Test::More;
+
+    my $min_ver = 0.09;
+    eval "use Test::Map::Tube $min_ver";
+    plan skip_all => "Test::Map::Tube $min_ver required" if $@;
+
+    use Map::Tube::London;
+    ok_map_functions(Map::Tube::London->new);
 
 =cut
 

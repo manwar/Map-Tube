@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '3.07';
+$Map::Tube::Line::VERSION   = '3.08';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 3.07
+Version 3.08
 
 =cut
 
@@ -92,7 +92,7 @@ sub add_station {
 
     Map::Tube::Exception::InvalidNodeObject->throw({
         method      => __PACKAGE__."::add_station",
-        message     => "ERROR: Invalid station.",
+        message     => "ERROR: Invalid Node Object [". ref($station). "].",
         filename    => $caller[1],
         line_number => $caller[2] })
         unless (ref($station) eq 'Map::Tube::Node');
