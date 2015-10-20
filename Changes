@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.09  2015-10-20T11:40:00+00:00
+      - Proposed solution to RT# 107745.
+
 3.08  2015-10-19T12:00:00+00:00
       - Updated pod document about map functional validation provided by Test::Map::Tube v0.09.
       - Updated exception error message in the method Map::Tube::Line::add_station().

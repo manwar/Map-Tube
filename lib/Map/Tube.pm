@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.08';
+$Map::Tube::VERSION   = '3.09';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.08
+Version 3.09
 
 =cut
 
@@ -76,17 +76,18 @@ This role has been taken by the following modules (and many more):
 
 =cut
 
-has name          => (is => 'rw');
-has nodes         => (is => 'rw');
-has lines         => (is => 'rw');
-has tables        => (is => 'rw');
-has routes        => (is => 'rw');
-has name_to_id    => (is => 'rw');
-has plugins       => (is => 'rw');
+has name           => (is => 'rw');
+has nodes          => (is => 'rw');
+has lines          => (is => 'rw');
+has tables         => (is => 'rw');
+has routes         => (is => 'rw');
+has name_to_id     => (is => 'rw');
+has plugins        => (is => 'rw');
 
-has _active_links => (is => 'rw');
-has _other_links  => (is => 'rw');
-has _lines        => (is => 'rw');
+has _active_links  => (is => 'rw');
+has _other_links   => (is => 'rw');
+has _lines         => (is => 'rw');
+has _line_stations => (is => 'rw');
 
 sub BUILD {
     my ($self) = @_;
@@ -544,6 +545,7 @@ sub _init_map {
     @caller = caller(2) if $caller[3] eq '(eval)';
 
     my $name_to_id = $self->{name_to_id};
+    my $has_station_index = 0;
     foreach my $station (@{$xml->{stations}->{station}}) {
         my $id = $station->{id};
 
@@ -567,6 +569,10 @@ sub _init_map {
 
         my $_station_lines = [];
         foreach my $_line (split /\,/, $station->{line}) {
+            if ($_line =~ /\:/) {
+                $has_station_index = 1;
+                $_line = $self->_capture_line_station($_line, $id);
+            }
             my $uc_line = uc($_line);
             my $line    = $lines->{$uc_line};
             $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
@@ -597,8 +603,10 @@ sub _init_map {
         my $node = Map::Tube::Node->new($station);
         $nodes->{$id} = $node;
 
-        foreach (@{$_station_lines}) {
-            push @{$_->{stations}}, $node;
+        unless ($has_station_index) {
+            foreach (@{$_station_lines}) {
+                push @{$_->{stations}}, $node;
+            }
         }
     }
 
@@ -613,8 +621,14 @@ sub _init_map {
         my $uc_line = uc($_line->{name});
         my $line    = $_lines->{$uc_line};
         if (defined $line) {
-            $line->{id}         = $_line->{id};
-            $line->{color}      = $_line->{color};
+            $line->{id}    = $_line->{id};
+            $line->{color} = $_line->{color};
+            if ($has_station_index) {
+                foreach (sort { $a <=> $b } keys %{$self->{_line_stations}->{$uc_line}}) {
+                    my $station_id = $self->{_line_stations}->{$uc_line}->{$_};
+                    $line->add_station($nodes->{$station_id});
+                }
+            }
             $_lines->{$uc_line} = $line;
         }
     }
@@ -768,6 +782,15 @@ sub _validate_multi_linked_nodes {
             filename    => $caller->[1],
             line_number => $caller->[2] });
     }
+}
+
+sub _capture_line_station {
+    my ($self, $line, $station_id) = @_;
+
+    my ($line_name, $sequence) = split /\:/, $line, 2;
+    $self->{_line_stations}->{uc($line_name)}->{$sequence} = $station_id;
+
+    return $line_name;
 }
 
 sub _validate_multi_lined_nodes {
