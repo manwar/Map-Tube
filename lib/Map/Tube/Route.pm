@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '3.09';
+$Map::Tube::Route::VERSION   = '3.10';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 3.09
+Version 3.10
 
 =cut
 
@@ -64,8 +64,8 @@ sub preferred {
         $nodes_object->{$node->name} = $node;
 
         foreach my $line (@{$node->{line}}) {
-            push @{$lines->[$index]}, $line->name;
-            $lines_object->{$line->name} = $line;
+            push @{$lines->[$index]}, $line->id;
+            $lines_object->{$line->id} = $line;
         }
 
         $index++;

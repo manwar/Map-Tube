@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.09';
+$Map::Tube::VERSION   = '3.10';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.09
+Version 3.10
 
 =cut
 
@@ -214,12 +214,28 @@ sub get_node_by_id {
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $node;
 
+    # Check if the node name appears more than once with different id.
+    my @nodes = $self->_get_node_id($node->name);
+    return $node if (scalar(@nodes) == 1);
+
+    my $lines = {};
+    foreach my $l (@{$node->line}) {
+        $lines->{$l->name} = $l if defined $l->name;
+    }
+    foreach my $i (@nodes) {
+        foreach my $j (@{$self->{nodes}->{$i}->line}) {
+            $lines->{$j->name} = $j if defined $j->name;
+        }
+    }
+    $node->line([ values %$lines ]);
+
     return $node;
 }
 
 =head2 get_node_by_name($node_name)
 
-Returns a list of object(s) of type L<Map::Tube::Node> matching node name C<$node_name>.
+Returns ref  to a list of object(s) of type L<Map::Tube::Node> matching node name
+C<$node_name> in scalar context otherwise returns just a list.
 
 =cut
 
@@ -271,18 +287,14 @@ sub get_line_by_id {
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $id;
 
-    foreach my $name (keys %{$self->{_lines}}) {
-        if (defined $self->{_lines}->{$name}->id) {
-            return $self->{_lines}->{$name}
-                if ($id eq $self->{_lines}->{$name}->id);
-        }
-    }
-
+    my $line = $self->_get_line_object_by_id($id);
     Map::Tube::Exception::InvalidLineId->throw({
         method      => __PACKAGE__."::get_line_by_id",
         message     => "ERROR: Invalid Line ID [$id].",
         filename    => $caller[1],
-        line_number => $caller[2] });
+        line_number => $caller[2] }) unless defined $line;
+
+    return $line;
 }
 
 =head2 get_line_by_name($line_name)
@@ -302,7 +314,7 @@ sub get_line_by_name {
         filename    => $caller[1],
         line_number => $caller[2] }) unless defined $name;
 
-    my $line = $self->{_lines}->{uc($name)};
+    my $line = $self->_get_line_object_by_name($name);
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_line_by_name",
         message     => "ERROR: Invalid Line Name [$name].",
@@ -322,14 +334,8 @@ sub get_lines {
     my ($self) = @_;
 
     my $lines = [];
-    if (defined $self->{_other_links} && scalar(keys %{$self->{_other_links}})) {
-        foreach (@{$self->{lines}}) {
-            push @$lines, $_
-                unless (exists $self->{_other_links}->{uc($_->name)});
-        }
-    }
-    else {
-        $lines = $self->{lines};
+    foreach (@{$self->{lines}}) {
+        push @$lines, $_ if defined $_->name;
     }
 
     return $lines;
@@ -342,7 +348,7 @@ Returns ref to a list of objects of type L<Map::Tube::Node> for the C<$line_name
 =cut
 
 sub get_stations {
-    my ($self, $line) = @_;
+    my ($self, $line_name) = @_;
 
     my @caller = caller(0);
     @caller    = caller(2) if $caller[3] eq '(eval)';
@@ -352,17 +358,26 @@ sub get_stations {
         message     => "ERROR: Missing Line Name.",
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless (defined $line);
+        unless (defined $line_name);
 
-    my $uc_line = uc($line);
+    my $line = $self->_get_line_object_by_name($line_name);
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_stations",
-        message     => "ERROR: Invalid Line Name [$line].",
+        message     => "ERROR: Invalid Line Name [$line_name].",
         filename    => $caller[1],
         line_number => $caller[2] })
-        unless (exists $self->{_lines}->{$uc_line});
+        unless defined $line;
 
-    return $self->{_lines}->{$uc_line}->{stations};
+    my $stations = [];
+    my $seen     = {};
+    foreach (@{$line->{stations}}) {
+        unless (exists $seen->{$_->id}) {
+            push @$stations, $self->get_node_by_id($_->id);
+            $seen->{$_->id} = 1;
+        }
+    }
+
+    return $stations;
 }
 
 =head1 PLUGINS
@@ -575,7 +590,7 @@ sub _init_map {
             }
             my $uc_line = uc($_line);
             my $line    = $lines->{$uc_line};
-            $line = Map::Tube::Line->new({ name => $_line }) unless defined $line;
+            $line = Map::Tube::Line->new({ id => $_line }) unless defined $line;
             $_lines->{$uc_line} = $line;
             $lines->{$uc_line}  = $line;
             push @$_station_lines, $line;
@@ -587,7 +602,7 @@ sub _init_map {
                 my ($_link_type, $_nodes) = split /\:/, $_entry, 2;
                 my $uc_link_type = uc($_link_type);
                 my $line = $lines->{$uc_link_type};
-                $line = Map::Tube::Line->new({ name => $_link_type }) unless defined $line;
+                $line = Map::Tube::Line->new({ id => $_link_type }) unless defined $line;
                 $_lines->{$uc_link_type} = $line;
                 $lines->{$uc_link_type}  = $line;
                 $_other_links->{$uc_link_type} = 1;
@@ -618,10 +633,10 @@ sub _init_map {
     }
 
     foreach my $_line (@lines) {
-        my $uc_line = uc($_line->{name});
+        my $uc_line = uc($_line->{id});
         my $line    = $_lines->{$uc_line};
         if (defined $line) {
-            $line->{id}    = $_line->{id};
+            $line->{name}  = $_line->{name};
             $line->{color} = $_line->{color};
             if ($has_station_index) {
                 foreach (sort { $a <=> $b } keys %{$self->{_line_stations}->{$uc_line}}) {
@@ -675,7 +690,7 @@ sub _get_next_link {
         next unless defined $node;
 
         my @lines = ();
-        foreach (@{$node->{line}}) { push @lines, $_->{name}; }
+        foreach (@{$node->{line}}) { push @lines, $_->{id}; }
 
         my @common = common_lines(\@common_lines, \@lines);
         return (1, $_link) if (scalar(@common) > 0);
@@ -787,17 +802,17 @@ sub _validate_multi_linked_nodes {
 sub _capture_line_station {
     my ($self, $line, $station_id) = @_;
 
-    my ($line_name, $sequence) = split /\:/, $line, 2;
-    $self->{_line_stations}->{uc($line_name)}->{$sequence} = $station_id;
+    my ($line_id, $sequence) = split /\:/, $line, 2;
+    $self->{_line_stations}->{uc($line_id)}->{$sequence} = $station_id;
 
-    return $line_name;
+    return $line_id;
 }
 
 sub _validate_multi_lined_nodes {
     my ($self, $caller, $node, $id) = @_;
 
     my %lines = ();
-    foreach (@{$node->{line}}) { $lines{$_->{name}}++; }
+    foreach (@{$node->{line}}) { $lines{$_->{id}}++; }
 
     my $max_link = 1;
     foreach (keys %lines) {
@@ -874,6 +889,35 @@ sub _get_node_id {
     else {
         return $nodes->[0];
     }
+}
+
+sub _get_line_object_by_name {
+    my ($self, $name) = @_;
+
+    $name = uc($name);
+    foreach my $line_id (keys %{$self->{_lines}}) {
+        my $line = $self->{_lines}->{$line_id};
+        if (defined $line && defined $line->name) {
+            return $line if ($name eq uc($line->name));
+        }
+    }
+
+    return;
+}
+
+sub _get_line_object_by_id {
+    my ($self, $id) = @_;
+
+    $id = uc($id);
+    foreach my $line_id (keys %{$self->{_lines}}) {
+
+        my $line = $self->{_lines}->{$line_id};
+        if (defined $line && defined $line->name) {
+            return $line if ($id eq uc($line->id));
+        }
+    }
+
+    return;
 }
 
 sub _is_visited {

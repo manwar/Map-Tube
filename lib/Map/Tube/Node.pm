@@ -1,15 +1,15 @@
 package Map::Tube::Node;
 
-$Map::Tube::Node::VERSION   = '3.09';
+$Map::Tube::Node::VERSION   = '3.10';
 $Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Node - Class to represent the node in the map.
+Map::Tube::Node - Class to represent the station in the map.
 
 =head1 VERSION
 
-Version 3.09
+Version 3.10
 
 =cut
 
@@ -24,7 +24,7 @@ use overload q{""} => 'as_string', fallback => 1;
 has id   => (is => 'ro', required => 1);
 has name => (is => 'ro', required => 1);
 has link => (is => 'ro', required => 1);
-has line => (is => 'ro', required => 1);
+has line => (is => 'rw', required => 1);
 
 sub as_string {
     my ($self) = @_;

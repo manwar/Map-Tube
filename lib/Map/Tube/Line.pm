@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '3.09';
+$Map::Tube::Line::VERSION   = '3.10';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 3.09
+Version 3.10
 
 =cut
 
@@ -24,8 +24,8 @@ use namespace::clean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has id       => (is => 'rw');
-has name     => (is => 'ro', required => 1);
+has id       => (is => 'ro', required => 1);
+has name     => (is => 'rw');
 has color    => (is => 'rw');
 has stations => (is => 'rw');
 
@@ -51,8 +51,8 @@ The following possible attributes for an object of type L<Map::Tube::Line>.
     +----------+--------------------------------------------------------------+
     | Key      | Description                                                  |
     +----------+--------------------------------------------------------------+
-    | id       | Unique Line ID (optional).                                   |
-    | name     | Unique Line name (required).                                 |
+    | id       | Unique Line ID (required).                                   |
+    | name     | Unique Line name (optional).                                 |
     | color    | Line color name or hash code (optional).                     |
     | stations | Ref to a list of objects of type Map::Tube::Node (optional). |
     +----------+--------------------------------------------------------------+
@@ -100,11 +100,13 @@ sub add_station {
     push @{$self->{stations}}, $station;
 }
 
-=head2 get_stations()
-
-Returns ref to a list of stations i.e. object of type L<Map::Tube::Node>.
-
-=cut
+# TODO: Fix station name with different ids. Refer method Map::Tube::get_stations()
+#
+#=head2 get_stations()
+#
+#Returns ref to a list of stations i.e. object of type L<Map::Tube::Node>.
+#
+#=cut
 
 sub get_stations {
     my ($self) = @_;
@@ -115,6 +117,7 @@ sub get_stations {
 sub as_string {
     my ($self) = @_;
 
+    return $self->id unless defined $self->name;
     return $self->name;
 }
 
