@@ -1,5 +1,12 @@
 Revision history for Map::Tube
 
+3.11  2015-10-23T14:20:00+00:00
+      - Ordered lines attached to station RT# 107745.
+      - Updated 'Changes' log history.
+
+3.10  2015-10-22T18:40:00+00:00
+      - Fixed the side effects of fix for RT# 107745.
+
 3.09  2015-10-20T11:40:00+00:00
       - Proposed solution to RT# 107745.
 

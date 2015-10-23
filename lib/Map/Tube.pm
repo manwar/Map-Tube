@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.10';
+$Map::Tube::VERSION   = '3.11';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.10
+Version 3.11
 
 =cut
 
@@ -648,6 +648,8 @@ sub _init_map {
         }
     }
 
+    $self->_order_station_lines($nodes);
+
     $self->lines([ values %$lines ]);
     $self->_lines($_lines);
     $self->_other_links($_other_links);
@@ -918,6 +920,24 @@ sub _get_line_object_by_id {
     }
 
     return;
+}
+
+sub _order_station_lines {
+    my ($self, $nodes) = @_;
+
+    return unless scalar(keys %$nodes);
+
+    foreach my $node (keys %$nodes) {
+        my $_lines_h = {};
+        foreach (@{$nodes->{$node}->{line}}) {
+            $_lines_h->{$_->id} = $_ if defined $_->name;
+        }
+        my $_lines_a = [];
+        foreach (sort keys %$_lines_h) {
+            push @$_lines_a, $_lines_h->{$_};
+        }
+        $nodes->{$node}->line($_lines_a);
+    }
 }
 
 sub _is_visited {
