@@ -28,7 +28,7 @@ WriteMakefile(
         'XML::Twig'            => '3.48',
         'Module::Pluggable'    => '5.1',
         'overload'             => 0,
-        'Map::Tube::Exception' => '3.05',
+        'Map::Tube::Exception' => '3.06',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Map-Tube-*' },

@@ -1,6 +1,7 @@
 Revision history for Map::Tube
 
 3.12  2015-10-30T10:25:00+00:00
+      - Upgraded to use Map::Tube::Exception v3.06.
       - Added missing plugin handler properly using AUTOLOAD.
 
 3.11  2015-10-23T14:20:00+00:00
