@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.11';
+$Map::Tube::VERSION   = '3.12';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.11
+Version 3.12
 
 =cut
 
@@ -34,7 +34,10 @@ use Map::Tube::Exception::FoundMultiLinkedStation;
 use Map::Tube::Exception::FoundSelfLinkedStation;
 use Map::Tube::Exception::DuplicateStationId;
 use Map::Tube::Exception::DuplicateStationName;
-use Map::Tube::Utils qw(is_same trim common_lines);
+use Map::Tube::Exception::MissingPluginGraph;
+use Map::Tube::Exception::MissingPluginFormatter;
+use Map::Tube::Exception::MissingPluginFuzzyFind;
+use Map::Tube::Utils qw(is_same trim common_lines get_method_map);
 
 use Moo::Role;
 use Role::Tiny qw();
@@ -88,6 +91,28 @@ has _active_links  => (is => 'rw');
 has _other_links   => (is => 'rw');
 has _lines         => (is => 'rw');
 has _line_stations => (is => 'rw');
+
+our $AUTOLOAD;
+
+sub AUTOLOAD {
+
+    my $name = $AUTOLOAD;
+    $name =~ s/.*://;
+
+    my @caller = caller(0);
+    @caller    = caller(2) if $caller[3] eq '(eval)';
+
+    my $method_map = get_method_map();
+    if (exists $method_map->{$name}) {
+        my $module    = $method_map->{$name}->{module};
+        my $exception = $method_map->{$name}->{exception};
+        $exception->throw({
+            method      => "${module}::${name}",
+            message     => "ERROR: Missing plugin $module.",
+            filename    => $caller[1],
+            line_number => $caller[2] });
+    }
+}
 
 sub BUILD {
     my ($self) = @_;

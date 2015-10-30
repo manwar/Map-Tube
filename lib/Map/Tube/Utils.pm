@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '3.11';
+$Map::Tube::Utils::VERSION   = '3.12';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 3.11
+Version 3.12
 
 =cut
 
@@ -19,7 +19,7 @@ use strict; use warnings;
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT_OK = qw(is_same trim common_lines filter);
+@EXPORT_OK = qw(is_same trim common_lines filter get_method_map);
 
 =head1 DESCRIPTION
 
@@ -87,6 +87,36 @@ sub filter {
               keys %{ $r{$_} } ],
         sort { $a cmp $b } keys %r
     ];
+}
+
+sub get_method_map {
+
+    return {
+        fuzzy_find => {
+            module    => 'Map::Tube::Plugin::FuzzyFind',
+            exception => 'Map::Tube::Exception::MissingPluginFuzzyFind',
+        },
+        as_image   => {
+            module    => 'Map::Tube::Plugin::Graph',
+            exception => 'Map::Tube::Exception::MissingPluginGraph',
+        },
+        to_xml     => {
+            module    => 'Map::Tube::Plugin::Formatter',
+            exception => 'Map::Tube::Exception::MissingPluginFormatter',
+        },
+        to_json    => {
+            module    => 'Map::Tube::Plugin::Formatter',
+            exception => 'Map::Tube::Exception::MissingPluginFormatter',
+        },
+        to_yaml    => {
+            module    => 'Map::Tube::Plugin::Formatter',
+            exception => 'Map::Tube::Exception::MissingPluginFormatter',
+        },
+        to_string  => {
+            module    => 'Map::Tube::Plugin::Formatter',
+            exception => 'Map::Tube::Exception::MissingPluginFormatter',
+        },
+    };
 }
 
 #
