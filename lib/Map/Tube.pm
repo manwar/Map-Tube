@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.12';
+$Map::Tube::VERSION   = '3.13';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.12
+Version 3.13
 
 =cut
 
@@ -76,6 +76,9 @@ This role has been taken by the following modules (and many more):
 =item * L<Map::Tube::Berlin>
 
 =back
+
+If you are new to L<Map::Tube> then I would recommend to read L<Map::Tube::Cookbook>
+first. It tries to explain the nitty gritty of L<Map::Tube>.
 
 =cut
 
@@ -359,7 +362,9 @@ sub get_lines {
     my ($self) = @_;
 
     my $lines = [];
+    my $other_links = $self->_other_links;
     foreach (@{$self->{lines}}) {
+        next if exists $other_links->{uc($_->id)};
         push @$lines, $_ if defined $_->name;
     }
 
@@ -627,7 +632,7 @@ sub _init_map {
                 my ($_link_type, $_nodes) = split /\:/, $_entry, 2;
                 my $uc_link_type = uc($_link_type);
                 my $line = $lines->{$uc_link_type};
-                $line = Map::Tube::Line->new({ id => $_link_type }) unless defined $line;
+                $line = Map::Tube::Line->new({ id => $_link_type, name => $_link_type }) unless defined $line;
                 $_lines->{$uc_link_type} = $line;
                 $lines->{$uc_link_type}  = $line;
                 $_other_links->{$uc_link_type} = 1;
@@ -985,7 +990,7 @@ L<https://github.com/Manwar/Map-Tube>
 
 =head1 SEE ALSO
 
-L<Map::Metro>
+L<Map::Metro>, L<Map::Tube::Cookbook>
 
 =head1 CONTRIBUTORS
 
