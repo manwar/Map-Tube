@@ -11,7 +11,6 @@ WriteMakefile(
     VERSION_FROM       => 'lib/Map/Tube.pm',
     ABSTRACT_FROM      => 'lib/Map/Tube.pm',
     LICENSE            => 'artistic_2',
-    PL_FILES           => {},
     MIN_PERL_VERSION   => 5.006,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 0,

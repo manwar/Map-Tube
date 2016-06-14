@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.13  2016-06-14T10:45:00+00:00
+      - Propose fix to handle standard line and other link appropriately.
+      - Updated copyright year information.
+
 3.12  2015-10-30T10:25:00+00:00
       - Upgraded to use Map::Tube::Exception v3.06.
       - Added missing plugin handler properly using AUTOLOAD.
