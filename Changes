@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.14  2016-06-20T11:20:00+00:00
+      - Updated unit test meta-json.t and meta-yml.t to check consistent version correctly.
+
 3.13  2016-06-14T10:45:00+00:00
       - Propose fix to handle standard line and other link appropriately.
       - Updated copyright year information.
