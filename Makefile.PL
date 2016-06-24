@@ -25,6 +25,7 @@ WriteMakefile(
         'namespace::clean'     => '0.24',
         'Throwable'            => 0,
         'XML::Twig'            => '3.48',
+        'XML::Parser'          => '2.23',
         'Module::Pluggable'    => '5.1',
         'overload'             => 0,
         'Map::Tube::Exception' => '3.06',
@@ -34,13 +35,13 @@ WriteMakefile(
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.14' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.14' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.14' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.14' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.14' },
-            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.14' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.14' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.15' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.15' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.15' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.15' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.15' },
+            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.15' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.15' },
         },
         resources => {
             repository => {
