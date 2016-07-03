@@ -7,6 +7,7 @@
 ^blibdirs
 ^Build$
 ^Build.bat$
+^perl.core$
 ^pod2htm
 ^_build/
 ^.git/

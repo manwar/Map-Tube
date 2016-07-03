@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.16  2016-07-03T03:25:00+00:00
+      - Addressed issue raised in the CPAN Tester Report.
+        http://www.cpantesters.org/cpan/report/297cf692-3f1d-11e6-a514-8183992ad5f0
+
 3.15  2016-06-24T10:30:00+00:00
       - Added explicit dependency on XML::Parser v2.23 to address the CPAN Tester FAIL report:
         http://www.cpantesters.org/cpan/report/059a00cc-38a5-11e6-a16d-92a790c50306
