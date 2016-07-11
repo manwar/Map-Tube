@@ -15,5 +15,8 @@ t/00-load.t
 t/meta-yml.t
 t/meta-json.t
 t/manifest.t
+t/map.t
 t/pod.t
 t/changes.t
+t/SampleMap.pm
+t/sample-map.xml

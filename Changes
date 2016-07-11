@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.17  2016-07-11T09:45:00+00:00
+      - Added unit test (t/map.t).
+
 3.16  2016-07-03T03:25:00+00:00
       - Addressed issue raised in the CPAN Tester Report.
         http://www.cpantesters.org/cpan/report/297cf692-3f1d-11e6-a514-8183992ad5f0
