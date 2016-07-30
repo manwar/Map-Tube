@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.17';
+$Map::Tube::VERSION   = '3.18';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.17
+Version 3.18
 
 =cut
 
@@ -466,6 +466,26 @@ basic functions provided by L<Map::Tube>.
 
     use Map::Tube::London;
     ok_map_functions(Map::Tube::London->new);
+
+The package L<Test::Map::Tube> v0.17 or above  can easily be used to validate map
+routing functions provided by L<Map::Tube>.
+
+    use strict; use warnings;
+    use Test::More;
+
+    my $min_ver = 0.17;
+    eval "use Test::Map::Tube $min_ver tests => 1";
+    plan skip_all => "Test::Map::Tube $min_ver required" if $@;
+
+    use Map::Tube::London;
+    my $map = Map::Tube::London->new;
+
+    my @routes = (
+        "Route 1|Tower Gateway|Aldgate|Tower Gateway,Tower Hill,Aldgate",
+        "Route 2|Liverpool Street|Monument|Liverpool Street,Bank,Monument",
+    );
+
+    ok_map_routes($map, \@routes);
 
 =cut
 
