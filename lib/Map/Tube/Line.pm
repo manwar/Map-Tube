@@ -1,6 +1,6 @@
 package Map::Tube::Line;
 
-$Map::Tube::Line::VERSION   = '3.18';
+$Map::Tube::Line::VERSION   = '3.19';
 $Map::Tube::Line::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Line - Class to represent the line in the map.
 
 =head1 VERSION
 
-Version 3.18
+Version 3.19
 
 =cut
 
@@ -18,6 +18,7 @@ use Data::Dumper;
 
 use Map::Tube::Exception::MissingNodeObject;
 use Map::Tube::Exception::InvalidNodeObject;
+use Map::Tube::Types qw(Color Nodes);
 
 use Moo;
 use namespace::clean;
@@ -26,8 +27,8 @@ use overload q{""} => 'as_string', fallback => 1;
 
 has id       => (is => 'ro', required => 1);
 has name     => (is => 'rw');
-has color    => (is => 'rw');
-has stations => (is => 'rw');
+has color    => (is => 'rw', isa => Color);
+has stations => (is => 'rw', isa => Nodes);
 
 =head1 DESCRIPTION
 
@@ -127,7 +128,7 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 =head1 REPOSITORY
 
-L<https://github.com/Manwar/Map-Tube>
+L<https://github.com/manwar/Map-Tube>
 
 =head1 BUGS
 

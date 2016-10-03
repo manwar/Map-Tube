@@ -13,8 +13,8 @@ my $version = $Map::Tube::VERSION;
 
 is($meta->{version},$version, 'MYMETA.yml distribution version matches');
 
-if($meta->{provides}) {
-    for my $mod (keys %{$meta->{provides}}) {
+if ($meta->{provides}) {
+    foreach my $mod (keys %{$meta->{provides}}) {
         eval("use $mod;");
         my $mod_version = eval(sprintf("\$%s::VERSION", $mod));
         is($meta->{provides}{$mod}{version}, $version, "MYMETA.yml entry [$mod] version matches");

@@ -1,6 +1,6 @@
 package Map::Tube::Route;
 
-$Map::Tube::Route::VERSION   = '3.18';
+$Map::Tube::Route::VERSION   = '3.19';
 $Map::Tube::Route::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,12 +9,13 @@ Map::Tube::Route - Class to represent the route in the map.
 
 =head1 VERSION
 
-Version 3.18
+Version 3.19
 
 =cut
 
 use 5.006;
 use Data::Dumper;
+use Map::Tube::Types qw(Node Nodes);
 use Map::Tube::Utils qw(filter);
 
 use Moo;
@@ -22,9 +23,9 @@ use namespace::clean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
-has from  => (is => 'ro', required => 1);
-has to    => (is => 'ro', required => 1);
-has nodes => (is => 'ro', required => 1);
+has from  => (is => 'ro', isa => Node,  required => 1);
+has to    => (is => 'ro', isa => Node,  required => 1);
+has nodes => (is => 'ro', isa => Nodes, required => 1);
 
 =head1 DESCRIPTION
 
@@ -105,7 +106,7 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 =head1 REPOSITORY
 
-L<https://github.com/Manwar/Map-Tube>
+L<https://github.com/manwar/Map-Tube>
 
 =head1 BUGS
 

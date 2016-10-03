@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.19  2016-10-03T09:40:00+00:00
+      - Added attribute type class 'Map::Tube::Types'.
+
 3.18  2016-07-30T10:30:00+00:00
       - Documented method ok_map_routes().
 

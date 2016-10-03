@@ -4,6 +4,9 @@ use 5.006;
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
+use File::ShareDir::Install;
+
+install_share dist => 'share';
 
 WriteMakefile(
     NAME               => 'Map::Tube',
@@ -13,7 +16,8 @@ WriteMakefile(
     LICENSE            => 'artistic_2',
     MIN_PERL_VERSION   => 5.006,
     CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => 0,
+        'ExtUtils::MakeMaker'     => 0,
+        'File::ShareDir::Install' => 0,
     },
     BUILD_REQUIRES   => {
         'Test::More' => '1.001014',
@@ -35,13 +39,14 @@ WriteMakefile(
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.18' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.18' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.18' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.18' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.18' },
-            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.18' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.18' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.19' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.19' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.19' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.19' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.19' },
+            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.19' },
+            'Map::Tube::Types'     => { file => 'lib/Map/Tube/Types.pm'    , version => '3.19' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.19' },
         },
         resources => {
             repository => {
@@ -53,3 +58,6 @@ WriteMakefile(
      : ()
     ),
 );
+
+package MY;
+use File::ShareDir::Install 'postamble';

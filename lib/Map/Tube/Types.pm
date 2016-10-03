@@ -1,11 +1,11 @@
-package Map::Tube::Node;
+package Map::Tube::Types;
 
-$Map::Tube::Node::VERSION   = '3.19';
-$Map::Tube::Node::AUTHORITY = 'cpan:MANWAR';
+$Map::Tube::Types::VERSION   = '3.19';
+$Map::Tube::Types::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
 
-Map::Tube::Node - Class to represent the station in the map.
+Map::Tube::Types - Attribute type definition for Map::Tube.
 
 =head1 VERSION
 
@@ -14,70 +14,71 @@ Version 3.19
 =cut
 
 use 5.006;
-use Data::Dumper;
-use Map::Tube::Types qw(Lines);
+use strict; use warnings;
 
-use Moo;
-use namespace::clean;
+use Type::Library -base, -declare => qw(Color Node Nodes Line Lines Route Routes);
+use Types::Standard qw(Str Object ArrayRef);
+use Type::Utils;
+use File::Share ':all';
 
-use overload q{""} => 'as_string', fallback => 1;
+our @COLOR_NAMES = _color_names();
 
-has id   => (is => 'ro', required => 1);
-has name => (is => 'ro', required => 1);
-has link => (is => 'ro', required => 1);
-has line => (is => 'rw', isa => Lines, required => 1);
+declare 'Color',
+    as Str,
+    where   { is_valid_color($_) },
+    message { "ERROR: Invalid color name [$_]." };
 
-sub as_string {
-    my ($self) = @_;
+declare 'Node',
+    as Object,
+    where   { ref($_) eq 'Map::Tube::Node' };
 
-    my $line = join ', ', @{$self->line};
-    return sprintf("%s (%s)", $self->name, $line);
-}
+declare 'Nodes',
+    as ArrayRef[Node];
+
+declare 'Line',
+    as Object,
+    where   { ref($_) eq 'Map::Tube::Line' };
+
+declare 'Lines',
+    as ArrayRef[Line];
+
+declare 'Route',
+    as Object,
+    where   { ref($_) eq 'Map::Tube::Route' };
+
+declare 'Routes',
+    as ArrayRef[Route];
 
 =head1 DESCRIPTION
 
-It provides simple interface to the 'node' of the map.
+B<FOR INTERNAL USE ONLY>.
 
-=head1 SYNOPSIS
+=cut
 
-    use strict; use warnings;
-    use Map::Tube::Node;
+sub _color_names {
 
-    my $line = Map::Tube::Line->new({ id => 1, name => 'L1', color => 'red'                  });
-    my $node = Map::Tube::Node->new({ id => 1, name => 'N1', link  => '2,3', line => [$line] });
+    my $source = dist_file('Map-Tube', 'color-names.txt');
+    open (FILE, $source);
+    my @color_names = <FILE>;
+    close (FILE);
 
-    print "Node: $node\n";
+    return @color_names;
+}
 
-=head1 CONSTRUCTOR
+sub _is_valid_color {
+    my ($color) = @_;
 
-The following possible attributes for an object of type L<Map::Tube::Node>.
+    return 0 unless defined $color;
 
-    +------+--------------------------------------------------------------------+
-    | Key  | Description                                                        |
-    +------+--------------------------------------------------------------------+
-    | id   | Unique Node ID (required).                                         |
-    | name | Node name (required).                                              |
-    | link | Comman seperated Node ID (required).                               |
-    | line | Ref to a list of objects of type Map::Tube::Line (required).       |
-    +------+--------------------------------------------------------------------+
-
-=head1 METHODS
-
-=head2 id()
-
-Returns the station id.
-
-=head2 name()
-
-Returns the station name.
-
-=head2 link()
-
-Returns comma seperated linked station id.
-
-=head2 line()
-
-Returns ref to a list of objects of type L<Map::Tube::Line>.
+    if ((grep { lc($color) eq $_ } @COLOR_NAMES)
+        ||
+        ($color =~ /^#[a-f0-9]{6}$/i)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
 
 =head1 AUTHOR
 
@@ -91,14 +92,14 @@ L<https://github.com/manwar/Map-Tube>
 
 Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,  or
 through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube>.
-I will  be notified and then you'll automatically be notified of progress on your
+I will be notified, and then you'll automatically be notified of progress on your
 bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Map::Tube::Node
+    perldoc Map::Tube::Types
 
 You can also look for information at:
 
@@ -126,9 +127,9 @@ L<http://search.cpan.org/dist/Map-Tube/>
 
 Copyright (C) 2010 - 2016 Mohammad S Anwar.
 
-This program is free software;you can  redistribute it and/or modify it under the
-terms of the the Artistic License(2.0). You may obtain a copy of the full license
-at:
+This program  is  free software; you can redistribute it and / or modify it under
+the  terms  of the the Artistic License  (2.0). You may obtain a copy of the full
+license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 
@@ -162,4 +163,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Map::Tube::Node
+1; # End of Map::Tube::Types

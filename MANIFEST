@@ -1,10 +1,12 @@
 Changes
+share/color-names.txt
 lib/Map/Tube.pm
 lib/Map/Tube/Node.pm
 lib/Map/Tube/Line.pm
 lib/Map/Tube/Table.pm
 lib/Map/Tube/Route.pm
 lib/Map/Tube/Utils.pm
+lib/Map/Tube/Types.pm
 lib/Map/Tube/Pluggable.pm
 Makefile.PL
 LICENSE

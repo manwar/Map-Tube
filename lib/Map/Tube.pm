@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.18';
+$Map::Tube::VERSION   = '3.19';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.18
+Version 3.19
 
 =cut
 
@@ -38,6 +38,7 @@ use Map::Tube::Exception::MissingPluginGraph;
 use Map::Tube::Exception::MissingPluginFormatter;
 use Map::Tube::Exception::MissingPluginFuzzyFind;
 use Map::Tube::Utils qw(is_same trim common_lines get_method_map);
+use Map::Tube::Types qw(Routes);
 
 use Moo::Role;
 use Role::Tiny qw();
@@ -86,7 +87,7 @@ has name           => (is => 'rw');
 has nodes          => (is => 'rw');
 has lines          => (is => 'rw');
 has tables         => (is => 'rw');
-has routes         => (is => 'rw');
+has routes         => (is => 'rw', isa => Routes);
 has name_to_id     => (is => 'rw');
 has plugins        => (is => 'rw');
 
@@ -1006,17 +1007,17 @@ Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 =head1 REPOSITORY
 
-L<https://github.com/Manwar/Map-Tube>
+L<https://github.com/manwar/Map-Tube>
 
 =head1 SEE ALSO
 
 =over 2
 
+=item * L<Map::Tube::Cookbook>
+
 =item * L<Map::Tube::CLI>
 
 =item * L<Map::Metro>
-
-=item * L<Map::Tube::Cookbook>
 
 =back
 
