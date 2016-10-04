@@ -1,6 +1,6 @@
 package Map::Tube::Types;
 
-$Map::Tube::Types::VERSION   = '3.19';
+$Map::Tube::Types::VERSION   = '3.20';
 $Map::Tube::Types::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,15 +9,15 @@ Map::Tube::Types - Attribute type definition for Map::Tube.
 
 =head1 VERSION
 
-Version 3.19
+Version 3.20
 
 =cut
 
 use 5.006;
 use strict; use warnings;
 
-use Type::Library -base, -declare => qw(Color Node Nodes Line Lines Route Routes);
-use Types::Standard qw(Str Object ArrayRef);
+use Type::Library -base, -declare => qw(Color Node NodeMap Nodes Line LineMap Lines Route Routes Table Tables);
+use Types::Standard qw(Str Object ArrayRef Map);
 use Type::Utils;
 use File::Share ':all';
 
@@ -32,12 +32,18 @@ declare 'Node',
     as Object,
     where   { ref($_) eq 'Map::Tube::Node' };
 
+declare 'NodeMap',
+    as Map[Str, Node];
+
 declare 'Nodes',
     as ArrayRef[Node];
 
 declare 'Line',
     as Object,
     where   { ref($_) eq 'Map::Tube::Line' };
+
+declare 'LineMap',
+    as Map[Str, Line];
 
 declare 'Lines',
     as ArrayRef[Line];
@@ -48,6 +54,13 @@ declare 'Route',
 
 declare 'Routes',
     as ArrayRef[Route];
+
+declare 'Table',
+    as Object,
+    where   { ref($_) eq 'Map::Tube::Table' };
+
+declare 'Tables',
+    as Map[Str, Table];
 
 =head1 DESCRIPTION
 

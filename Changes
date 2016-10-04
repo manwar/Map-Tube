@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.20  2016-10-04T12:00:00+00:00
+      - Added missing pre-reqs Type::Tiny and File::Share.
+      - Added some more attribute types 'Table', 'Tables', 'NodeMap' and 'LineMap'.
+
 3.19  2016-10-03T09:40:00+00:00
       - Added attribute type class 'Map::Tube::Types'.
 

@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.19';
+$Map::Tube::VERSION   = '3.20';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.19
+Version 3.20
 
 =cut
 
@@ -38,7 +38,7 @@ use Map::Tube::Exception::MissingPluginGraph;
 use Map::Tube::Exception::MissingPluginFormatter;
 use Map::Tube::Exception::MissingPluginFuzzyFind;
 use Map::Tube::Utils qw(is_same trim common_lines get_method_map);
-use Map::Tube::Types qw(Routes);
+use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 
 use Moo::Role;
 use Role::Tiny qw();
@@ -84,16 +84,16 @@ first. It tries to explain the nitty gritty of L<Map::Tube>.
 =cut
 
 has name           => (is => 'rw');
-has nodes          => (is => 'rw');
-has lines          => (is => 'rw');
-has tables         => (is => 'rw');
-has routes         => (is => 'rw', isa => Routes);
+has nodes          => (is => 'rw', isa => NodeMap);
+has lines          => (is => 'rw', isa => Lines  );
+has tables         => (is => 'rw', isa => Tables );
+has routes         => (is => 'rw', isa => Routes );
 has name_to_id     => (is => 'rw');
 has plugins        => (is => 'rw');
 
 has _active_links  => (is => 'rw');
 has _other_links   => (is => 'rw');
-has _lines         => (is => 'rw');
+has _lines         => (is => 'rw', isa => LineMap);
 has _line_stations => (is => 'rw');
 
 our $AUTOLOAD;
