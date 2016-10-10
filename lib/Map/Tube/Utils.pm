@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '3.20';
+$Map::Tube::Utils::VERSION   = '3.21';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,17 +9,20 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 3.20
+Version 3.21
 
 =cut
 
 use 5.006;
 use strict; use warnings;
+use File::Share ':all';
 
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT_OK = qw(is_same trim common_lines filter get_method_map);
+@EXPORT_OK = qw(is_same trim common_lines filter get_method_map is_valid_color);
+
+our @COLOR_NAMES = _color_names();
 
 =head1 DESCRIPTION
 
@@ -119,6 +122,21 @@ sub get_method_map {
     };
 }
 
+sub is_valid_color {
+    my ($color) = @_;
+
+    return 0 unless defined $color;
+
+    if (($color =~ /^#[a-f0-9]{6}$/i)
+        ||
+        (grep { lc($color) eq $_ } @COLOR_NAMES)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
 #
 #
 # PRIVATE METHODS
@@ -128,6 +146,17 @@ sub _is_number {
 
     return (defined($this)
             && ($this =~ /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/));
+}
+
+sub _color_names {
+
+    my $source = dist_file('Map-Tube', 'color-names.txt');
+    open (FILE, $source);
+    my @color_names = <FILE>;
+    chomp @color_names;
+    close (FILE);
+
+    return @color_names;
 }
 
 =head1 AUTHOR

@@ -32,7 +32,7 @@ WriteMakefile(
         'XML::Parser'          => '2.23',
         'Module::Pluggable'    => '5.1',
         'overload'             => 0,
-        'Map::Tube::Exception' => '3.06',
+        'Map::Tube::Exception' => '3.08',
         'Type::Tiny'           => '1.000005',
         'File::Share'          => '0.25',
     },
@@ -41,14 +41,14 @@ WriteMakefile(
     (eval { ExtUtils::MakeMaker->VERSION(6.46) } ? (META_MERGE => {
         'meta-spec' => { version => 2 },
         provides    => {
-            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.20' },
-            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.20' },
-            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.20' },
-            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.20' },
-            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.20' },
-            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.20' },
-            'Map::Tube::Types'     => { file => 'lib/Map/Tube/Types.pm'    , version => '3.20' },
-            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.20' },
+            'Map::Tube'            => { file => 'lib/Map/Tube.pm'          , version => '3.21' },
+            'Map::Tube::Node'      => { file => 'lib/Map/Tube/Node.pm'     , version => '3.21' },
+            'Map::Tube::Line'      => { file => 'lib/Map/Tube/Line.pm'     , version => '3.21' },
+            'Map::Tube::Table'     => { file => 'lib/Map/Tube/Table.pm'    , version => '3.21' },
+            'Map::Tube::Route'     => { file => 'lib/Map/Tube/Route.pm'    , version => '3.21' },
+            'Map::Tube::Utils'     => { file => 'lib/Map/Tube/Utils.pm'    , version => '3.21' },
+            'Map::Tube::Types'     => { file => 'lib/Map/Tube/Types.pm'    , version => '3.21' },
+            'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.21' },
         },
         resources => {
             repository => {

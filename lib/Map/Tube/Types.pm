@@ -1,6 +1,6 @@
 package Map::Tube::Types;
 
-$Map::Tube::Types::VERSION   = '3.20';
+$Map::Tube::Types::VERSION   = '3.21';
 $Map::Tube::Types::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Types - Attribute type definition for Map::Tube.
 
 =head1 VERSION
 
-Version 3.20
+Version 3.21
 
 =cut
 
@@ -19,9 +19,7 @@ use strict; use warnings;
 use Type::Library -base, -declare => qw(Color Node NodeMap Nodes Line LineMap Lines Route Routes Table Tables);
 use Types::Standard qw(Str Object ArrayRef Map);
 use Type::Utils;
-use File::Share ':all';
-
-our @COLOR_NAMES = _color_names();
+use Map::Tube::Utils qw(is_valid_color);
 
 declare 'Color',
     as Str,
@@ -65,33 +63,6 @@ declare 'Tables',
 =head1 DESCRIPTION
 
 B<FOR INTERNAL USE ONLY>.
-
-=cut
-
-sub _color_names {
-
-    my $source = dist_file('Map-Tube', 'color-names.txt');
-    open (FILE, $source);
-    my @color_names = <FILE>;
-    close (FILE);
-
-    return @color_names;
-}
-
-sub _is_valid_color {
-    my ($color) = @_;
-
-    return 0 unless defined $color;
-
-    if ((grep { lc($color) eq $_ } @COLOR_NAMES)
-        ||
-        ($color =~ /^#[a-f0-9]{6}$/i)) {
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
 
 =head1 AUTHOR
 

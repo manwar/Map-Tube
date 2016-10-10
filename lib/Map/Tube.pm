@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.20';
+$Map::Tube::VERSION   = '3.21';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.20
+Version 3.21
 
 =cut
 
@@ -29,6 +29,7 @@ use Map::Tube::Exception::MissingLineId;
 use Map::Tube::Exception::InvalidLineId;
 use Map::Tube::Exception::MissingLineName;
 use Map::Tube::Exception::InvalidLineName;
+use Map::Tube::Exception::InvalidLineColor;
 use Map::Tube::Exception::FoundMultiLinedStation;
 use Map::Tube::Exception::FoundMultiLinkedStation;
 use Map::Tube::Exception::FoundSelfLinkedStation;
@@ -37,7 +38,7 @@ use Map::Tube::Exception::DuplicateStationName;
 use Map::Tube::Exception::MissingPluginGraph;
 use Map::Tube::Exception::MissingPluginFormatter;
 use Map::Tube::Exception::MissingPluginFuzzyFind;
-use Map::Tube::Utils qw(is_same trim common_lines get_method_map);
+use Map::Tube::Utils qw(is_same trim common_lines get_method_map is_valid_color);
 use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 
 use Moo::Role;
@@ -780,6 +781,8 @@ sub _validate_map_data {
     my $nodes  = $self->{nodes};
     my $seen   = {};
 
+    $self->_validate_lines(\@caller);
+
     foreach my $id (keys %$nodes) {
 
         Map::Tube::Exception::InvalidStationId->throw({
@@ -794,6 +797,22 @@ sub _validate_map_data {
         $self->_validate_self_linked_nodes(\@caller, $node, $id);
         $self->_validate_multi_linked_nodes(\@caller, $node, $id);
         $self->_validate_multi_lined_nodes(\@caller, $node, $id);
+    }
+}
+
+sub _validate_lines {
+    my ($self, $caller) = @_;
+
+    my $lines = $self->{lines};
+    foreach (@$lines) {
+        my $line_color = $_->{color};
+        if (defined $line_color && !(is_valid_color($line_color))) {
+            Map::Tube::Exception::InvalidLineColor->throw({
+                method      => __PACKAGE__."::_validate_map_data",
+                message     => "ERROR: Invalid Line Color [$line_color].",
+                filename    => $caller->[1],
+                line_number => $caller->[2] });
+        }
     }
 }
 

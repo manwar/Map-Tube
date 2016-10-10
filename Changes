@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.21  2016-10-10T09:45:00+00:00
+      - Added validation for line color.
+      - Updated dependency on Map::Tube::Exception v3.08.
+
 3.20  2016-10-04T12:00:00+00:00
       - Added missing pre-reqs Type::Tiny and File::Share.
       - Added some more attribute types 'Table', 'Tables', 'NodeMap' and 'LineMap'.

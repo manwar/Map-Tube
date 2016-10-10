@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tube name="test">
   <lines>
-    <line id="A" name="A" color="#550000"/>
+    <line id="A" name="A" color="red"/>
     <line id="B" name="B" color="#FFFF00"/>
   </lines>
   <stations>
