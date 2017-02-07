@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.21';
+$Map::Tube::VERSION   = '3.22';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,11 +9,12 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.21
+Version 3.22
 
 =cut
 
 use 5.006;
+use JSON::Parse qw(json_file_to_perl);
 use XML::Twig;
 use Data::Dumper;
 use Map::Tube::Node;
@@ -21,6 +22,7 @@ use Map::Tube::Line;
 use Map::Tube::Table;
 use Map::Tube::Route;
 use Map::Tube::Pluggable;
+use Map::Tube::Exception::MissingMapData;
 use Map::Tube::Exception::MissingStationName;
 use Map::Tube::Exception::InvalidStationName;
 use Map::Tube::Exception::MissingStationId;
@@ -44,8 +46,6 @@ use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 use Moo::Role;
 use Role::Tiny qw();
 use namespace::clean;
-
-requires 'xml';
 
 =encoding utf8
 
@@ -412,6 +412,35 @@ sub get_stations {
     return $stations;
 }
 
+#
+#
+# DO NOT MAKE IT PUBLIC
+
+sub get_map_data {
+    my ($self, $caller, $method) = @_;
+
+    if (defined $self->{xml}) {
+        return XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
+    }
+    elsif (defined $self->{json}) {
+        return json_file_to_perl($self->json);
+    }
+    else {
+        if (!defined $caller) {
+            $method = __PACKAGE__."::get_map_data";
+            my @_caller = caller(0);
+            @_caller = caller(2) if $_caller[3] eq '(eval)';
+            $caller = \@_caller;
+        }
+
+        Map::Tube::Exception::MissingMapData->throw({
+            method      => __PACKAGE__."::$method",
+            message     => "ERROR: Missing Map Data.",
+            filename    => $caller->[1],
+            line_number => $caller->[2] });
+    }
+}
+
 =head1 PLUGINS
 
 =head2 * L<Map::Tube::Plugin::Graph>
@@ -593,7 +622,7 @@ sub _validate_input {
 sub _xml_data {
     my ($self) = @_;
 
-    return XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
+    return $self->get_map_data;
 }
 
 sub _init_map {
@@ -605,19 +634,21 @@ sub _init_map {
     my $tables = {};
     my $_other_links = {};
     my $_seen_nodes  = {};
-    my $xml = $self->_xml_data;
-    $self->{name} = $xml->{name};
 
     my @caller = caller(0);
     @caller = caller(2) if $caller[3] eq '(eval)';
 
+    my $method = __PACKAGE__."::_init_map";
+    my $data   = $self->get_map_data(\@caller, $method);
+    $self->{name} = $data->{name};
+
     my $name_to_id = $self->{name_to_id};
     my $has_station_index = 0;
-    foreach my $station (@{$xml->{stations}->{station}}) {
+    foreach my $station (@{$data->{stations}->{station}}) {
         my $id = $station->{id};
 
         Map::Tube::Exception::DuplicateStationId->throw({
-            method      => __PACKAGE__."::_init_map",
+            method      => $method,
             message     => "ERROR: Duplicate Station ID [$id].",
             filename    => $caller[1],
             line_number => $caller[2] }) if (exists $_seen_nodes->{$id});
@@ -626,7 +657,7 @@ sub _init_map {
         my $name = $station->{name};
 
         Map::Tube::Exception::DuplicateStationName->throw({
-            method      => __PACKAGE__."::_init_map",
+            method      => $method,
             message     => "ERROR: Duplicate Station Name [$name].",
             filename    => $caller[1],
             line_number => $caller[2] }) if (defined $name_to_id->{uc($name)});
@@ -678,10 +709,10 @@ sub _init_map {
     }
 
     my @lines;
-    if (exists $xml->{lines} && exists $xml->{lines}->{line}) {
-        @lines = (ref $xml->{lines}->{line} eq 'HASH')
-            ? ($xml->{lines}->{line})
-            : @{$xml->{lines}->{line}};
+    if (exists $data->{lines} && exists $data->{lines}->{line}) {
+        @lines = (ref $data->{lines}->{line} eq 'HASH')
+            ? ($data->{lines}->{line})
+            : @{$data->{lines}->{line}};
     }
 
     foreach my $_line (@lines) {
@@ -927,19 +958,21 @@ sub _get_path {
 sub _set_path {
     my ($self, $id, $node_id) = @_;
 
+    return unless (defined $id && defined $node_id);
     $self->{tables}->{$id}->{path} = $node_id;
 }
 
 sub _get_length {
     my ($self, $id) = @_;
 
-    return 0 unless defined $self->{tables}->{$id};
+    return 0 unless (defined $id && defined $self->{tables}->{$id});
     return $self->{tables}->{$id}->{length};
 }
 
 sub _set_length {
     my ($self, $id, $value) = @_;
 
+    return unless (defined $id && defined $value);
     $self->{tables}->{$id}->{length} = $value;
 }
 

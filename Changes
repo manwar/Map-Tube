@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+3.22  2017-02-07T15:50:00+00:00
+      - Added support for map data in JSON format as well. XML is still the default format.
+      - Added test for bad map data.
+      - Updated dependency on Map::Tube::Exception v3.09.
+      - Updated optional minimum dependency on Test::Map::Tube v0.22.
+
 3.21  2016-10-10T09:45:00+00:00
       - Added validation for line color.
       - Updated dependency on Map::Tube::Exception v3.08.
