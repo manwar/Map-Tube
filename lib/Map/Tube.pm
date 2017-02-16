@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.22';
+$Map::Tube::VERSION   = '3.23';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.22
+Version 3.23
 
 =cut
 
@@ -464,6 +464,63 @@ name, possibly partly or inexactly specified. The module is a Moo role which get
 plugged into the Map::Tube::* family automatically once it is installed.
 
 Please refer to the L<documentation|Map::Tube::Plugin::FuzzyFind> for more info.
+
+=head1 MAP DATA FORMAT
+
+Map data can be represented in JSON or XML format. The preferred  format is JSON.
+C<Map::Tube v3.23> or above comes with a handy script C<map-data-converter>, that
+can be used to change the data format of an existing map data.Below is how we can
+represet the sample map:
+
+      A(1)  ----  B(2)
+     /              \
+    C(3)  --------  F(6) --- G(7) ---- H(8)
+     \              /
+      D(4)  ----  E(5)
+
+=head2 JSON
+
+   {
+       "name"  : "sample map",
+       "lines" : {
+           "line" : [
+               { "id" : "A", "name" : "A", "color" : "red"     },
+               { "id" : "B", "name" : "B", "color" : "#FFFF00" }
+           ]
+       },
+       "stations" : {
+           "station" : [
+               { "id" : "A1", "name" : "A1", "line" : "A",   "link" : "B2,C3"    },
+               { "id" : "B2", "name" : "B2", "line" : "A",   "link" : "A1,F6"    },
+               { "id" : "C3", "name" : "C3", "line" : "A,B", "link" : "A1,D4,F6" },
+               { "id" : "D4", "name" : "D4", "line" : "A,B", "link" : "C3,E5"    },
+               { "id" : "E5", "name" : "E5", "line" : "B",   "link" : "D4,F6"    },
+               { "id" : "F6", "name" : "F6", "line" : "B",   "link" : "B2,C3,E5" },
+               { "id" : "G7", "name" : "G7", "line" : "B",   "link" : "F6,H8"    },
+               { "id" : "H8", "name" : "H8", "line" : "B",   "link" : "G7"       }
+           ]
+       }
+   }
+
+=head2 XML
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <tube name="sample map">
+        <lines>
+            <line id="A" name="A" color="red"    />
+            <line id="B" name="B" color="#FFFF00"/>
+        </lines>
+        <stations>
+            <station id="A1" name="A1" line="A"   link="B2,C3"   />
+            <station id="B2" name="B2" line="A"   link="A1,F6"   />
+            <station id="C3" name="C3" line="A,B" link="A1,D4,F6"/>
+            <station id="D4" name="D4" line="A,B" link="C3,E5"   />
+            <station id="E5" name="E5" line="B"   link="D4,F6"   />
+            <station id="F6" name="F6" line="B"   link="B2,C3,E5"/>
+            <station id="G7" name="G7" line="B"   link="F6,H8"   />
+            <station id="H8" name="H8" line="B"   link="G7"      />
+        </stations>
+    </tube>
 
 =head1 MAP VALIDATION
 

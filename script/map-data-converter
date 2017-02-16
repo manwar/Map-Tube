@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+
+package MapDataConverter;
+
+use Moo;
+use namespace::clean;
+use MooX::Options;
+
+option 'to_json' => (is => 'ro', doc => 'Convert data to JSON format.');
+option 'to_xml'  => (is => 'ro', doc => 'Convert data to XML format.');
+option 'input'   => (is => 'ro', format => 's', doc => 'Map data file.');
+
+package main;
+
+use JSON;
+use XML::Twig;
+use XML::Simple;
+use File::Basename;
+use JSON::Parse qw(json_file_to_perl);
+
+my $options = MapDataConverter->new_with_options;
+
+die "Missing map data file." unless ($options->input);
+die "Missing option --to_json or --to_xml." unless ($options->to_json || $options->to_xml);
+
+my ($data, $IN);
+if ($options->to_json) {
+    $IN   = XML::Twig->new->parsefile($options->input)->simplify(keyattr => 'stations', forcearray => 0);
+    $data = JSON->new->utf8(1)->pretty(1)->encode($IN);
+}
+elsif ($options->to_xml) {
+    $IN   = json_file_to_perl($options->input);
+    $data = XMLout($IN, XMLDecl => qq{<?xml version="1.0" encoding="UTF-8"?>}, RootName => 'tube');
+}
+
+my $OUT = output_file($options->input);
+save_output($OUT, $data);
+
+#
+#
+# METHODS
+
+sub save_output {
+    my ($file, $data) = @_;
+
+    open(my $O, '>:encoding(utf8)', $file) or die "ERROR: Couldn't open [$file]: $!\n";
+    print $O $data;
+    close($O);
+}
+
+sub output_file {
+    my ($input) = @_;
+
+    my ($name, $path, $ext) = fileparse($input, '\.[^\.]*');
+    if ($ext =~ /\.xml/i) {
+        $ext = '.json';
+    }
+    elsif ($ext =~ /\.json/i) {
+        $ext = '.xml';
+    }
+    else {
+        die "ERROR: Invalid file format. [$input]\n";
+    }
+
+    return sprintf("%s%s%s", $path, $name, $ext);
+}

@@ -1,5 +1,6 @@
 Changes
 share/color-names.txt
+script/map-data-converter
 lib/Map/Tube.pm
 lib/Map/Tube/Node.pm
 lib/Map/Tube/Line.pm

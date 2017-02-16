@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.23  2017-02-16T16:00:00+00:00
+      - Added script map-data-converter.
+      - Documented supported map data format.
+
 3.22  2017-02-07T15:50:00+00:00
       - Added support for map data in JSON format as well. XML is still the default format.
       - Added test for bad map data.
