@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+3.24  2017-02-19T07:25:00+00:00
+      - Added dependency on MooX::Options v4.023.
+      - Added dependency on Map::Tube::Exceptions v3.11.
+      - Refactored script map-data-converter to handle error appropriately.
+
 3.23  2017-02-16T16:00:00+00:00
       - Added script map-data-converter.
       - Documented supported map data format.

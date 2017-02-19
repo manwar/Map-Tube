@@ -1,48 +1,66 @@
 #!/usr/bin/perl
 
+#
+# Author: Mohammad S Anwar (mohammad.anwar@yahoo.com)
+# Distribution: Map::Tube v3.24.
+
 package MapDataConverter;
-
-use Moo;
-use namespace::clean;
-use MooX::Options;
-
-option 'to_json' => (is => 'ro', doc => 'Convert data to JSON format.');
-option 'to_xml'  => (is => 'ro', doc => 'Convert data to XML format.');
-option 'input'   => (is => 'ro', format => 's', doc => 'Map data file.');
-
-package main;
 
 use JSON;
 use XML::Twig;
 use XML::Simple;
 use File::Basename;
 use JSON::Parse qw(json_file_to_perl);
+use Map::Tube::Exception::FoundUnsupportedMapDataFormat;
 
-my $options = MapDataConverter->new_with_options;
+use Moo;
+use namespace::clean;
+use MooX::Options;
 
-die "Missing map data file." unless ($options->input);
-die "Missing option --to_json or --to_xml." unless ($options->to_json || $options->to_xml);
+has 'IN'  => (is => 'rw');
+has 'OUT' => (is => 'rw');
 
-my ($data, $IN);
-if ($options->to_json) {
-    $IN   = XML::Twig->new->parsefile($options->input)->simplify(keyattr => 'stations', forcearray => 0);
-    $data = JSON->new->utf8(1)->pretty(1)->encode($IN);
+option 'to_json' => (is => 'ro', doc => 'Convert data to JSON format.');
+option 'to_xml'  => (is => 'ro', doc => 'Convert data to XML format.');
+option 'input'   => (is => 'ro', required => 1, format => 's', doc => 'Map data file.');
+
+sub BUILD {
+    my ($self) = @_;
+
+    $self->{OUT} = output_file($self->input);
+
+    if ($self->to_json) {
+        $self->{IN} = XML::Twig->new->parsefile($self->input)->simplify(keyattr => 'stations', forcearray => 0);
+    }
+    elsif ($self->to_xml) {
+        $self->{IN} = json_file_to_perl($self->input);
+    }
+    else {
+        die "ERROR: Missing option --to_json or --to_xml.\n";
+    }
 }
-elsif ($options->to_xml) {
-    $IN   = json_file_to_perl($options->input);
-    $data = XMLout($IN, XMLDecl => qq{<?xml version="1.0" encoding="UTF-8"?>}, RootName => 'tube');
-}
 
-my $OUT = output_file($options->input);
-save_output($OUT, $data);
+sub run {
+    my ($self) = @_;
+
+    my $IN = $self->{IN};
+
+    if ($self->to_json) {
+        $self->save_output(JSON->new->utf8(1)->pretty(1)->encode($IN));
+    }
+    elsif ($self->to_xml) {
+        $self->save_output(XMLout($IN, XMLDecl => qq{<?xml version="1.0" encoding="UTF-8"?>}, RootName => 'tube'));
+    }
+}
 
 #
 #
 # METHODS
 
 sub save_output {
-    my ($file, $data) = @_;
+    my ($self, $data) = @_;
 
+    my $file = $self->{OUT};
     open(my $O, '>:encoding(utf8)', $file) or die "ERROR: Couldn't open [$file]: $!\n";
     print $O $data;
     close($O);
@@ -59,8 +77,20 @@ sub output_file {
         $ext = '.xml';
     }
     else {
-        die "ERROR: Invalid file format. [$input]\n";
+        my @caller = caller(0);
+        @caller    = caller(2) if $caller[3] eq '(eval)';
+
+        Map::Tube::Exception::FoundUnsupportedMapDataFormat->throw({
+            method      => __PACKAGE__."::output_file",
+            message     => "ERROR: Unsupportd map data format [$input].",
+            filename    => $caller[1],
+            line_number => $caller[2] });
     }
 
     return sprintf("%s%s%s", $path, $name, $ext);
 }
+
+package main;
+
+
+MapDataConverter->new_with_options->run;
