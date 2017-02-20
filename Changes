@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.25  2017-02-20T11:55:00+00:00
+      - Removed dependency on XML::Simple.
+      - Refactored script map-data-converter to workout with XML::Twig when creating xml file.
+
 3.24  2017-02-19T07:25:00+00:00
       - Added dependency on MooX::Options v4.023.
       - Added dependency on Map::Tube::Exceptions v3.11.

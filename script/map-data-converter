@@ -2,13 +2,12 @@
 
 #
 # Author: Mohammad S Anwar (mohammad.anwar@yahoo.com)
-# Distribution: Map::Tube v3.24.
+# Distribution: Map::Tube v3.25.
 
 package MapDataConverter;
 
 use JSON;
 use XML::Twig;
-use XML::Simple;
 use File::Basename;
 use JSON::Parse qw(json_file_to_perl);
 use Map::Tube::Exception::FoundUnsupportedMapDataFormat;
@@ -30,7 +29,7 @@ sub BUILD {
     $self->{OUT} = output_file($self->input);
 
     if ($self->to_json) {
-        $self->{IN} = XML::Twig->new->parsefile($self->input)->simplify(keyattr => 'stations', forcearray => 0);
+        $self->{IN} = XML::Twig->new->parsefile($self->input)->simplify(keyattr => 'tube', forcearray => 0);
     }
     elsif ($self->to_xml) {
         $self->{IN} = json_file_to_perl($self->input);
@@ -43,13 +42,11 @@ sub BUILD {
 sub run {
     my ($self) = @_;
 
-    my $IN = $self->{IN};
-
     if ($self->to_json) {
-        $self->save_output(JSON->new->utf8(1)->pretty(1)->encode($IN));
+        $self->save_output($self->json);
     }
     elsif ($self->to_xml) {
-        $self->save_output(XMLout($IN, XMLDecl => qq{<?xml version="1.0" encoding="UTF-8"?>}, RootName => 'tube'));
+        $self->save_output($self->xml);
     }
 }
 
@@ -88,6 +85,49 @@ sub output_file {
     }
 
     return sprintf("%s%s%s", $path, $name, $ext);
+}
+
+sub xml {
+    my ($self) = @_;
+
+    my $IN  = $self->{IN};
+    my $xml = XML::Twig->new()->set_xml_version("1.0")->set_encoding('utf-8');
+
+    my $attr;
+    if (exists $IN->{name}) {
+        $attr = { name => $IN->{name} };
+    }
+
+    my $map = XML::Twig::Elt->new('tube', $attr);
+    $xml->set_root($map);
+
+    if (exists $IN->{stations}) {
+        my $stations = $map->insert_new_elt('stations');
+        if (exists $IN->{stations}->{station}) {
+            foreach (@{$IN->{stations}->{station}}) {
+                $stations->insert_new_elt('station', $_);
+            }
+        }
+    }
+
+    if (exists $IN->{lines}) {
+        my $lines = $map->insert_new_elt('lines');
+        if (exists $IN->{lines}->{line}) {
+            foreach (@{$IN->{lines}->{line}}) {
+                $lines->insert_new_elt('line', $_);
+            }
+        }
+    }
+
+    $xml->set_pretty_print('indented');
+    return $xml->sprint;
+}
+
+sub json {
+    my ($self) = @_;
+
+    my $IN = $self->{IN};
+    return JSON->new->utf8(1)->pretty(1)->encode($IN));
 }
 
 package main;
