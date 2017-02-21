@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '3.25';
+$Map::Tube::Utils::VERSION   = '3.26';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,18 +9,19 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 3.25
+Version 3.26
 
 =cut
 
 use 5.006;
 use strict; use warnings;
+use JSON;
 use File::Share ':all';
 
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT_OK = qw(is_same trim common_lines filter get_method_map is_valid_color);
+@EXPORT_OK = qw(to_perl is_same trim common_lines filter get_method_map is_valid_color);
 
 our @COLOR_NAMES = _color_names();
 
@@ -29,6 +30,20 @@ our @COLOR_NAMES = _color_names();
 B<FOR INTERNAL USE ONLY>.
 
 =cut
+
+sub to_perl {
+    my ($file) = @_;
+
+    my $json_text = do {
+        open(my $json_fh, "<:encoding(UTF-8)", $file) or die("ERROR: Can't open \$file\": $!\n");
+        local $/;
+        my $text = <$json_fh>;
+        close($json_fh);
+        $text;
+    };
+
+    return JSON->new->utf8(1)->decode($json_text);
+}
 
 sub trim {
     my ($data) = @_;

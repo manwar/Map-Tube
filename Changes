@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+3.26  2017-02-21T13:35:00+00:00
+      - Removed dependency on JSON::Parse.
+      - Added new method to_perl() to the helper package Map::Tube::Utils.
+      - Refactored script map-data-converter to make use of newly created method to_perl().
+
 3.25  2017-02-20T11:55:00+00:00
       - Removed dependency on XML::Simple.
       - Refactored script map-data-converter to workout with XML::Twig when creating xml file.

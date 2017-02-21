@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.25';
+$Map::Tube::VERSION   = '3.26';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,12 +9,11 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.25
+Version 3.26
 
 =cut
 
 use 5.006;
-use JSON::Parse qw(json_file_to_perl);
 use XML::Twig;
 use Data::Dumper;
 use Map::Tube::Node;
@@ -40,7 +39,7 @@ use Map::Tube::Exception::DuplicateStationName;
 use Map::Tube::Exception::MissingPluginGraph;
 use Map::Tube::Exception::MissingPluginFormatter;
 use Map::Tube::Exception::MissingPluginFuzzyFind;
-use Map::Tube::Utils qw(is_same trim common_lines get_method_map is_valid_color);
+use Map::Tube::Utils qw(to_perl is_same trim common_lines get_method_map is_valid_color);
 use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 
 use Moo::Role;
@@ -423,7 +422,7 @@ sub get_map_data {
         return XML::Twig->new->parsefile($self->xml)->simplify(keyattr => 'stations', forcearray => 0);
     }
     elsif (defined $self->{json}) {
-        return json_file_to_perl($self->json);
+        return to_perl($self->json);
     }
     else {
         if (!defined $caller) {
