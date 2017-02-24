@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.26';
+$Map::Tube::VERSION   = '3.27';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.26
+Version 3.27
 
 =cut
 
@@ -120,6 +120,10 @@ sub AUTOLOAD {
 
 sub BUILD {
     my ($self) = @_;
+
+    unless (exists $self->{xml} || exists $self->{json}) {
+        die "ERROR: Can't apply Map::Tube role, missing 'xml' or 'json'.";
+    }
 
     $self->_init_map;
     $self->_load_plugins;

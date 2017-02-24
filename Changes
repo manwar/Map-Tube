@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.27  2017-02-24T10:50:00+00:00
+      - Added required attribute checks.
+
 3.26  2017-02-21T13:35:00+00:00
       - Removed dependency on JSON::Parse.
       - Added new method to_perl() to the helper package Map::Tube::Utils.

@@ -21,5 +21,6 @@ t/manifest.t
 t/map.t
 t/pod.t
 t/changes.t
+t/invalid-role.t
 t/good-map.xml
 t/bad-map.json
