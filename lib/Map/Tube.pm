@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.27';
+$Map::Tube::VERSION   = '3.28';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Core library as Role (Moo) to process map data.
 
 =head1 VERSION
 
-Version 3.27
+Version 3.28
 
 =cut
 
@@ -430,14 +430,14 @@ sub get_map_data {
     }
     else {
         if (!defined $caller) {
-            $method = __PACKAGE__."::get_map_data";
+            $method = __PACKAGE__.'::get_map_data';
             my @_caller = caller(0);
             @_caller = caller(2) if $_caller[3] eq '(eval)';
             $caller = \@_caller;
         }
 
         Map::Tube::Exception::MissingMapData->throw({
-            method      => __PACKAGE__."::$method",
+            method      => $method,
             message     => "ERROR: Missing Map Data.",
             filename    => $caller->[1],
             line_number => $caller->[2] });

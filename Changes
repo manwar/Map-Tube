@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.28  2017-03-06T11:20:00+00:00
+      - Fixed error handling in the method Map::Tube::get_map_data().
+
 3.27  2017-02-24T10:50:00+00:00
       - Added required attribute checks.
 
