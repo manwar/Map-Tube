@@ -22,5 +22,7 @@ t/map.t
 t/pod.t
 t/changes.t
 t/invalid-role.t
+t/common-lines-map.t
 t/good-map.xml
 t/bad-map.json
+t/common-lines-map.json
