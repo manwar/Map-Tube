@@ -18,7 +18,7 @@ use Data::Dumper;
 use Map::Tube::Types qw(Lines);
 
 use Moo;
-use namespace::clean;
+use namespace::autoclean;
 
 use overload q{""} => 'as_string', fallback => 1;
 

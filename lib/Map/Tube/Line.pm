@@ -21,7 +21,7 @@ use Map::Tube::Exception::InvalidNodeObject;
 use Map::Tube::Types qw(Color Nodes);
 
 use Moo;
-use namespace::clean;
+use namespace::autoclean;
 
 use overload q{""} => 'as_string', fallback => 1;
 

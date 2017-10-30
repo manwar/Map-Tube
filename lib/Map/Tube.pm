@@ -45,7 +45,7 @@ use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 
 use Moo::Role;
 use Role::Tiny qw();
-use namespace::clean;
+use namespace::autoclean;
 
 =encoding utf8
 

@@ -30,7 +30,7 @@ WriteMakefile(
         'Moo::Role'            => '2.000000',
         'Role::Tiny'           => '2.000000',
         'MooX::Options'        => '4.023',
-        'namespace::clean'     => '0.24',
+        'namespace::autoclean' => '0.28',
         'JSON'                 => '2.90',
         'File::Basename'       => '2.6',
         'XML::Twig'            => '3.48',
