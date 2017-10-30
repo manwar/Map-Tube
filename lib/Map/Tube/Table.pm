@@ -15,7 +15,7 @@ Version 3.36
 
 use 5.006;
 use Moo;
-use namespace::clean;
+use namespace::autoclean;
 
 has id => (is => 'ro', required => 1);
 has [ qw(path length) ] => (is => 'rw');

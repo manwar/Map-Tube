@@ -42,7 +42,7 @@ sub to_perl {
         $text;
     };
 
-    return JSON->new->utf8(1)->decode($json_text);
+    return JSON->new->allow_nonref->utf8(1)->decode($json_text);
 }
 
 sub trim {

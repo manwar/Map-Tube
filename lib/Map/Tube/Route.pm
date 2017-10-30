@@ -19,7 +19,7 @@ use Map::Tube::Types qw(Node Nodes);
 use Map::Tube::Utils qw(filter);
 
 use Moo;
-use namespace::clean;
+use namespace::autoclean;
 
 use overload q{""} => 'as_string', fallback => 1;
 
