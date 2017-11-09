@@ -426,7 +426,14 @@ sub get_map_data {
     my $data;
     my $xml = $self->xml;
     if ($xml ne '') {
-        eval { $data = XML::Twig->new->parsefile($xml)->simplify(keyattr => 'stations', forcearray => 0); };
+        eval {
+            $data = XML::Twig->new->parsefile($xml)->simplify(keyattr => 'stations', forcearray => 0);
+            # Handle if there are only one line.
+            my $lines = $data->{lines}->{line};
+            if (ref($lines) eq 'HASH') {
+                $data->{lines}->{line} = [ $lines ];
+            }
+        };
         return $data unless ($@);
 
         Map::Tube::Exception::MalformedMapData->throw({
@@ -697,12 +704,6 @@ sub _validate_input {
     my $_to = $self->get_node_by_name($to);
 
     return ($_from->{id}, $_to->{id});
-}
-
-sub _xml_data {
-    my ($self) = @_;
-
-    return $self->get_map_data;
 }
 
 sub _init_map {
