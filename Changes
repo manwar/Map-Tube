@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.38  2017-11-16T10:20:00+00:00
+      - Replaced namespace::clean with namespace::autoclean.
+      - Used allow_nonref where ever json decoding happens.
+
 3.37  2017-11-07T15:35:00+00:00
       - Updated method get_stations() to return all map stations
         if no line name is passed.
