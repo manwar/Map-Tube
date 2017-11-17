@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '3.38';
+$Map::Tube::Utils::VERSION   = '3.39';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 3.38
+Version 3.39
 
 =cut
 
@@ -35,7 +35,7 @@ sub to_perl {
     my ($file) = @_;
 
     my $json_text = do {
-        open(my $json_fh, "<:encoding(UTF-8)", $file) or die("ERROR: Can't open \$file\": $!\n");
+        open(my $json_fh, $file) or die("ERROR: Can't open \$file\": $!\n");
         local $/;
         my $text = <$json_fh>;
         close($json_fh);
