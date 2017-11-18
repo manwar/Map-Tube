@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.37';
+$Map::Tube::VERSION   = '3.39';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.37
+Version 3.39
 
 =cut
 
@@ -45,7 +45,7 @@ use Map::Tube::Types qw(Routes Tables Lines NodeMap LineMap);
 
 use Moo::Role;
 use Role::Tiny qw();
-use namespace::clean;
+use namespace::autoclean;
 
 =encoding utf8
 
