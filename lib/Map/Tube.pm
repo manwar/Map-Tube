@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.39';
+$Map::Tube::VERSION   = '3.40';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.39
+Version 3.40
 
 =cut
 
@@ -426,7 +426,14 @@ sub get_map_data {
     my $data;
     my $xml = $self->xml;
     if ($xml ne '') {
-        eval { $data = XML::Twig->new->parsefile($xml)->simplify(keyattr => 'stations', forcearray => 0); };
+        eval {
+            $data = XML::Twig->new->parsefile($xml)->simplify(keyattr => 'stations', forcearray => 0);
+            # Handle if there is only one line.
+            my $lines = $data->{lines}->{line};
+            if (ref($lines) eq 'HASH') {
+                $data->{lines}->{line} = [ $lines ];
+            }
+        };
         return $data unless ($@);
 
         Map::Tube::Exception::MalformedMapData->throw({

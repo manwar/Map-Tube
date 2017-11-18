@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.40  2017-11-18T03:00:00+00:00
+      - Handle one line in xml format map data.
+
 3.39  2017-11-17T10:45:00+00:00
       - Fixed double encoding of map data in JSON format.
 
