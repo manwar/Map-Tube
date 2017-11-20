@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.41  2017-11-20T14:30:00+00:00
+      - Added sample code for all the supported plugins.
+      - Updated CONTRIBUTORS section.
+
 3.40  2017-11-18T03:00:00+00:00
       - Handle one line in xml format map data.
 
