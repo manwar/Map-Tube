@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.46  2018-04-03T12:00:00+00:00
+      - Added handy method get_next_stations().
+
 3.45  2018-03-18T05:05:00+00:00
       - Documented method get_stations() for Map::Tube::Line.
       - Added test script line-stations.t.
