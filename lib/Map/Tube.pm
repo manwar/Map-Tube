@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.47';
+$Map::Tube::VERSION   = '3.48';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.47
+Version 3.48
 
 =cut
 
@@ -455,7 +455,7 @@ sub get_next_stations {
 
     my $nodes = [];
     my $node  = $self->get_node_by_id($node_id);
-    foreach my $link (@{$node->{link}}) {
+    foreach my $link (split /,/,$node->{link}) {
         push @$nodes, $self->get_node_by_id($link);
     }
 
