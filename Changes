@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.50  2018-00-00T00:00:00+00:00
+      - Added test for map data structure.
+
 3.49  2018-04-07T08:30:00+00:00
       - Updated mininmum version of Test::Map::Tube v0.41.
 
