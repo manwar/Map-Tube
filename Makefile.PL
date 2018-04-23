@@ -36,7 +36,7 @@ WriteMakefile(
         'XML::Twig'            => '3.48',
         'XML::Parser'          => '2.23',
         'Module::Pluggable'    => '5.1',
-        'Map::Tube::Exception' => '3.13',
+        'Map::Tube::Exception' => '3.16',
         'Type::Tiny'           => '1.000005',
         'File::Share'          => '0.25',
         'Taint::Util'          => '0.08',
