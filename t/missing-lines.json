@@ -1,0 +1,9 @@
+ {
+    "name"     : "MissingLines",
+    "lines"    : { "line"    : [ { "id" : "L1", "name" : "L1" } ] },
+    "stations" : { "station" : [ { "id" : "L01", "name": "A", "line": "L2", "link": "L02,L03" },
+                                 { "id" : "L02", "name": "B", "line": "L1", "link": "L01,L03" },
+                                 { "id" : "L03", "name": "C", "line": "L1", "link": "L02"     }
+                               ]
+                 }
+ }

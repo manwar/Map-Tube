@@ -855,6 +855,7 @@ sub _init_map {
 
     my $name_to_id = $self->{name_to_id};
     my $has_station_index = {};
+    my $station_lines = {};
     foreach my $station (@{$data->{stations}->{station}}) {
         my $id = $station->{id};
 
@@ -888,6 +889,7 @@ sub _init_map {
             $_lines->{$uc_line} = $line;
             $lines->{$uc_line}  = $line;
             push @$_station_lines, $line;
+            $station_lines->{uc($_line)} = $_line;
         }
 
         if (exists $station->{other_link} && defined $station->{other_link}) {
@@ -939,6 +941,16 @@ sub _init_map {
             }
             $_lines->{$uc_line} = $line;
         }
+    }
+
+    #die Dumper($station_lines), Dumper($_lines);
+    # What if station is assigned a line and it is not defined yet.
+    foreach my $line_id (keys %$station_lines) {
+        Map::Tube::Exception::InvalidLineId->throw({
+            method      => $method,
+            message     => "ERROR: Invalid Line ID [".$station_lines->{$line_id}."]",
+            filename    => $caller[1],
+            line_number => $caller[2] }) unless (exists $_lines->{$line_id});
     }
 
     $self->_order_station_lines($nodes);
