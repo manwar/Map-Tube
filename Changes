@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.64  2019-07-05T16:45:00+00:00
+      - Moved author test scripts to xt/ subfolder.
+
 3.63  2019-06-18T18:00:00+00:00
       - Added SYNOPSIS section to Map::Tube::Route.
       - Added more codes to SYNOPSIS section of Map::Tube::Node and Map::Tube::Line.
