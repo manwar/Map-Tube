@@ -20,6 +20,7 @@ t/not_ok_map.t
 t/invalid-role.t
 t/common-lines-map.t
 t/line-stations.t
+t/taint-data.t
 t/good-map.xml
 t/bad-map.json
 t/common-lines-map.json

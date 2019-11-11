@@ -517,7 +517,7 @@ sub get_map_data {
 
             Map::Tube::Exception::MalformedMapData->throw({
                 method      => $method,
-                message     => "ERROR: Malformed Map Data ($json).",
+                message     => "ERROR: Malformed Map Data ($json). [$@]\n",
                 filename    => $caller->[1],
                 line_number => $caller->[2] });
         }

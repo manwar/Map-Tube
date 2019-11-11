@@ -16,7 +16,7 @@ Version 3.64
 use 5.006;
 use strict; use warnings;
 use JSON;
-use Taint::Util;
+#use Taint::Util;
 use File::ShareDir ':ALL';
 use parent 'Exporter';
 
@@ -32,7 +32,23 @@ B<FOR INTERNAL USE ONLY>.
 sub to_perl {
     my ($file) = @_;
 
+    #die "ERROR: Unsafe file [$file].\n"
+    #    unless (($file =~ /^(-|[a-zA-Z0-9_.])+$/)
+    #            && (index($file, '..') >= 0));
+    #$file = _untaint($file);
+
+    #if ($file =~ /^([-\/\w.]+)$/) { # check for valid chars only
+    #    $file = $1; # explicity set $PATH to (non-tainted) value
+    #}
+    #my $f;
+    #if ($file =~ m/^([A-Z0-9_.-\/]+)$/ig) {
+    #    $f = $1;
+    #}
+    #else {
+    #    die "XXXX\n";
+    #}
     my $json_text = do {
+        #open(my $json_fh, "<", $f) or die("ERROR: Can't open [$f]: $!\n");
         open(my $json_fh, "<", $file) or die("ERROR: Can't open $file: $!\n");
         local $/;
         my $text = <$json_fh>;
@@ -40,8 +56,33 @@ sub to_perl {
         $text;
     };
 
-    untaint $json_text;
+    #untaint $json_text;
     return JSON->new->allow_nonref->utf8(1)->decode($json_text);
+}
+
+sub _untaint {
+    my ($file) = @_;
+
+    my ($ok1, $ok2);
+    if ($file =~ /^(-|[a-zA-Z0-9_.\/])+$/) {
+        $ok1 = 1;
+    }
+    else {
+        $ok1 = 0;
+    }
+    if (index($file, '..') >= 0) {
+        $ok2 = 0;
+    }
+    else {
+        $ok2 = 1;
+    }
+
+    die "ERROR: Unsafe file [$file].\n" unless ($ok1 && $ok2);
+    if ($file =~ /^([-\/\w.]+)$/) { # check for valid chars only
+        $file = $1; # explicity set $PATH to (non-tainted) value
+    }
+    #print "I am safe [$file]\n";
+    return $file;
 }
 
 sub trim {
