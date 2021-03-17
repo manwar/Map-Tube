@@ -30,16 +30,13 @@ command.
 You can also look for information at:
 
     RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Map-Tube
-
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Map-Tube
+        https://rt.cpan.org/Public/Dist/Display.html?Status=__Active__;Name=Map-Tube
 
     CPAN Ratings
         http://cpanratings.perl.org/d/Map-Tube
 
-    Search CPAN
-        http://search.cpan.org/dist/Map-Tube/
+    MetaCPAN
+        https://metacpan.org/release/Map-Tube
 
 LICENSE AND COPYRIGHT
 
