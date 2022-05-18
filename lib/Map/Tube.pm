@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.64';
+$Map::Tube::VERSION   = '3.65';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.64
+Version 3.65
 
 =cut
 
@@ -990,12 +990,32 @@ sub _capture_common_lines {
     $self->{_common_lines} = [ common_lines($from_lines, $to_lines) ];
 }
 
+sub _get_common_lines {
+    my ($nodes, $active_links) = @_;
+
+    my %_unique_links = ();
+    foreach (@{$active_links}) {
+        $_unique_links{$_} = 1;
+    }
+
+    my %_common_lines = ();
+    foreach my $_link (keys %_unique_links) {
+        foreach my $_link_line (@{$nodes->{$_link}->line}) {
+            $_common_lines{$_link_line->id} = 1;
+        }
+    }
+
+    return (keys %_common_lines);
+}
+
 sub _get_next_link {
     my ($self, $from, $seen, $links) = @_;
 
     my $nodes        = $self->{nodes};
     my $active_links = $self->{_active_links};
-    my @common_lines = common_lines($active_links->[0], $active_links->[1]);
+    my @common_lines = _get_common_lines(
+        $nodes, [ @{$active_links->[0]}, @{$active_links->[1]} ]
+    );
 
     if ($self->{experimental} && scalar(@{$self->{_common_lines}})) {
         @common_lines = (@{$self->{_common_lines}}, @common_lines);

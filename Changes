@@ -1,5 +1,11 @@
 Revision history for Map::Tube
 
+3.65  2022-05-18T20:50:00+00:00
+      - Fixed the flaw in logic in sub _get_next_link().
+        (If start station is linked to station which is on
+         the same line as end station then follow the link
+         first before trying any other linked stations).
+
 3.64  2019-07-05T16:45:00+00:00
       - Moved author test scripts to xt/ subfolder.
 
