@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.65';
+$Map::Tube::VERSION   = '3.66';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.65
+Version 3.66
 
 =cut
 
@@ -93,7 +93,7 @@ documented in L<Map::Tube::Cookbook>.
 
 =cut
 
-has [qw(name name_to_id plugins _active_link _other_links _line_stations _common_lines)] => (is => 'rw');
+has [qw(name name_to_id plugins _active_link _other_links _line_stations _line_station_index _common_lines)] => (is => 'rw');
 has experimental => (is => 'ro', default => sub { 0 });
 has nodes   => (is => 'rw', isa => NodeMap);
 has lines   => (is => 'rw', isa => Lines  );
@@ -187,6 +187,28 @@ sub get_shortest_route {
 
     $self->_capture_common_lines($_from, $_to);
 
+    my $reverse = 0;
+
+    # Found common lines between start and end nodes.
+    if (@{$self->{_common_lines}}) {
+        my $_common_line = $self->{_common_lines}->[0];
+        my $from_index   = $self->{_line_station_index}
+                                ->{uc($_common_line)}
+                                ->{$_from->id};
+        my $to_index     = $self->{_line_station_index}
+                                ->{uc($_common_line)}
+                                ->{$_to->id};
+
+        $reverse = 1 if (defined $from_index
+                         && defined $to_index
+                         && ($from_index < $to_index));
+    }
+
+    if ($reverse) {
+        ($from, $to) = ($to, $from);
+        ($_from, $_to) = ($_to, $_from);
+    }
+
     $self->_get_shortest_route($from);
 
     my $nodes = [];
@@ -197,10 +219,21 @@ sub get_shortest_route {
 
     push @$nodes, $_from;
 
+    my $_nodes;
+
+    if ($reverse) {
+        $_nodes = [ @$nodes ];
+    }
+    else {
+        $_nodes = [ reverse(@$nodes) ];
+    }
+
     return Map::Tube::Route->new(
-        { from  => $_from,
-          to    => $_to,
-          nodes => [ reverse(@$nodes) ] } );
+        { from  => $_nodes->[0],
+          to    => $_nodes->[-1],
+          nodes => $_nodes,
+        }
+    );
 }
 
 =head2 get_all_routes($from, $to) *** EXPERIMENTAL ***
@@ -1185,6 +1218,7 @@ sub _capture_line_station {
 
     my ($line_id, $sequence) = split /\:/, $line, 2;
     $self->{_line_stations}->{uc($line_id)}->{$sequence} = $station_id;
+    $self->{_line_station_index}->{uc($line_id)}->{$station_id} = $sequence;
 
     return $line_id;
 }

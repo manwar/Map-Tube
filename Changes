@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.66  2022-05-19T00:15:00+00:00
+      - Handle reverse map when start and end share common line.
+
 3.65  2022-05-18T20:50:00+00:00
       - Fixed the flaw in logic in sub _get_next_link().
         (If start station is linked to station which is on
