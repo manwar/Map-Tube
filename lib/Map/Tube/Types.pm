@@ -1,6 +1,6 @@
 package Map::Tube::Types;
 
-$Map::Tube::Types::VERSION   = '3.66';
+$Map::Tube::Types::VERSION   = '3.67';
 $Map::Tube::Types::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Types - Attribute type definition for Map::Tube.
 
 =head1 VERSION
 
-Version 3.66
+Version 3.67
 
 =cut
 

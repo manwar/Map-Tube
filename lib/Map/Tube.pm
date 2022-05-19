@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.66';
+$Map::Tube::VERSION   = '3.67';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.66
+Version 3.67
 
 =cut
 
@@ -89,6 +89,8 @@ documented in L<Map::Tube::Cookbook>.
     | Marco Fontani       | MFONTANI | 1 (Milan)                                |
     |                     |          |                                          |
     | Soren Lund          | SLU      | 1 (Copenhagen)                           |
+    |                     |          |                                          |
+    | FUNG Cheok Yin      | CYFUNG   | 1 (Hongkong)                             |
     +---------------------+----------+------------------------------------------+
 
 =cut
