@@ -1,5 +1,10 @@
 Revision history for Map::Tube
 
+3.68  2022-05-19T19:20:00+00:00
+      - Removed reference to CPAN search.
+      - Removed reference to RT - issues.
+      - Updated copyright year details.
+
 3.67  2022-05-19T14:30:00+00:00
       - Updated pod w.r.t the new map Map::Tube::Hongkong.
 
