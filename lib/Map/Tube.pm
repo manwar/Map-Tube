@@ -91,6 +91,8 @@ documented in L<Map::Tube::Cookbook>.
     | Soren Lund          | SLU      | 1 (Copenhagen)                           |
     |                     |          |                                          |
     | FUNG Cheok Yin      | CYFUNG   | 1 (Hongkong)                             |
+    |                     |          |                                          |
+    | Vitali Peil         | VPEIL    | 1 (Bielefeld)                            |
     +---------------------+----------+------------------------------------------+
 
 =cut
