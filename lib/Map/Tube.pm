@@ -1399,7 +1399,7 @@ L<https://github.com/manwar/Map-Tube>
 
 =item * Gisbert W. Selke, C<< <gws at cpan.org> >>
 
-=item * Toby Inskter, C<< <tobyink at cpan.org> >>
+=item * Toby Inkster, C<< <tobyink at cpan.org> >>
 
 =back
 
