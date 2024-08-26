@@ -1,6 +1,6 @@
 package Map::Tube::Cookbook;
 
-$Map::Tube::Cookbook::VERSION   = '3.73';
+$Map::Tube::Cookbook::VERSION   = '3.74';
 $Map::Tube::Cookbook::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,13 +9,12 @@ Map::Tube::Cookbook - Cookbook for Map::Tube library.
 
 =head1 VERSION
 
-Version 3.73
+Version 3.74
 
 =cut
 
 use 5.006;
 use strict; use warnings;
-use Data::Dumper;
 
 =head1 DESCRIPTION
 
@@ -59,7 +58,7 @@ And same in JSON format:
            "line" : [
                { "id"    : "Line-ID",
                  "name"  : "Line-Name",
-                 "color" : "Line-Code-Code"
+                 "color" : "Line-Color-Code"
                },
                .....
                .....
@@ -375,20 +374,16 @@ Author of map like L<Berlin|Map::Tube::Berlin>.
 
 =head1 AUTHOR
 
-Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
+Mohammad Sajid Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
 =head1 REPOSITORY
 
-L<https://github.com/manwar/Map-Tube-Cookbook>
-
-=head1 SEE ALSO
-
-L<Map::Tube>
+L<https://github.com/manwar/Map-Tube>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-map-tube-cookbook at rt.cpan.org>,
-or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube-Cookbook>.
+Please report any bugs or feature requests to C<bug-map-tube at rt.cpan.org>,
+or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Map-Tube>.
 I will  be notified and then you'll automatically be notified of progress on your
 bug as I make changes.
 
@@ -402,27 +397,27 @@ You can also look for information at:
 
 =over 4
 
-=item * RT: CPAN's request tracker (report bugs here)
+=item * BUG Report
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Map-Tube-Cookbook>
+L<https://github.com/manwar/Map-Tube/issues>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Map-Tube-Cookbook>
+L<http://annocpan.org/dist/Map-Tube>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Map-Tube-Cookbook>
+L<http://cpanratings.perl.org/d/Map-Tube>
 
-=item * Search CPAN
+=item * Search MetaCPAN
 
-L<http://search.cpan.org/dist/Map-Tube-Cookbook/>
+L<https://metacpan.org/dist/Map-Tube/>
 
 =back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 - 2017 Mohammad S Anwar.
+Copyright (C) 2010 - 2024 Mohammad Sajid Anwar.
 
 This  program  is  free software;  you can redistribute it and/or modify it under
 the  terms  of the the Artistic License (2.0). You  may obtain a copy of the full
