@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.71';
+$Map::Tube::VERSION   = '3.72';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.71
+Version 3.72
 
 =cut
 
@@ -1050,9 +1050,15 @@ sub _get_next_link {
 
     my $nodes        = $self->{nodes};
     my $active_links = $self->{_active_links};
-    my @common_lines = _get_common_lines(
-        $nodes, [ @{$active_links->[0]}, @{$active_links->[1]} ]
-    );
+
+    # Revert changes as it breaks routing (v3.65)
+    # Commit id: 49273fd2a0baaedbfc1d02ef7
+    # -------------------------------------------
+    # my @common_lines = _get_common_lines(
+    #     $nodes, [ @{$active_links->[0]}, @{$active_links->[1]} ]
+    # );
+
+    my @common_lines = common_lines($active_links->[0], $active_links->[1]);
 
     if ($self->{experimental} && scalar(@{$self->{_common_lines}})) {
         @common_lines = (@{$self->{_common_lines}}, @common_lines);
