@@ -1,6 +1,6 @@
 package Test::Map::Tube;
 
-$Test::Map::Tube::VERSION   = '3.75';
+$Test::Map::Tube::VERSION   = '3.76';
 $Test::Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Test::Map::Tube - Interface to test Map::Tube features.
 
 =head1 VERSION
 
-Version 3.75
+Version 3.76
 
 =cut
 
@@ -36,7 +36,7 @@ takes the role of L<Map::Tube>. You can also unit test map functions as well.
     use strict; use warnings;
     use Test::More;
 
-    my $min_ver = 0.17;
+    my $min_ver = 3.75;
     eval "use Test::Map::Tube $min_ver";
     plan skip_all => "Test::Map::Tube $min_ver required" if $@;
 
@@ -48,7 +48,7 @@ takes the role of L<Map::Tube>. You can also unit test map functions as well.
     use strict; use warnings;
     use Test::More;
 
-    my $min_ver = 0.17;
+    my $min_ver = 3.75;
     eval "use Test::Map::Tube $min_ver";
     plan skip_all => "Test::Map::Tube $min_ver required" if $@;
 
@@ -60,7 +60,7 @@ takes the role of L<Map::Tube>. You can also unit test map functions as well.
     use strict; use warnings;
     use Test::More;
 
-    my $min_ver = 0.17;
+    my $min_ver = 3.75;
     eval "use Test::Map::Tube $min_ver tests => 2";
     plan skip_all => "Test::Map::Tube $min_ver required" if $@;
 
@@ -74,7 +74,7 @@ takes the role of L<Map::Tube>. You can also unit test map functions as well.
     use strict; use warnings;
     use Test::More;
 
-    my $min_ver = 0.17;
+    my $min_ver = 3.75;
     eval "use Test::Map::Tube $min_ver tests => 3";
     plan skip_all => "Test::Map::Tube $min_ver required" if $@;
 
@@ -139,7 +139,7 @@ sub not_ok_map ($;$) {
 
 Validates the map functions. It expects an object of a package that has taken the
 role of L<Map::Tube>. You can  optionally  pass C<$message>. For this method, you
-would require C<Test::Map::Tube> v0.09 or above.
+would require C<Map::Tube> v3.75 or above.
 
 =cut
 
