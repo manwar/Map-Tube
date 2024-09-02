@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.74';
+$Map::Tube::VERSION   = '3.75';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.74
+Version 3.75
 
 =cut
 
@@ -1386,8 +1386,6 @@ L<https://github.com/manwar/Map-Tube>
 =head1 SEE ALSO
 
 =over 2
-
-=item * L<Map::Tube::Cookbook>
 
 =item * L<Map::Tube::CLI>
 
