@@ -8,6 +8,7 @@ lib/Map/Tube/Route.pm
 lib/Map/Tube/Table.pm
 lib/Map/Tube/Types.pm
 lib/Map/Tube/Utils.pm
+lib/Test/Map/Tube.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
@@ -16,7 +17,7 @@ README
 script/map-data-converter
 share/color-names.txt
 t/00-load.t
-t/bad-map.json
+t/bad-sample.xml
 t/common-lines-map.json
 t/common-lines-map.t
 t/good-map.xml
@@ -24,6 +25,11 @@ t/invalid-role.t
 t/line-stations.t
 t/map.t
 t/not_ok_map.t
+t/ok_map.t
+t/ok_map_functions.t
+t/ok_map_routes.t
+t/Sample.pm
+t/sample.xml
 xt/changes.t
 xt/manifest.t
 xt/meta-json.t

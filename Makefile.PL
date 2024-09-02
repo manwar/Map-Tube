@@ -57,6 +57,7 @@ WriteMakefile(
             'Map::Tube::Types'     => { file => 'lib/Map/Tube/Types.pm'    , version => '3.74' },
             'Map::Tube::Cookbook'  => { file => 'lib/Map/Tube/Cookbook.pm' , version => '3.74' },
             'Map::Tube::Pluggable' => { file => 'lib/Map/Tube/Pluggable.pm', version => '3.74' },
+            'Test::Map::Tube'      => { file => 'lib/Test/Map/Tube.pm'     , version => '3.74' },
         },
         resources => {
             repository => {
