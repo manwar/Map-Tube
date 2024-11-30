@@ -1,6 +1,6 @@
 package Map::Tube::Utils;
 
-$Map::Tube::Utils::VERSION   = '3.78';
+$Map::Tube::Utils::VERSION   = '3.79';
 $Map::Tube::Utils::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube::Utils - Helper package for Map::Tube.
 
 =head1 VERSION
 
-Version 3.78
+Version 3.79
 
 =cut
 

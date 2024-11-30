@@ -3,7 +3,7 @@
 use 5.010;
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 5;
+use Test::More;
 eval 'use Map::Tube::London';
 plan skip_all => 'Map::Tube::London required for this test' if $@;
 
