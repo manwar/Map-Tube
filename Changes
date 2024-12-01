@@ -1,5 +1,9 @@
 Revision history for Map::Tube
 
+3.80  2024-12-01T00:40:00+00:00
+      - Tidied up unit test to make less noisy as reported by @srezic and @gwselke.
+      https://rt.cpan.org/Ticket/Display.html?id=157584
+
 3.79  2024-11-30T15:15:00+00:00
       - Fixed the test failure reported by @srezic.
       https://www.cpantesters.org/cpan/report/918741da-af20-11ef-82be-e5166e8775ea

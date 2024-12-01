@@ -4,8 +4,10 @@ use 5.010;
 use strict;
 use warnings FATAL => 'all';
 use Test::More;
-eval 'use Map::Tube::London';
-plan skip_all => 'Map::Tube::London required for this test' if $@;
+
+my $min_ver = 1.36;
+eval "use Map::Tube::London $min_ver";
+plan skip_all => "Map::Tube::London $min_ver required for this test" if $@;
 
 my $map = new_ok( 'Map::Tube::London' );
 
