@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.82  2024-12-03T21:00:00+00:00
+      - Handle duplicate station name.
+
 3.81  2024-12-03T14:35:00+00:00
       - Added test for invalid station line id.
 
