@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.80';
+$Map::Tube::VERSION   = '3.81';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.80
+Version 3.81
 
 =cut
 
@@ -26,6 +26,7 @@ use Map::Tube::Exception::MissingStationName;
 use Map::Tube::Exception::InvalidStationName;
 use Map::Tube::Exception::MissingStationId;
 use Map::Tube::Exception::InvalidStationId;
+use Map::Tube::Exception::InvalidStationLineId;
 use Map::Tube::Exception::MissingLineId;
 use Map::Tube::Exception::InvalidLineId;
 use Map::Tube::Exception::MissingLineName;
@@ -877,6 +878,19 @@ sub _init_map {
     my $data   = $self->get_map_data(\@caller, $method);
     $self->{name} = $data->{name};
 
+    # Pull all lines detail first
+    # So that we can check if a station has a valid line attached.
+    my @lines;
+    if (exists $data->{lines} && exists $data->{lines}->{line}) {
+        @lines = (ref $data->{lines}->{line} eq 'HASH')
+            ? ($data->{lines}->{line})
+            : @{$data->{lines}->{line}};
+    }
+    my $master_line_data = {};
+    foreach (@lines) {
+        $master_line_data->{$_->{id}} = 1;
+    }
+
     my $name_to_id = $self->{name_to_id};
     my $has_station_index = {};
     foreach my $station (@{$data->{stations}->{station}}) {
@@ -906,6 +920,15 @@ sub _init_map {
                 $_line = $self->_capture_line_station($_line, $id);
                 $has_station_index->{$_line} = 1;
             }
+
+            if (!exists $master_line_data->{$_line}) {
+                Map::Tube::Exception::InvalidStationLineId->throw({
+                    method      => $method,
+                    message     => "ERROR: Invalid line [$_line] for station [$name].",
+                    filename    => $caller[1],
+                    line_number => $caller[2] });
+            }
+
             my $uc_line = uc($_line);
             my $line    = $lines->{$uc_line};
             $line = Map::Tube::Line->new({ id => $_line }) unless defined $line;
@@ -940,13 +963,6 @@ sub _init_map {
             next if exists $has_station_index->{$line->id};
             push @{$line->{stations}}, $node;
         }
-    }
-
-    my @lines;
-    if (exists $data->{lines} && exists $data->{lines}->{line}) {
-        @lines = (ref $data->{lines}->{line} eq 'HASH')
-            ? ($data->{lines}->{line})
-            : @{$data->{lines}->{line}};
     }
 
     foreach my $_line (@lines) {
@@ -1415,10 +1431,6 @@ You can also look for information at:
 =item * BUG Report
 
 L<https://github.com/manwar/Map-Tube/issues>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Map-Tube>
 
 =item * CPAN Ratings
 
