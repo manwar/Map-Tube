@@ -1,5 +1,8 @@
 Revision history for Map::Tube
 
+3.87  2024-12-13T19:05:00+00:00
+      - Added test for unidirection map.
+
 3.86  2024-12-13T12:10:00+00:00
       - Ignore common lines with station index.
       - Fixed typo in exception error.
