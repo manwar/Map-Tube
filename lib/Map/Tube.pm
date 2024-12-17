@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.87';
+$Map::Tube::VERSION   = '3.88';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.87
+Version 3.88
 
 =cut
 
@@ -1348,6 +1348,9 @@ sub _get_table {
 sub _get_node_id {
     my ($self, $name) = @_;
 
+    return unless defined $name;
+    $name =~ s/^\s+//;
+    $name =~ s/\s+$//;
     return $self->{name_to_id}->{uc($name)};
 }
 
