@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.88';
+$Map::Tube::VERSION   = '3.89';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.88
+Version 3.89
 
 =cut
 
@@ -301,7 +301,7 @@ Returns map name.
 
 =head2 get_node_by_id($node_id)
 
-Returns an object of type L<Map::Tube::Node>.
+Returns an object of type L<Map::Tube::Node> for given C<$node_id>.
 
 =cut
 
@@ -343,8 +343,7 @@ sub get_node_by_id {
 
 =head2 get_node_by_name($node_name)
 
-Returns ref  to a list of object(s) of type L<Map::Tube::Node> matching node name
-C<$node_name> in scalar context otherwise returns just a list.
+Returns an object of type L<Map::Tube::Node> for given C<$node_name>.
 
 =cut
 
@@ -1424,6 +1423,10 @@ L<https://github.com/manwar/Map-Tube>
 =over 2
 
 =item * L<Map::Tube::CLI>
+
+=item * L<Map::Tube::API>
+
+=item * L<Map::Tube::Server>
 
 =item * L<Map::Metro>
 
