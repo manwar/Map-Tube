@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '3.89';
+$Map::Tube::VERSION   = '3.90';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 3.89
+Version 3.90
 
 =cut
 
@@ -821,13 +821,13 @@ sub _get_shortest_route {
                 }
 
                 $seen->{$link} = 1;
-                $links = [ grep(!/\b$link\b/, @$links) ];
+                $links = [ grep(!/\Q\b$link\b\E/, @$links) ];
             }
         }
 
         $index = $length + 1;
         $from  = shift @$nodes;
-        $nodes = [ grep(!/\b$from\b/, @$nodes) ] if defined $from;
+        $nodes = [ grep(!/\Q\b$from\b\E/, @$nodes) ] if defined $from;
     }
 }
 
@@ -1033,7 +1033,7 @@ sub _is_directly_linked {
     my ($self, $start_station, $end_station) = @_;
     my $linked_stations = $self->get_linked_stations($start_station);
 
-    return grep /$end_station/, @$linked_stations;
+    return grep { $_ eq $end_station }  @$linked_stations;
 }
 
 sub _init_table {
