@@ -3,7 +3,7 @@
   <lines>
     <line id="A" name="Line A"  color="red"/>
     <line id="B" name="Line B"  color="#FFFF00"/>
-    <line id="A" name="Line A duplicate id" color="#green"/>
+    <line id="a" name="Line a (lowercase)" color="#green"/>
   </lines>
   <stations>
     <station id="A1" name="Station A1"  line="A:2"     link="A2"   />
