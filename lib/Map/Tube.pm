@@ -75,10 +75,10 @@ documented in L<Map::Tube::Cookbook>.
     |                      |          | Sofia, Tbilisi, Vienna, Warsaw,          |
     |                      |          | Yekaterinburg                            |
     |                      |          |                                          |
-    | Gisbert W Selke      | GWS      | 13 (Beijing, Brussels, Chicago, Glasgow, |
-    |                      |          | Hamburg, KoelnBonn, Lyon, Napoli, Oslo,  |
-    |                      |          | Rhein/Ruhr, Stockholm, Stuttgart,        |
-    |                      |          | Toulouse)                                |
+    | Gisbert W Selke      | GWS      | 14 (Beijing, Brussels, Chicago, Glasgow, |
+    |                      |          | Hamburg, KoelnBonn, Lyon, Muenchen,      |
+    |                      |          | Napoli, Oslo, Rhein/Ruhr, Stockholm,     |
+    |                      |          | Stuttgart, Toulouse)                     |
     |                      |          |                                          |
     | Mohammad Sajid Anwar | MANWAR   | 7 (Barcelona, Delhi, Kolkatta, London,   |
     |                      |          | Madrid, NYC, Tokyo)                      |
