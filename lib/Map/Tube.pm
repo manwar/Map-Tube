@@ -75,8 +75,10 @@ documented in L<Map::Tube::Cookbook>.
     |                      |          | Sofia, Tbilisi, Vienna, Warsaw,          |
     |                      |          | Yekaterinburg                            |
     |                      |          |                                          |
-    | Gisbert W Selke      | GWS      | 8 (Beijing, Glasgow, Hamburg, KoelnBonn, |
-    |                      |          | Lyon, Rhein/Ruhr, Stockholm, Toulouse)   |
+    | Gisbert W Selke      | GWS      | 14 (Beijing, Brussels, Chicago, Glasgow, |
+    |                      |          | Hamburg, KoelnBonn, Lyon, Muenchen,      |
+    |                      |          | Napoli, Oslo, Rhein/Ruhr, Stockholm,     |
+    |                      |          | Stuttgart, Toulouse)                     |
     |                      |          |                                          |
     | Mohammad Sajid Anwar | MANWAR   | 7 (Barcelona, Delhi, Kolkatta, London,   |
     |                      |          | Madrid, NYC, Tokyo)                      |
@@ -815,6 +817,7 @@ sub _get_shortest_route {
             while (scalar(@$links) > 0) {
                 my ($success, $link) = $self->_get_next_link($from, $seen, $links);
                 $success or ($links = [ grep(!/\b\Q$link\E\b/, @$links) ]) and next;
+                next unless defined($link);
 
                 if (($self->_get_length($link) == 0) || ($length > ($index + 1))) {
                     $self->_set_length($link, $length + 1);
