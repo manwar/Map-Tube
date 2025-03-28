@@ -32,10 +32,13 @@ t/line-stations.t
 t/map.t
 t/not_ok_map.t
 t/ok_map.t
+t/ok_map_forked.t
 t/ok_map_functions.t
 t/ok_map_routes.t
 t/preferred-route.t
 t/Sample.pm
+t/Forked.pm
+t/forked-map.xml
 t/sample.xml
 t/lib/BadSample.pm
 t/lib/Sample.pm
@@ -108,5 +111,3 @@ xt/meta-json.t
 xt/meta-yml.t
 xt/pod.t
 xt/version.t
-META.yml                                 Module YAML meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)
