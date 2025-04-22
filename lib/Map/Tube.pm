@@ -1,6 +1,6 @@
 package Map::Tube;
 
-$Map::Tube::VERSION   = '4.07';
+$Map::Tube::VERSION   = '4.08';
 $Map::Tube::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ Map::Tube - Lightweight Routing Framework.
 
 =head1 VERSION
 
-Version 4.07
+Version 4.08
 
 =cut
 
@@ -418,6 +418,7 @@ sub get_line_by_name {
         line_number => $caller[2] }) unless defined $name;
 
     my $line = $self->_get_line_object_by_name($name);
+    $name = _decode_utf8_if_needed($name);
     Map::Tube::Exception::InvalidLineName->throw({
         method      => __PACKAGE__."::get_line_by_name",
         message     => "ERROR: Invalid Line Name [$name].",
@@ -935,7 +936,7 @@ sub _init_map {
     }
     my $master_line_data = {};
     foreach (@lines) {
-        $master_line_data->{lc $_->{id}} = 1;
+        $master_line_data->{NFC(lc $_->{id})} = 1;
     }
 
     my $has_station_index = {};
@@ -967,7 +968,8 @@ sub _init_map {
                 $has_station_index->{$_line} = 1;
             }
 
-            if (!exists $master_line_data->{lc $_line}) {
+            $_line = _decode_utf8_if_needed($_line);
+            if (!exists $master_line_data->{NFC(lc $_line)}) {
                 Map::Tube::Exception::InvalidStationLineId->throw({
                     method      => $method,
                     message     => "ERROR: Invalid line [$_line] for station [$name].",
@@ -1044,6 +1046,16 @@ sub _init_map {
 
     $self->nodes($nodes);
     $self->tables($tables);
+}
+
+sub _decode_utf8_if_needed {
+    my ($data) = @_;
+
+    if (!utf8::is_utf8($data) && utf8::valid($data)) {
+        $data = decode_utf8($data);
+    }
+
+    return $data;
 }
 
 sub _is_directly_linked {
@@ -1269,7 +1281,7 @@ sub _get_node_id {
     return unless defined $name;
     $name =~ s/^\s+//;
     $name =~ s/\s+$//;
-    $name = decode_utf8($name) if !utf8::is_utf8($name) && utf8::valid($name);
+    $name = _decode_utf8_if_needed($name);
     $name = NFC(uc($name));
     return $self->{name_to_id}->{$name};
 }
@@ -1277,7 +1289,8 @@ sub _get_node_id {
 sub _get_line_object_by_name {
     my ($self, $name) = @_;
 
-    $name = uc($name);
+    $name = _decode_utf8_if_needed($name);
+    $name = NFC(uc($name));
     foreach my $line_id (keys %{$self->{_lines}}) {
         my $line = $self->{_lines}->{$line_id};
         if (defined $line && defined $line->name) {
