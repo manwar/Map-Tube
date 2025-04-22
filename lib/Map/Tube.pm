@@ -13,6 +13,9 @@ Version 4.07
 
 =cut
 
+use Unicode::Normalize;
+use Encode qw(decode_utf8);
+
 use 5.006;
 use XML::Twig;
 use Data::Dumper;
@@ -874,7 +877,7 @@ sub _get_all_routes {
 sub _map_node_name {
     my ($self, $name, $id) = @_;
 
-    $self->{name_to_id}->{uc($name)} = $id;
+    $self->{name_to_id}->{NFC(uc($name))} = $id;
 }
 
 sub _validate_input {
@@ -1266,7 +1269,9 @@ sub _get_node_id {
     return unless defined $name;
     $name =~ s/^\s+//;
     $name =~ s/\s+$//;
-    return $self->{name_to_id}->{uc($name)};
+    $name = decode_utf8($name) if !utf8::is_utf8($name) && utf8::valid($name);
+    $name = NFC(uc($name));
+    return $self->{name_to_id}->{$name};
 }
 
 sub _get_line_object_by_name {
