@@ -35,6 +35,7 @@ t/ok_map.t
 t/ok_map_other_link.t
 t/ok_map_functions.t
 t/ok_map_routes.t
+t/ok-path-check.t
 t/preferred-route.t
 t/Sample.pm
 t/OtherLink.pm

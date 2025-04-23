@@ -13,7 +13,7 @@ Version 4.08
 
 =cut
 
-use 5.006;
+use v5.14;
 use strict; use warnings;
 use Module::Pluggable search_path => ['Map::Tube::Plugin'], require => 1, max_depth => 4;
 

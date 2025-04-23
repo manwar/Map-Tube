@@ -13,7 +13,7 @@ Version 4.08
 
 =cut
 
-use 5.006;
+use v5.14;
 use strict; use warnings;
 
 =head1 DESCRIPTION

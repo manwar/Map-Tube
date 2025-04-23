@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use 5.006;
+use v5.14;
 use strict;
 use warnings FATAL => 'all';
 use ExtUtils::MakeMaker;
@@ -15,7 +15,7 @@ WriteMakefile(
     ABSTRACT_FROM      => 'lib/Map/Tube.pm',
     LICENSE            => 'artistic_2',
     EXE_FILES          => [ 'script/map-data-converter' ],
-    MIN_PERL_VERSION   => 5.006,
+    MIN_PERL_VERSION   => 5.014,
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker'     => 0,
         'File::ShareDir::Install' => '0.13',
@@ -42,7 +42,10 @@ WriteMakefile(
         'Map::Tube::Exception' => '3.24',
         'Type::Tiny'           => '1.000005',
         'File::ShareDir'       => '1.114',
-        'Taint::Util'          => '0.08',
+        'Try::Tiny'            => 0,
+        'Path::Tiny'           => 0,
+        'Scalar::Util'         => 0,
+        'Unicode::Normalize'   => 0,
         'Data::Compare'        => '1.25',
         'Map::Tube::Plugin::Formatter' => '0.16',
     },
