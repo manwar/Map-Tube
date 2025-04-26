@@ -13,8 +13,7 @@ Version 4.08
 
 =cut
 
-use 5.006;
-use Data::Dumper;
+use v5.14;
 use Map::Tube::Types qw(Node Nodes);
 use Map::Tube::Utils qw(filter);
 
